@@ -1,0 +1,13 @@
+Package: flowPlate
+Version: 0.1
+Date: 2007-07-15
+Title: Statistical tools and data structures for plate-based flow cytometry
+Author: P. Haaland and E. Strain
+Maintainer: Perry Haaland <perry_haaland@bd.com>
+Depends: R (>= 2.4.0), flowCore
+Imports: flowCore, flowViz
+Description: Provides basic S4 data structures and routines for
+        analysing plate based flow cytometry data.
+License: GNU General Public License 2.0.
+biocViews: Flowcytometry, Infrastructure, CellBasedAssays
+
