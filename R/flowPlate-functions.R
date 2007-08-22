@@ -414,12 +414,17 @@ applyIsoGates <- function(data,isoGates) {
 ##
 ######################################################################################################################
 
-checkIsoGates <- function(data,plateSumm.df,unstain,isoGates,numMads=5) {
+checkIsoGates <- function(data,plateSumm.df,isoGates,unstain,numMads=5) {
 
+	## Identify the wells containing unstained samples
+	if(missing(unstain)) {
+		unstain <- unlist(subset(pData(phenoData(data)),as.logical((Sample.Type=="Unstained") ),select="name"))[[1]]
+	}
+	
 	## Get the names of the columns with dyes
     dyeCols <- colnames(pData(phenoData(data)))[grep(".*\\.dye",colnames(pData(phenoData(data))))]
 	isoCols <- sapply(dyeCols,function(x) sub("\\.dye","",x))
-		
+	
 	unstainGates <- lapply(1:length(isoCols),function(x) {
 		mfi <- median((data[[unstain]]@exprs[,isoCols[x]]))
 		mfi.mad <- mad((data[[unstain]]@exprs[,isoCols[x]]))
@@ -454,11 +459,13 @@ checkIsoGates <- function(data,plateSumm.df,unstain,isoGates,numMads=5) {
 	})
 	
 	lapply(ls(isoGates), function(x) {
-		unstainPP <- sapply(testWells[[x]],function(y) {	
-			if((100*sum(filter(data[[y]],!unstainGates[[x]])@subSet)/(nrow(exprs(data[[y]]))+1))<=2) FALSE
-			else TRUE
-		})
-		if(sum(unstainPP)==0) assign(x,unstainGates[[x]],env=isoGates) 
+		if(length(testWells[[x]])>0) {
+			unstainPP <- sapply(testWells[[x]],function(y) {	
+				if((100*sum(filter(data[[y]],!unstainGates[[x]])@subSet)/(nrow(exprs(data[[y]]))+1))<=2) FALSE
+				else TRUE
+			})
+			if(sum(unstainPP)==0) assign(x,unstainGates[[x]],env=isoGates) 
+		}
 	})
 	
 	return(isoGates)	
