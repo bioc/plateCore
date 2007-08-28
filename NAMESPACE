@@ -4,4 +4,4 @@
 
 export("fixAutoFl","makePhenoData","read.flowPlate","getIsoGates","getLinIsoGates","applyIsoGates",
 	"getMarkers","calcIsoRatio","plateBasicSumm","getCompGates","plateCompensate","chanReg","eventCheck",
-	"callPops","getControlGates","checkIsoGates")
+	"callPops","getControlGates","checkIsoGates","checkIsoGates2")

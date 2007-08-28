@@ -340,7 +340,7 @@ getLinIsoGates <- function(data,numMads=5,Samp.Type="Isotype") {
 		mfi.mad <- mad((data[[isoWells[x]]]@exprs[,isoCols[x]]))
 		isoMad <- numMads
 		while(quantile(unlist(data[[isoWells[x]]]@exprs[,isoCols[x]]),probs=0.99)>(mfi+isoMad*mfi.mad)) {
-			isoMad <- isoMad + 1
+			isoMad <- isoMad + 0.1
 		}
 		thresh <- c(1,mfi+isoMad*mfi.mad) 
 		rangeF <- (range(unlist(data[[isoWells[x]]]@exprs[,isoCols[x]])))[1]	
@@ -430,7 +430,7 @@ checkIsoGates <- function(data,plateSumm.df,isoGates,unstain,numMads=5) {
 		mfi.mad <- mad((data[[unstain]]@exprs[,isoCols[x]]))
 		isoMad <- numMads
 		while(quantile(unlist(data[[unstain]]@exprs[,isoCols[x]]),probs=0.99)>(mfi+isoMad*mfi.mad)) {
-			isoMad <- isoMad + 1
+			isoMad <- isoMad + 0.1
 		}
 		thresh <- c(1,mfi+isoMad*mfi.mad) 
 		rangeF <- (range(unlist(data[[unstain]]@exprs[,isoCols[x]])))[1]	
@@ -461,7 +461,9 @@ checkIsoGates <- function(data,plateSumm.df,isoGates,unstain,numMads=5) {
 	lapply(ls(isoGates), function(x) {
 		if(length(testWells[[x]])>0) {
 			unstainPP <- sapply(testWells[[x]],function(y) {	
-				if((100*sum(filter(data[[y]],!unstainGates[[x]])@subSet)/(nrow(exprs(data[[y]]))+1))<=2) FALSE
+				unPP <- 100*sum(filter(data[[y]],!unstainGates[[x]])@subSet)/(nrow(exprs(data[[y]]))+1)
+				isoPP <- 100*sum(filter(data[[y]],!isoGates[[x]])@subSet)/(nrow(exprs(data[[y]]))+1)
+				if(unPP <= 2 & unPP <= isoPP) FALSE
 				else TRUE
 			})
 			if(sum(unstainPP)==0) assign(x,unstainGates[[x]],env=isoGates) 
@@ -471,6 +473,41 @@ checkIsoGates <- function(data,plateSumm.df,isoGates,unstain,numMads=5) {
 	return(isoGates)	
 }
 
+checkIsoGates2 <- function(data,plateSumm.df,isoGates) {
+	
+	## Get the test wells for each isotype control that are <=1% positive
+	testWells <- sapply(ls(isoGates),function(x) {
+		tempFilt <- get(x,env=isoGates)		
+		sampNames <- sampleNames(data)[pData(phenoData(data))[,paste(parameters(tempFilt)[[2]],".dye",sep="")]==x]	
+		sampNames <- sampNames[pData(phenoData(data[sampNames]))[,"Sample.Type"]=="Test"]
+		chanPP <- paste(parameters(tempFilt)[[2]],".pp",sep="")
+		sampNames[plateSumm.df[plateSumm.df$name %in% sampNames,chanPP]<=1]
+	})
+	
+	lapply(ls(isoGates), function(x) {
+		if(length(testWells[[x]])>0) {
+			tempGate <- get(x,env=isoGates)
+			delta0 <- tempGate@max[2]/100
+			delta <- delta0
+			tempGate@max[2] <- tempGate@max[2] - delta0
+			while(delta>0) {
+				pp <- sapply(testWells[[x]],function(y) {
+					100*sum(filter(data[[y]],!tempGate)@subSet)/nrow(exprs(data[[y]]))
+				})
+				if(mean(pp)>=2) {
+					assign(x,tempGate,env=isoGates)
+					delta <- -1
+				} else { 
+					delta <- delta - delta0 
+					tempGate@max[2] <- tempGate@max[2] - delta
+				}
+			
+			}
+		}
+	})
+	
+	return(isoGates)	
+}
 
 ######################################################################################################################
 ##
