@@ -339,7 +339,7 @@ getLinIsoGates <- function(data,numMads=5,Samp.Type="Isotype") {
 		mfi <- median((data[[isoWells[x]]]@exprs[,isoCols[x]]))
 		mfi.mad <- mad((data[[isoWells[x]]]@exprs[,isoCols[x]]))
 		isoMad <- numMads
-		while(quantile(unlist(data[[isoWells[x]]]@exprs[,isoCols[x]]),probs=0.99)>(mfi+isoMad*mfi.mad)) {
+		while(quantile(unlist(data[[isoWells[x]]]@exprs[,isoCols[x]]),probs=0.975)>(mfi+isoMad*mfi.mad)) {
 			isoMad <- isoMad + 0.1
 		}
 		thresh <- c(1,mfi+isoMad*mfi.mad) 
@@ -487,9 +487,7 @@ checkIsoGates2 <- function(data,plateSumm.df,isoGates) {
 	lapply(ls(isoGates), function(x) {
 		if(length(testWells[[x]])>0) {
 			tempGate <- get(x,env=isoGates)
-			delta0 <- tempGate@max[2]/100
-			delta <- delta0
-			tempGate@max[2] <- tempGate@max[2] - delta0
+			delta <- tempGate@max[2]/200
 			while(delta>0) {
 				pp <- sapply(testWells[[x]],function(y) {
 					100*sum(filter(data[[y]],!tempGate)@subSet)/nrow(exprs(data[[y]]))
@@ -498,7 +496,6 @@ checkIsoGates2 <- function(data,plateSumm.df,isoGates) {
 					assign(x,tempGate,env=isoGates)
 					delta <- -1
 				} else { 
-					delta <- delta - delta0 
 					tempGate@max[2] <- tempGate@max[2] - delta
 				}
 			
