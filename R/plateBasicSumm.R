@@ -28,7 +28,9 @@ plateBasicSumm <- function(data,posCells,normCells,nonDeb,channels,fsc="FSC.A",s
 	colHeadings <- c(colHeadings,unlist(lapply(channels,function(x) gsub("-",'\\.',paste(x,".pp",sep="")))))
 	colHeadings <- c(colHeadings,unlist(lapply(channels,function(x) gsub("-",'\\.',paste(x,".posMFI",sep="")))))
 	colHeadings <- c(colHeadings,unlist(lapply(channels,function(x) gsub("-",'\\.',paste(x,".negMFI",sep="")))))
+	colHeadings <- c(colHeadings,unlist(lapply(channels,function(x) gsub("-",'\\.',paste(x,".CV",sep="")))))
 
+	
 	## Function list used to calculate values for columns listed above.
 	funList <- vector("list",length=7) 
 	
@@ -76,14 +78,23 @@ plateBasicSumm <- function(data,posCells,normCells,nonDeb,channels,fsc="FSC.A",s
 			})
 		})
  	}	
+ 	## CVs
+	funList[[8]] <- function(fs,...) {
+		lapply(channels,function(y) {
+			fsApply(fs, function(x) { 
+				 round(100*sd(log(exprs(x)[,y]),na.rm=TRUE)/mean(log(exprs(x)[,y]),na.rm=TRUE),digits=0)
+			})
+		})
+	}	
+	
 
 	## apply the function list
 	plateSumm.df <- data.frame(matrix(unlist(lapply(funList,function(x) x(data,normCells,posCells,nonDeb))),
 					nrow=length(data)),stringsAsFactors=FALSE)
 
-	plateSumm.df <- cbind(pData(phenoData(data))$Well.Id,plateSumm.df)
+	plateSumm.df <- cbind(pData(phenoData(data))[,c("Well.Id","FITC.A.dye","PE.A.dye","PerCP.Cy5.5.A.dye","APC.A.dye")],plateSumm.df)
 	
-	names(plateSumm.df) <- c("Well.Id",colHeadings)
+	names(plateSumm.df) <- c(c("Well.Id","FITC.A.dye","PE.A.dye","PerCP.Cy5.5.A.dye","APC.A.dye"),colHeadings)
 	
 	rownames(plateSumm.df) <- as.character(plateSumm.df$Well.Id)
 		

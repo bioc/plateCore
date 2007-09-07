@@ -15,7 +15,7 @@
 ##
 ## Function: callPops
 ##
-## Description:  Use mclust to say whether there are 1, 2, or 3 populations in a well/channel.  
+## Description:  Use mclust to say whether there are 1 or 2 populations in a well/channel.  
 ##	The function uses the unstained wells to call the minimum quantile.  Different analyses have
 ##	differing levels of garbage near the axes, need to cut this off since it complicates determining
 ##	the number of populations.
@@ -65,7 +65,12 @@ callPops <- function(data,chanCols,bySize=0.01,cutOff=1.1,minDiff=0.25) {
 	temp.df <- fsApply(data, function(x) {
 		sapply(chanCols, function(y) {
 			quantVals <- quantile(log10(exprs(x)[,y]),probs=seq(0,0.9999,by=bySize))  
-			quantVals <- quantVals[quantVals>lowerBound[y]]
+			if(sum(quantVals>lowerBound[y])<=2) {
+				l <- length(quantVals)
+				quantVals <- quantVals[c(l-2:l)]
+			} else { 
+				quantVals <- quantVals[quantVals>lowerBound[y]] 
+			}
 			testClust <- Mclust(quantVals,G=1:2,modelNames=c("V"))
 			numPops <- length(testClust$parameters$mean)
 
@@ -546,8 +551,10 @@ getMarkers <- function(data,summ.df,chanCols) {
 	
 	out.mat <- matrix(unlist(out.mat,recursive=TRUE),ncol=length(cols),byrow=TRUE)
 	colnames(out.mat) <- cols
-	data.frame(out.mat,stringsAsFactors=FALSE)
-	
+	out.df <- data.frame(out.mat,stringsAsFactors=FALSE)
+	fjPP <- out.df$pp
+	ppCol <- which(cols=="pp")	
+	cbind(out.df[,1:ppCol],fjPP,out.df[,(ppCol+1):length(cols)])
 }
 
 ######################################################################################################################
