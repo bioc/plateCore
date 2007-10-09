@@ -10,4 +10,15 @@
 ##
 #########################################################################################################
 
+setClass("flowPlate",                   
+	representation(
+		plateSet="flowSet",
+		plateFilters="environment",
+		plateConfig="data.frame",
+		wellAnnotation="data.frame"),
+	prototype=list(
+		plateFilters=emptyenv(),
+		plateConfig=data.frame(),
+		wellAnnotation=data.frame())
+)
 
