@@ -22,3 +22,12 @@ setClass("flowPlate",
 		wellAnnotation=data.frame())
 )
 
+setGeneric("flowPlate", function(x,...) standardGeneric("flowPlate"))
+
+setMethod("flowPlate",signature("flowSet"),function(x) {
+	temp <- new("flowPlate")
+	temp@plateSet <- x
+	return(temp)
+})
+
+
