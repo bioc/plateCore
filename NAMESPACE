@@ -1,7 +1,12 @@
-## exportClasses()
 
-## importClassesFrom("flowCore","flowSet")
+importFrom("flowCore", "compensate")
+importClassesFrom("flowCore", "flowSet", "filterSet")
 
-export("fixAutoFl","makePhenoData","read.flowPlate","getIsoGates","getLinIsoGates","applyIsoGates",
+exportClasses("flowPlate")
+
+exportMethods("compensate","flowPlate","setRange","fixAutoFl")	
+	
+export("makePhenoData","read.flowPlate","getIsoGates","getLinIsoGates","applyIsoGates",
 	"getMarkers","calcIsoRatio","plateBasicSumm","getCompGates","plateCompensate","chanReg","eventCheck",
 	"callPops","getControlGates","checkIsoGates","checkIsoGates2")
+		

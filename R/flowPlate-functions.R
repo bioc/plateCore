@@ -168,21 +168,24 @@ chanReg <- function(chan1,chan2,data) {
 ##	approach fits a linear model of the form FL*-H ~ FSC.  The correction parameter is the mean of the slopes
 ## 	from the unstained samples in a plate.  
 ##
+##  Sets the median to be the same after the correction.
+##
 #########################################################################################################
 
-fixAutoFl <- function(plateSet,chanCols,unstain,fsc="FSC.A") {
+setMethod("fixAutoFl",signature("flowSet"), 
+	function(fp,chanCols,unstain,fsc="FSC.A") {
 	
 	require(rrcov)
 	
 	## Identify the wells containing unstained samples
 	if(missing(unstain)) {
-		unstainWells <- unlist(subset(pData(phenoData(plateSet)),as.logical((Sample.Type=="Unstained") ),select="name"))
+		unstainWells <- unlist(subset(pData(phenoData(fp)),as.logical((Sample.Type=="Unstained") ),select="name"))
 	} else {
 		unstainWells <- unstain
 	}
 	
 	## Fit a linear model to the unstained data, get the slope
-	unstainFits <- fsApply(plateSet[unstainWells], function(x) {
+	unstainFits <- fsApply(fp[unstainWells], function(x) {
 			unlist(lapply(chanCols,function(y) {
 				exprData <- exprs(x)[(exprs(x)[,y]> 1),]	
 				ltsReg(as.formula(paste(y," ~ ",fsc,sep="")), log(data.frame(exprData)))$coefficients[fsc]
@@ -191,18 +194,20 @@ fixAutoFl <- function(plateSet,chanCols,unstain,fsc="FSC.A") {
 
 	## Get a matrix of mean slopes
 	coeff.mat <- matrix(apply(unstainFits,2,mean),nrow=1)
-
 	
 	## Apply the correction to the channels of interest in chanCols\
 	## Truncate values less than 0 at 0
-	plateSet <- fsApply(plateSet,function(x) {
-		exprs(x)[,chanCols] <- exp(log(exprs(x)[,chanCols])-(log(exprs(x)[,fsc]) %*% coeff.mat))
+	fp <- fsApply(fp,function(x) {
+		initMFIs <- log(apply(exprs(x)[,chanCols],2,median))	
+		exprs(x)[,chanCols] <- exp(log(exprs(x)[,chanCols])-(log(exprs(x)[,fsc]) %*% coeff.mat)) 
+		diffMFI <- matrix(rep(initMFIs - log(apply(exprs(x)[,chanCols],2,median)),nrow(exprs(x))),ncol=length(chanCols),byrow=TRUE)
+		exprs(x)[,chanCols] <- exp(log(exprs(x)[,chanCols]) + diffMFI)
 		x@exprs[x@exprs<0] <- 0	
 		x
 	})
-		
-	return(plateSet)
-}
+
+	return(fp)
+})
 
 
 ######################################################################################################################

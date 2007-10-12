@@ -11,3 +11,8 @@
 #########################################################################################################
 
 
+setGeneric("flowPlate", function(data,...) standardGeneric("flowPlate"))
+
+setGeneric("setRange", function(x,minF,maxF,type) standardGeneric("setRange"))
+
+setGeneric("fixAutoFl", function(fp,...) standardGeneric("fixAutoFl"))

@@ -13,21 +13,14 @@
 setClass("flowPlate",                   
 	representation(
 		plateSet="flowSet",
-		plateFilters="environment",
-		plateConfig="data.frame",
-		wellAnnotation="data.frame"),
+		plateFilters="filterSet",
+		wellAnnotation="data.frame",
+		fjWorkspaces="environment"),
 	prototype=list(
 		plateFilters=emptyenv(),
 		plateConfig=data.frame(),
-		wellAnnotation=data.frame())
+		wellAnnotation=data.frame(),
+		fjWorkspaces=emptyenv())
 )
-
-setGeneric("flowPlate", function(x,...) standardGeneric("flowPlate"))
-
-setMethod("flowPlate",signature("flowSet"),function(x) {
-	temp <- new("flowPlate")
-	temp@plateSet <- x
-	return(temp)
-})
 
 
