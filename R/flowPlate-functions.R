@@ -562,10 +562,10 @@ getMarkers <- function(data,summ.df,chanCols) {
 	
 	## Now get the marker MFI, etc. values from the plate data
 	out.mat <- apply(geneMap.df,1,function(x) {
-		matrix( c(x["Antigen"],summ.df[x[["Well.Id"]],c(grep(x[["Channel"]],colnames(summ.df)))]) ,nrow=1 )
+		matrix( c(x["Antigen"],x[["Well.Id"]],summ.df[x[["Well.Id"]],c(grep(x[["Channel"]],colnames(summ.df)))]) ,nrow=1 )
 	})
 
-	cols <- c("Antigen",sub(paste(chanCols[1],"\\.",sep=""),"",colnames(summ.df)[grep(chanCols[1],colnames(summ.df))])) 
+	cols <- c("Antigen","Well.Id",sub(paste(chanCols[1],"\\.",sep=""),"",colnames(summ.df)[grep(chanCols[1],colnames(summ.df))])) 
 	
 	out.mat <- matrix(unlist(out.mat,recursive=TRUE),ncol=length(cols),byrow=TRUE)
 	colnames(out.mat) <- cols
