@@ -1,4 +1,3 @@
-
 importFrom("flowCore", "compensate")
 importClassesFrom("flowCore", "flowSet", "filterSet")
 

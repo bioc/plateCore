@@ -155,3 +155,26 @@ setMethod("fixAutoFl",signature("flowPlate"),
 			return(fp)
 		})
 
+
+
+setMethod("compensate", signature(x="flowPlate"), function(x,spillover) {
+
+	plateSet <- fsApply(x@plateSet,function(y) {
+		fileName <- attributes(y)$descriptio[["$FIL"]]
+		wellId <- pData(phenoData(x@plateSet))[fileName,"Well.Id"]
+		dyeCols <- subset(x@wellAnnotation,Well.Id==wellId,select="Channel")
+		dyeCols <- dyeCols[which(dyeCols %in% colnames(spillover))]
+		if(length(dyeCols)>=2) {
+			y <- compensate(y,spillover[dyeCols,dyeCols])
+			
+		} else {
+			y
+		}
+	})	
+	
+	x@plateSet <- plateSet
+	return(x)
+})
+	
+
+

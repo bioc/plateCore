@@ -17,7 +17,6 @@ setClass("flowPlate",
 		wellAnnotation="data.frame",
 		fjWorkspaces="environment"),
 	prototype=list(
-		plateFilters=emptyenv(),
 		plateConfig=data.frame(),
 		wellAnnotation=data.frame(),
 		fjWorkspaces=emptyenv())
