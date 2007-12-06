@@ -35,7 +35,6 @@ setMethod("flowPlate",signature("flowSet"),function(data,config=NULL,wellAnnot=N
 			return(temp)
 		})
 
-
 flowPhenoMerge <- function(data, newDF) {
 	
 	##Assume the columns to be "merged" are the first columns in pData for each annotated data frame
@@ -76,27 +75,6 @@ flowPhenoMerge <- function(data, newDF) {
 	return(data)
 }
 
-setMethod("compensate",signature("flowPlate","matrix"), function(x,spillover) {
-			if(nrow(fp@wellAnnotation)>0) {	
-				x@plateSet <- fsApply(x@plateSet,function(y) {
-							fileName <- attributes(y)$descriptio[["$FIL"]]
-							WellId <- pData(phenoData(x@plateSet))[fileName,"Well.Id"]
-							dyeCols <- unique(unlist(subset(x@wellAnnotation,Well.Id==WellId, select=Channel))) 
-							dyeCols[dyeCols %in% colnames(spillover)]
-							if(length(dyeCols)>=2) {
-								y <- compensate(y,spillover[dyeCols,dyeCols])			
-							} else {
-								y
-							}
-						})			
-			} else {
-				x@plateSet <- compensate(x@plateSet,spillover)
-			}
-			return(x)
-		})
-
-
-
 
 setMethod("setRange",signature("flowPlate","numeric","numeric","character"), function(x,minF,maxF,type="truncate") {
 			if(type=="truncate") {
@@ -116,8 +94,6 @@ setMethod("setRange",signature("flowPlate","numeric","numeric","character"), fun
 			}
 			return(x)		
 		})
-
-
 
 setMethod("fixAutoFl",signature("flowPlate"), 
 		function(fp,fsc,chanCols,unstain=NULL) {
@@ -155,15 +131,13 @@ setMethod("fixAutoFl",signature("flowPlate"),
 			return(fp)
 		})
 
-
-
 setMethod("compensate", signature(x="flowPlate"), function(x,spillover) {
 
 	plateSet <- fsApply(x@plateSet,function(y) {
 		fileName <- attributes(y)$descriptio[["$FIL"]]
 		wellId <- pData(phenoData(x@plateSet))[fileName,"Well.Id"]
-		dyeCols <- subset(x@wellAnnotation,Well.Id==wellId,select="Channel")
-		dyeCols <- dyeCols[which(dyeCols %in% colnames(spillover))]
+		dyeCols <- subset(x@wellAnnotation,Well.Id==wellId & !is.na(Dye),select=Channel)
+		dyeCols <- dyeCols[which(dyeCols$Channel %in% colnames(spillover)),]
 		if(length(dyeCols)>=2) {
 			y <- compensate(y,spillover[dyeCols,dyeCols])
 			
@@ -177,4 +151,47 @@ setMethod("compensate", signature(x="flowPlate"), function(x,spillover) {
 })
 	
 
+setMethod("setContolGates", signature("flowPlate"), function(data,gateType="Isotype",numMads=5,...) {
+			
+	if(gateType=="Isotype") {
+		## First get the control gate for each of the isotype groups.	
+		isoWells <- subset(data@wellAnnotation,Sample.Type=="Isotype" & !is.na(Dye))
+		
+		isoGates <- lapply(unique(isoWells$Well.Id), function(x) {
+			sapply(isoWells[isoWells$Well.Id==x,"Channel"], function(i) {	
+				mfi <- median(exprs(data[[x]])[,i])
+				mfi.mad <- mad(exprs(data[[x]])[,i])
+				isoMad <- numMads
+				while(quantile(exprs(data[[x]])[,i],probs=0.975)>(mfi+isoMad*mfi.mad)) {
+					isoMad <- isoMad + 0.1
+				}
+				thresh <- mfi+isoMad*mfi.mad	
+				thresh
+			})		
+		 })
+		names(isoGates) <- unique(isoWells$Well.Id)
+		
+		## Get the Dye Groups for each isotype, and average any replicates.	
+		controlGroups <- isoWells[isoWells$Well.Id == names(isoGates),]
+		controlGroups$thresh <- apply(controlGroups,1, function(x) {
+				isoGates[[x["Well.Id"]]][x["Channel"]]
+			})
+	}
 
+	data@wellAnnotation$Isogate <- apply(data@wellAnnotation,1,function(x) {
+		mean(subset(controlGroups,Isotype.Group==as.numeric(x[["Isotype.Group"]]) & Channel==x[["Channel"]],select=thresh))
+	}) 
+	
+	return(data)
+})
+		
+		
+setMethod("[[","flowPlate",function(x,i,j,...) {
+	if(length(i)!=1)
+		stop("subscript out of bounds (index must have length 1)")
+
+	fr <- sampleNames(data@plateSet)[pData(phenoData(data@plateSet))[,"Well.Id"] == i]
+	if(is.na(fr)) stop("subscript out of bounds")
+	fr <- data@plateSet[[fr]]
+
+})		

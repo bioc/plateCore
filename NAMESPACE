@@ -7,5 +7,5 @@ exportMethods("compensate","flowPlate","setRange","fixAutoFl")
 	
 export("makePhenoData","read.flowPlate","getIsoGates","getLinIsoGates","applyIsoGates",
 	"getMarkers","calcIsoRatio","plateBasicSumm","getCompGates","plateCompensate","chanReg","eventCheck",
-	"callPops","getControlGates","checkIsoGates","checkIsoGates2")
+	"callPops","setContolGates","checkIsoGates","checkIsoGates2")
 		
