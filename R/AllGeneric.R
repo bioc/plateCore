@@ -21,3 +21,6 @@ setGeneric("setContolGates", function(data,...) standardGeneric("setContolGates"
 
 setGeneric("plateSet", function(fp,...) standardGeneric("plateSet"))
 
+setGeneric("overlayFilterResult", function(subSet,...) standardGeneric("overlayFilterResult"))
+
+setGeneric("overlay", function(data,...) standardGeneric("overlay"))

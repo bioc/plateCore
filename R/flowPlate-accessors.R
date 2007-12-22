@@ -10,21 +10,66 @@
 ##
 #########################################################################################################
 
+setMethod("overlayFilterResult",signature("vector"),function(subSet,...) {
+			temp <- new("overlayFilterResult")
+			temp@subSet <- subSet
+			return(temp)
+		})
+
+
+setMethod("overlay",signature("flowPlate"),function(data,type,channel,...) {
+	if(type=="Negative.Control") {
+		wellIds <- subset(data@wellAnnotation,Channel==channel)
+		wellIds$eventCount <- sapply(wellIds$name,function(x) nrow(exprs(data@plateSet[[x]])))
+
+		data@plateSet <- fsApply(data@plateSet,function(x) {
+			sampName <- identifier(x)	
+			if(sampName %in% wellIds$name) {
+				negName <- wellIds[wellIds$name==sampName,"Negative.Control"]
+				if(length(negName) && (negName %in% wellIds$Well.Id)) {	
+					negName <- wellIds[wellIds$Well.Id==negName,"name"]
+					exprs(x) <- rbind(exprs(x),exprs(data@plateSet[[negName]]))
+				}
+			}
+			x	
+		})
+
+		temp <- lapply(sampleNames(data@plateSet),function(sampName) {
+			if(sampName %in% wellIds$name) {
+				negName <- wellIds[wellIds$name==sampName,"Negative.Control"]					
+				if(length(negName) && (negName %in% wellIds$Well.Id)) {
+					return(overlayFilterResult(c(rep(0,wellIds[wellIds$name==sampName,"eventCount"]),
+						rep(1,wellIds[wellIds$Well.Id==negName,"eventCount"]))))
+				}
+			}	
+			overlayFilterResult(c(rep(0,nrow(exprs(data@plateSet[[sampName]])))))
+		})
+
+		names(temp) <- sampleNames(data@plateSet)
+
+		data@overlayFilterResults <- temp
+	}	
+	data		
+})			
 
 setMethod("%on%",signature(e2="flowPlate"),function(e1,e2) {
+		
+		if("Isogate" %in% colnames(e2@wellAnnotation)) {
+			for(y in e1@transforms) {
+				wellList <- which(e2@wellAnnotation$Channel %in% y@input)	
+				e2@wellAnnotation[wellList,"Isogate"] <- y@f(e2@wellAnnotation[wellList,"Isogate"])			  	
+			}
+		}
+			
 		e2@plateSet <- fsApply(e2@plateSet,"%on%",e1=e1)	
 		e2
+
 	})
 
 setMethod("flowPlate",signature("flowSet"),function(data,wellAnnot,...) {
 			
-			config <- makePlateLayout(wellAnnot)
-			
 			temp <- new("flowPlate")
-					
-			wellAnnot$Channel <- gsub("-",".",wellAnnot$Channel)
-			temp@wellAnnotation <- wellAnnot
-			
+
 			## Get rid of dashes in flowSet because they're annoying for lattice
 			data <- fsApply(data,function(x) {
 						newNames <- gsub("-",".",colnames(exprs(x)))
@@ -32,7 +77,13 @@ setMethod("flowPlate",signature("flowSet"),function(data,wellAnnot,...) {
 						x
 					})
 
+			config <- makePlateLayout(wellAnnot)
 			data <- flowPhenoMerge(data,config)
+
+			wellAnnot$name <- sapply(wellAnnot$Well.Id,function(x) pData(phenoData(data))[pData(phenoData(data))$Well.Id==x,"name"])
+			
+			wellAnnot$Channel <- gsub("-",".",wellAnnot$Channel)
+			temp@wellAnnotation <- wellAnnot
 			
 			temp@plateSet <- data
 			return(temp)

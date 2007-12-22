@@ -5,7 +5,7 @@ importFrom("flowViz")
 
 exportClasses("flowPlate")
 
-exportMethods("compensate","flowPlate","setRange","fixAutoFl","plateSet","Subset","%on%")	
+exportMethods("compensate","flowPlate","setRange","fixAutoFl","plateSet","Subset","%on%","overlay")	
 	
 export("makePhenoData","read.flowPlate","getIsoGates","getLinIsoGates","applyIsoGates",
 	"getMarkers","calcIsoRatio","plateBasicSumm","getCompGates","plateCompensate","chanReg","eventCheck",
