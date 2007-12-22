@@ -11,9 +11,19 @@
 #########################################################################################################
 
 
-setMethod("flowPlate",signature("flowSet"),function(data,config=NULL,wellAnnot=NULL,...) {
+setMethod("%on%",signature(e2="flowPlate"),function(e1,e2) {
+		e2@plateSet <- fsApply(e2@plateSet,"%on%",e1=e1)	
+		e2
+	})
+
+setMethod("flowPlate",signature("flowSet"),function(data,wellAnnot,...) {
+			
+			config <- makePlateLayout(wellAnnot)
 			
 			temp <- new("flowPlate")
+					
+			wellAnnot$Channel <- gsub("-",".",wellAnnot$Channel)
+			temp@wellAnnotation <- wellAnnot
 			
 			## Get rid of dashes in flowSet because they're annoying for lattice
 			data <- fsApply(data,function(x) {
@@ -21,60 +31,12 @@ setMethod("flowPlate",signature("flowSet"),function(data,config=NULL,wellAnnot=N
 						colnames(exprs(x)) <- newNames
 						x
 					})
-			
-			if(!missing(config)) {
-				## Do some validity check on config
-				data <- flowPhenoMerge(data,config)
-			}
-			
-			if(!missing(wellAnnot)) {		
-				temp@wellAnnotation <- wellAnnot
-			}	
+
+			data <- flowPhenoMerge(data,config)
 			
 			temp@plateSet <- data
 			return(temp)
 		})
-
-flowPhenoMerge <- function(data, newDF) {
-	
-	##Assume the columns to be "merged" are the first columns in pData for each annotated data frame
-	##Also assume that the ids in the first column of pData(newADF) 
-	
-	origDF <- pData(phenoData(data))
-	
-	## Make sure merging columns are unique, otherwise throw an error
-	
-	newIds <- newDF[,1]
-	dataNames <- origDF[,1]
-	
-	idOrder <- sapply(newIds,function(x) {grep(x,dataNames)})
-	
-	## Should warn users if ids are missing
-	newDF <- newDF[!is.na(idOrder>0),]
-	
-	## Warn if idOrder is not unique
-	idOrder <- unlist(idOrder[!is.na(idOrder>0)])
-	
-	if(colnames(newDF)[1]=="name") { newDF <- newDF[,-1]}
-	
-	##Remove flowFrames from data that don't have any config information, also
-	##orders the ids
-	##Give users a warning that if any frames are removed
-	data <- data[sampleNames(data)[idOrder]]
-	
-	newDF <- cbind(pData(phenoData(data)),newDF)
-	
-	tempMeta.df <- data.frame(colnames(newDF))
-	rownames(tempMeta.df) <- colnames(newDF)
-	
-	tempPheno.adf <- new("AnnotatedDataFrame", data=newDF, varMetadata=tempMeta.df, dimLabels=c("rowNames", "colNames"))
-	sampleNames(tempPheno.adf) <- newDF$name
-	
-	phenoData(data) <- tempPheno.adf
-	
-	return(data)
-}
-
 
 setMethod("setRange",signature("flowPlate","numeric","numeric","character"), function(x,minF,maxF,type="truncate") {
 			if(type=="truncate") {
@@ -135,9 +97,9 @@ setMethod("compensate", signature(x="flowPlate"), function(x,spillover) {
 
 	plateSet <- fsApply(x@plateSet,function(y) {
 		fileName <- attributes(y)$descriptio[["$FIL"]]
-		wellId <- pData(phenoData(x@plateSet))[fileName,"Well.Id"]
-		dyeCols <- subset(x@wellAnnotation,Well.Id==wellId & !is.na(Dye),select=Channel)
-		dyeCols <- dyeCols[which(dyeCols$Channel %in% colnames(spillover)),]
+		well <- pData(phenoData(x@plateSet))[fileName,]	
+		dyeCols <- colnames(spillover)[!is.na(well[,colnames(spillover)])]
+		
 		if(length(dyeCols)>=2) {
 			y <- compensate(y,spillover[dyeCols,dyeCols])
 			
@@ -151,11 +113,12 @@ setMethod("compensate", signature(x="flowPlate"), function(x,spillover) {
 })
 	
 
-setMethod("setContolGates", signature("flowPlate"), function(data,gateType="Isotype",numMads=5,...) {
+setMethod("setContolGates", signature("flowPlate"), function(data,gateType="Negative.Control",numMads=5,...) {
 			
-	if(gateType=="Isotype") {
+	if(gateType=="Negative.Control") {
 		## First get the control gate for each of the isotype groups.	
-		isoWells <- subset(data@wellAnnotation,Sample.Type=="Isotype" & !is.na(Dye))
+
+		isoWells <- subset(data@wellAnnotation,Sample.Type=="Isotype" & !is.na(Channel))
 		
 		isoGates <- lapply(unique(isoWells$Well.Id), function(x) {
 			sapply(isoWells[isoWells$Well.Id==x,"Channel"], function(i) {	
@@ -170,18 +133,18 @@ setMethod("setContolGates", signature("flowPlate"), function(data,gateType="Isot
 			})		
 		 })
 		names(isoGates) <- unique(isoWells$Well.Id)
-		
-		## Get the Dye Groups for each isotype, and average any replicates.	
-		controlGroups <- isoWells[isoWells$Well.Id == names(isoGates),]
-		controlGroups$thresh <- apply(controlGroups,1, function(x) {
-				isoGates[[x["Well.Id"]]][x["Channel"]]
-			})
+
+		data@wellAnnotation$Isogate <- apply(data@wellAnnotation,1,function(x) {
+			well <- x[["Negative.Control"]]	
+			if(well %in% names(isoGates)) {
+				isoGates[[well]][x[["Channel"]]]
+			} else if (x[["Well.Id"]] %in% unique(isoWells$Well.Id)) {
+				isoGates[[x[["Well.Id"]]]][x[["Channel"]]]
+			}
+			else NA
+		}) 
 	}
 
-	data@wellAnnotation$Isogate <- apply(data@wellAnnotation,1,function(x) {
-		mean(subset(controlGroups,Isotype.Group==as.numeric(x[["Isotype.Group"]]) & Channel==x[["Channel"]],select=thresh))
-	}) 
-	
 	return(data)
 })
 		
@@ -190,8 +153,98 @@ setMethod("[[","flowPlate",function(x,i,j,...) {
 	if(length(i)!=1)
 		stop("subscript out of bounds (index must have length 1)")
 
-	fr <- sampleNames(data@plateSet)[pData(phenoData(data@plateSet))[,"Well.Id"] == i]
+	fr <- sampleNames(x@plateSet)[pData(phenoData(x@plateSet))[,"Well.Id"] == i]
 	if(is.na(fr)) stop("subscript out of bounds")
-	fr <- data@plateSet[[fr]]
+	fr <- x@plateSet[[fr]]
 
 })		
+
+setMethod("plateSet","flowPlate",function(fp,...) {
+		 return(fp@plateSet)
+		})
+
+setMethod("Subset","flowPlate",function(x,subset,...) {
+			x@plateSet <- Subset(x@plateSet,subset)
+			x
+		})
+
+flowPhenoMerge <- function(data, newDF) {
+	
+	##Assume the columns to be "merged" are the first columns in pData for each annotated data frame
+	##Also assume that the ids in the first column of pData(newADF) 
+	
+	origDF <- pData(phenoData(data))
+	
+	## Make sure merging columns are unique, otherwise throw an error
+	
+	newIds <- newDF[,1]
+	dataNames <- origDF[,1]
+	
+	idOrder <- sapply(newIds,function(x) {grep(x,dataNames)})
+	
+	## Should warn users if ids are missing
+	newDF <- newDF[!is.na(idOrder>0),]
+	
+	## Warn if idOrder is not unique
+	idOrder <- unlist(idOrder[!is.na(idOrder>0)])
+	
+	if(colnames(newDF)[1]=="name") { newDF <- newDF[,-1]}
+	
+	##Remove flowFrames from data that don't have any config information, also
+	##orders the ids
+	##Give users a warning that if any frames are removed
+	data <- data[sampleNames(data)[idOrder]]
+	
+	newDF <- cbind(pData(phenoData(data)),newDF)
+	
+	tempMeta.df <- data.frame(colnames(newDF))
+	rownames(tempMeta.df) <- colnames(newDF)
+	
+	tempPheno.adf <- new("AnnotatedDataFrame", data=newDF, varMetadata=tempMeta.df, dimLabels=c("rowNames", "colNames"))
+	sampleNames(tempPheno.adf) <- newDF$name
+	
+	phenoData(data) <- tempPheno.adf
+	
+	return(data)
+}
+
+
+
+
+
+makePlateLayout <- function(plateDesc,abName="Ab.Name",sampleType="Sample.Type",negCon="Negative.Control",...) {
+	
+	##--------------------------------------------------------------------------
+	##
+	## Function: makePlateLayout
+	##
+	## Description: Create an wide data.frame for a flowSet from a tall data.frame.    
+	##
+	##--------------------------------------------------------------------------
+	
+	
+	## Add some validity check function
+	
+	
+	## Now get the unique channels, and remove dashes make them legal column names
+	chans <- unique(plateDesc$Channel)
+	chans <- gsub("-",".",chans[chans != ""])
+	plateDesc$Channel <- gsub("-",".",plateDesc$Channel)
+	
+	## Make a plate layout data.frame
+	plateLayout <- data.frame(Well.Id=as.character(unique(plateDesc$Well.Id)),stringsAsFactors=FALSE)
+	
+	for(wellChan in chans) {
+		temp <- subset(plateDesc,Channel==wellChan,select=c("Well.Id",abName,sampleType,negCon))
+		colnames(temp) <- c("Well.Id",wellChan,paste(sampleType,wellChan,sep="."),paste(negCon,wellChan,sep="."))
+		plateLayout <- merge(plateLayout,temp,by="Well.Id",all.x=TRUE)
+	}
+	
+	
+	temp <- subset(plateDesc,Channel=="",select=c("Well.Id",sampleType))
+	plateLayout <- merge(plateLayout,temp,by="Well.Id",all.x=TRUE)
+	
+	cbind(name=plateLayout$Well.Id,plateLayout)
+	
+	
+}

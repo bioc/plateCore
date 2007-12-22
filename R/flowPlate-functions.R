@@ -11,17 +11,49 @@
 ##
 ######################################################################################################################
 
+makePhenoData <- function(plateDesc,abName="Ab.Name",sampleType="Sample.Type",negCon="Negative.Control",plateMetaData=NULL,...) {
+
+##--------------------------------------------------------------------------
+##
+## Function: makePhenoData.R
+##
+## Description: Create an AnnotatedDataFrame for a flowSet from a data.frame.    
+##
+##--------------------------------------------------------------------------
+	
+
+	## Add some validity check function
 
 
-
-
-
-
-
-
-
-
-
+	## Now get the unique channels, and remove dashes make them legal column names
+	chans <- unique(plateDesc$Channel)
+	chans <- gsub("-",".",chans[chans != ""])
+	plateDesc$Channel <- gsub("-",".",plateDesc$Channel)
+	
+	## Make a plate layout data.frame
+	plateLayout <- data.frame(Well.Id=unique(plateDesc$Well.Id))
+	
+	for(wellChan in chans) {
+		temp <- subset(plateDesc,Channel==wellChan,select=c("Well.Id",abName,sampleType,negCon))
+		colnames(temp) <- c("Well.Id",wellChan,paste(sampleType,wellChan,sep="."),paste(negCon,wellChan,sep="."))
+		plateLayout <- merge(plateLayout,temp,by="Well.Id",all.x=TRUE)
+	}
+	
+	
+	temp <- subset(plateDesc,Channel=="",select=c("Well.Id",sampleType))
+	plateLayout <- merge(plateLayout,temp,by="Well.Id",all.x=TRUE)
+	
+	plateLayout <- cbind(name=plateLayout$Well.Id,plateLayout)
+	
+	if(is.null(plateMetaData)) {
+		plateMetaData <- data.frame(colnames(plateLayout))
+		rownames(plateMetaData) <- colnames(plateLayout)
+	}
+	
+	tempPheno.adf <- new("AnnotatedDataFrame", data=plateLayout, varMetadata=plateMetaData, dimLabels=c("rowNames", "colNames"))
+	sampleNames(tempPheno.adf) <- plateLayout$name
+	return(tempPheno.adf)
+}
 
 
 #########################################################################################################
@@ -210,25 +242,7 @@ setMethod("fixAutoFl",signature("flowSet"),
 })
 
 
-######################################################################################################################
-##
-## Function: makePhenoData.R
-##
-## Description: Create an AnnotatedDataFrame for a flowSet from a data.frame.    
-##
-######################################################################################################################
 
-makePhenoData <- function(plateDesc.df,tempMeta.df=NULL) {
-
-	if(is.null(tempMeta.df)) {
-		tempMeta.df <- data.frame(colnames(plateDesc.df))
-		rownames(tempMeta.df) <- colnames(plateDesc.df)
-	}
-	
-	tempPheno.adf <- new("AnnotatedDataFrame", data=plateDesc.df, varMetadata=tempMeta.df, dimLabels=c("rowNames", "colNames"))
-    sampleNames(tempPheno.adf) <- plateDesc.df$name
-	return(tempPheno.adf)
-}
 
 ######################################################################################################################
 ##

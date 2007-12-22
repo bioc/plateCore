@@ -18,3 +18,6 @@ setGeneric("setRange", function(x,minF,maxF,type) standardGeneric("setRange"))
 setGeneric("fixAutoFl", function(fp,...) standardGeneric("fixAutoFl"))
 
 setGeneric("setContolGates", function(data,...) standardGeneric("setContolGates"))
+
+setGeneric("plateSet", function(fp,...) standardGeneric("plateSet"))
+
