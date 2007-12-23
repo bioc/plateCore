@@ -19,7 +19,8 @@ setMethod("getGroups",signature("flowPlate"),function(data,type="Negative.Contro
 	
 	if(type=="Negative.Control") {
 		wells <- lapply(wellIds,function(x) {
-			wells <- unlist(subset(data@wellAnnotation,Channel==chan & (Negative.Control==x | Well.Id==x),select=name))		
+			wells <- unlist(subset(data@wellAnnotation,Channel==chan & Negative.Control==x,select=name))
+			wells <- c(unlist(subset(data@wellAnnotation,Channel==chan & Well.Id==x,select=name)),wells)
 			wells <- unique(wells)	
 			if(!length(wells)) NA
 			else wells
@@ -217,18 +218,19 @@ setMethod("applyControlGates", signature("flowPlate"), function(data,gateType="I
 			
 		if(gateType=="Isogate") {
 			## First get the control gate for each of the isotype groups.	
-
-			data@wellAnnotation$Percent.Positive <- apply(data@wellAnnotation,1,function(x) {
+			wa <- data@wellAnnotation 
+			wa$Percent.Positive <- apply(data@wellAnnotation,1,function(x) {
 					thresh <- as.numeric(x[["Isogate"]])	
 					chan <- x[["Channel"]]
 					frame <- data@plateSet[[x[["name"]]]]
 
-					if(!is.na(thresh) && chan %in% colnames(data@plateSet)) {
+					if(!is.na(thresh) && chan %in% colnames(exprs(frame))) {
 						iso <- new("rectangleGate",filterId="rectangleGate",parameters=chan,min=thresh,max=Inf)
 						isoResult <- filter(frame,iso)
 						return(100*(sum(isoResult@subSet)/nrow(exprs(frame))))
 					} else { NA }	
 				})	
+			data@wellAnnotation <- wa
 		}
 		return(data)
 	})
