@@ -28,3 +28,5 @@ setGeneric("overlay", function(data,...) standardGeneric("overlay"))
 setGeneric("applyControlGates", function(data,...) standardGeneric("applyControlGates"))
 
 setGeneric("summaryStats", function(data,...) standardGeneric("summaryStats"))
+
+setGeneric("getGroups", function(data,...) standardGeneric("getGroups"))

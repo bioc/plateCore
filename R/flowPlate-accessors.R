@@ -10,6 +10,28 @@
 ##
 #########################################################################################################
 
+setMethod("getGroups",signature("flowPlate"),function(data,type="Negative.Control",chan,...) {
+			
+	wellIds <- unique(data@wellAnnotation$Negative.Control)
+	wellIds <- wellIds[wellIds %in% pData(phenoData(data@plateSet))$Well.Id]
+	
+	wells <- list()
+	
+	if(type=="Negative.Control") {
+		wells <- lapply(wellIds,function(x) {
+			wells <- unlist(subset(data@wellAnnotation,Channel==chan & (Negative.Control==x | Well.Id==x),select=name))		
+			wells <- unique(wells)	
+			if(!length(wells)) NA
+			else wells
+		})
+	}
+	
+	wells <- wells[!is.na(wells)]
+	return(wells)
+})
+
+
+
 setMethod("%on%",signature(e2="flowPlate"),function(e1,e2) {
 		
 		if("Isogate" %in% colnames(e2@wellAnnotation)) {
@@ -41,6 +63,7 @@ setMethod("flowPlate",signature("flowSet"),function(data,wellAnnot,...) {
 			wellAnnot$name <- sapply(wellAnnot$Well.Id,function(x) pData(phenoData(data))[pData(phenoData(data))$Well.Id==x,"name"])
 			
 			wellAnnot$Channel <- gsub("-",".",wellAnnot$Channel)
+			wellAnnot <- subset(wellAnnot,name %in% sampleNames(data))
 			temp@wellAnnotation <- wellAnnot
 			
 			temp@plateSet <- data
