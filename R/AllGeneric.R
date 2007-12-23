@@ -26,3 +26,5 @@ setGeneric("overlayFilterResult", function(subSet,...) standardGeneric("overlayF
 setGeneric("overlay", function(data,...) standardGeneric("overlay"))
 
 setGeneric("applyControlGates", function(data,...) standardGeneric("applyControlGates"))
+
+setGeneric("summaryStats", function(data,...) standardGeneric("summaryStats"))

@@ -121,6 +121,39 @@ setMethod("compensate", signature(x="flowPlate"), function(x,spillover) {
 	return(x)
 })
 
+
+
+setMethod("summaryStats", signature("flowPlate"), function(data,...) {
+
+	wellAnnotation <- data@wellAnnotation
+
+	wellAnnotation$MFI <- apply(wellAnnotation,1,function(x) {
+		chan <- x[["Channel"]]
+		frame <- data@plateSet[[x[["name"]]]]
+
+		if(chan %in% colnames(exprs(frame))) {
+			return(median(exprs(frame)[,chan]))
+		} else { NA }	
+	})
+
+	wellAnnotation$MFI.Ratio <- apply(wellAnnotation,1,function(x) {
+			negWell <- x[["Negative.Control"]]
+			chan <- x[["Channel"]]
+			negMFI <- subset(wellAnnotation,Well.Id==negWell & Channel==chan,select=MFI)
+			frame <- data@plateSet[[x[["name"]]]]
+			
+			if(chan %in% colnames(exprs(frame)) && negWell!="") {
+				negMFI <- subset(wellAnnotation,Well.Id==negWell & Channel==chan,select=MFI)
+				if(!is.na(negMFI) && !is.na(x[["MFI"]])) return(as.numeric(x[["MFI"]])/as.numeric(negMFI))
+			} else { NA }	
+	})	
+
+	data@wellAnnotation <- wellAnnotation
+	
+	return(data)
+
+})
+
 setMethod("setContolGates", signature("flowPlate"), function(data,gateType="Negative.Control",numMads=5,...) {
 			
 	if(gateType=="Negative.Control") {
@@ -178,16 +211,7 @@ setMethod("applyControlGates", signature("flowPlate"), function(data,gateType="I
 	})
 
 
-		
-setMethod("[[","flowPlate",function(x,i,j,...) {
-	if(length(i)!=1)
-		stop("subscript out of bounds (index must have length 1)")
-
-	fr <- sampleNames(x@plateSet)[pData(phenoData(x@plateSet))[,"Well.Id"] == i]
-	if(is.na(fr)) stop("subscript out of bounds")
-	fr <- x@plateSet[[fr]]
-
-})		
+	
 
 setMethod("plateSet","flowPlate",function(fp,...) {
 		 return(fp@plateSet)
@@ -197,3 +221,38 @@ setMethod("Subset","flowPlate",function(x,subset,...) {
 			x@plateSet <- Subset(x@plateSet,subset)
 			x
 		})
+
+setMethod("sampleNames","flowPlate",function(object) {
+			sampleNames(phenoData(object@plateSet))
+		})
+
+## ==========================================================================
+## subsetting methods
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+setMethod("[",c("flowPlate"),function(x,i,j,...,drop=FALSE) {
+		if(missing(drop)) drop = FALSE
+		if(missing(i)) return(x)
+
+		if(is.numeric(i) || is.logical(i)) {
+				copy = sampleNames(x)[i]
+		} else {
+			copy = i
+			i    = match(i,sampleNames(x))
+		}
+
+		x@plateSet <- x@plateSet[copy]
+		x@wellAnnotation <- subset(x@wellAnnotation,name %in% copy)
+		x
+})
+
+
+setMethod("[[","flowPlate",function(x,i,j,...) {
+			if(length(i)!=1)
+				stop("subscript out of bounds (index must have length 1)")
+			
+			fr <- sampleNames(x@plateSet)[pData(phenoData(x@plateSet))[,"Well.Id"] == i]
+			if(is.na(fr)) stop("subscript out of bounds")
+			fr <- x@plateSet[[fr]]
+			
+		})	
