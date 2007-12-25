@@ -86,6 +86,15 @@ makePlateLayout <- function(plateDesc,abName="Ab.Name",sampleType="Sample.Type",
 	
 	temp <- subset(plateDesc,Channel=="",select=c("Well.Id",sampleType))
 	plateLayout <- merge(plateLayout,temp,by="Well.Id",all.x=TRUE)
+
+	
+	plateLayout$Row.Id <- sapply(plateLayout$Well.Id,function(x) {
+						substr(x,1,1)
+					})
+	plateLayout$Column.Id <- sapply(plateLayout$Well.Id,function(x) {
+						substr(x,2,3)
+					})
+				
 	
 	cbind(name=plateLayout$Well.Id,plateLayout)
 	

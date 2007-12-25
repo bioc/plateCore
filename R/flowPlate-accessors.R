@@ -59,6 +59,7 @@ setMethod("flowPlate",signature("flowSet"),function(data,wellAnnot,...) {
 					})
 
 			config <- makePlateLayout(wellAnnot)
+	
 			data <- flowPhenoMerge(data,config)
 
 			wellAnnot$name <- sapply(wellAnnot$Well.Id,function(x) pData(phenoData(data))[pData(phenoData(data))$Well.Id==x,"name"])
@@ -66,7 +67,8 @@ setMethod("flowPlate",signature("flowSet"),function(data,wellAnnot,...) {
 			wellAnnot$Channel <- gsub("-",".",wellAnnot$Channel)
 			wellAnnot <- subset(wellAnnot,name %in% sampleNames(data))
 			temp@wellAnnotation <- wellAnnot
-			
+	
+	
 			temp@plateSet <- data
 			return(temp)
 		})
