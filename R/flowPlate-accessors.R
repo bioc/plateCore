@@ -232,6 +232,30 @@ setMethod("applyControlGates", signature("flowPlate"), function(data,gateType="I
 						return(100*(sum(isoResult@subSet)/nrow(exprs(frame))))
 					} else { NA }	
 				})	
+		
+			wa$Total.Count <- apply(data@wellAnnotation,1,function(x) {
+					thresh <- as.numeric(x[["Isogate"]])	
+					chan <- x[["Channel"]]
+					frame <- data@plateSet[[x[["name"]]]]
+					
+					if(!is.na(thresh) && chan %in% colnames(exprs(frame))) {
+						return(nrow(exprs(frame)))
+					} else { NA }	
+				})	
+		
+			wa$Positive.Count <- apply(data@wellAnnotation,1,function(x) {
+					thresh <- as.numeric(x[["Isogate"]])	
+					chan <- x[["Channel"]]
+					frame <- data@plateSet[[x[["name"]]]]
+					
+					if(!is.na(thresh) && chan %in% colnames(exprs(frame))) {
+						iso <- new("rectangleGate",filterId="rectangleGate",parameters=chan,min=thresh,max=Inf)
+						isoResult <- filter(frame,iso)
+						return(sum(isoResult@subSet))
+					} else { NA }	
+				})	
+		
+		
 			data@wellAnnotation <- wa
 		}
 		return(data)
