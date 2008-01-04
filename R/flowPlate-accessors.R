@@ -23,8 +23,6 @@ setMethod("pbind",signature("flowPlate","flowPlate"),function(p1,p2,...) {
 			
 			if(length(plateIds) != length(unique(plateIds))) stop("Binding flowPlates with identical plateNames is not supported.")
 			
-
-			
 			annl <- lapply(argl,function(x) data.frame(plateName=x@plateName,x@wellAnnotation))
 			
 			annl <- lapply(annl,function(x) { 
@@ -37,8 +35,7 @@ setMethod("pbind",signature("flowPlate","flowPlate"),function(p1,p2,...) {
 			for(i in 2:length(argl)) {
 				if(!all.equal(colnames(annl[[1]]),colnames(annl[[i]]))) stop("flowPllate Well Annotations must have identical column names.")
 			}
-			
-			
+					
 			wellAnnotation <- annl[[1]]
 			
 			for(i in 2:length(annl)) {
