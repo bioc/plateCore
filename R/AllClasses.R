@@ -16,12 +16,14 @@ setClass("overlayFilterResult",
 
 setClass("flowPlate",                   
 	representation(
+		plateName="character",
 		plateSet="flowSet",
 		plateFilters="filterSet",
 		wellAnnotation="data.frame",
 		overlayFilterResults="list",
 		fjWorkspaces="environment"),
 	prototype=list(
+		plateName=character(0),
 		plateConfig=data.frame(),
 		wellAnnotation=data.frame(),
 		overlayFilterResults=list(),

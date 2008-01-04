@@ -10,6 +10,72 @@
 ##
 #########################################################################################################
 
+
+setMethod("pbind",signature("flowPlate","flowPlate"),function(p1,p2,...) {
+			
+			na <- nargs()
+			argl <- list(p1,p2,...)
+			
+			while(na > 0 && is.null(argl[[na]])) { argl <- argl[-na]; na <- na - 1 }
+			argl <- argl[sapply(argl,class)=="flowPlate"]
+			
+			plateIds <- sapply(argl,function(x) x@plateName)
+			
+			if(length(plateIds) != length(unique(plateIds))) stop("Binding flowPlates with identical plateNames is not supported.")
+			
+
+			
+			annl <- lapply(argl,function(x) data.frame(plateName=x@plateName,x@wellAnnotation))
+			
+			annl <- lapply(annl,function(x) { 
+					x$Well.Id <- apply(x,1,function(y) {paste(y['plateName'],y['Well.Id'],sep="")})
+					x$Negative.Control <- apply(x,1,function(y) {paste(y['plateName'],y['Negative.Control'],sep="")})
+					x$name<- apply(x,1,function(y) {paste(y['Well.Id'],y['name'],sep="")})
+					subset(x,select=-plateName)
+					})
+			
+			for(i in 2:length(argl)) {
+				if(!all.equal(colnames(annl[[1]]),colnames(annl[[i]]))) stop("flowPllate Well Annotations must have identical column names.")
+			}
+			
+			
+			wellAnnotation <- annl[[1]]
+			
+			for(i in 2:length(annl)) {
+				wellAnnotation <- rbind(wellAnnotation,annl[[i]])
+			}
+			
+			frames <- unlist(lapply(argl,function(x) {
+					temp <- as(x@plateSet@frames,"list")
+					fnames <- pData(phenoData(plateSet(x)))$name
+					fIds <- pData(phenoData(plateSet(x)))$Well.Id
+					names(temp) <- sapply(1:length(fnames),function(y) {paste(x@plateName,fIds[y],fnames[y],sep="")})
+					temp
+				}))
+			
+			fs <- as(frames,"flowSet")	
+
+			config <- makePlateLayout(wellAnnotation)
+				
+			fs <- flowPhenoMerge(fs,config)
+			
+			np <- new("flowPlate")
+			
+			np@plateSet <- fs
+			np@wellAnnotation <- wellAnnotation
+
+			return(np)
+		})
+
+
+
+
+
+
+
+
+
+
 setMethod("getGroups",signature("flowPlate"),function(data,type="Negative.Control",chan,...) {
 			
 	wellIds <- unique(data@wellAnnotation$Negative.Control)
@@ -47,10 +113,12 @@ setMethod("%on%",signature(e2="flowPlate"),function(e1,e2) {
 
 	})
 
-setMethod("flowPlate",signature("flowSet"),function(data,wellAnnot,...) {
+setMethod("flowPlate",signature("flowSet"),function(data,wellAnnot,plateName=character(0),...) {
 			
 			temp <- new("flowPlate")
-
+			
+			temp@plateName=plateName
+			
 			## Get rid of dashes in flowSet because they're annoying for lattice
 			data <- fsApply(data,function(x) {
 						newNames <- gsub("-",".",colnames(exprs(x)))
