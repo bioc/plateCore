@@ -68,14 +68,6 @@ setMethod("pbind",signature("flowPlate","flowPlate"),function(p1,p2,...) {
 		})
 
 
-
-
-
-
-
-
-
-
 setMethod("getGroups",signature("flowPlate"),function(data,type="Negative.Control",chan,...) {
 			
 	wellIds <- unique(data@wellAnnotation$Negative.Control)
