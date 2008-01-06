@@ -9,7 +9,7 @@ importFrom("Biobase","sampleNames")
 exportClasses("flowPlate")
 
 exportMethods("compensate","flowPlate","setRange","fixAutoFl","plateSet","getGroups",
-	"Subset","%on%","overlay","applyControlGates","summaryStats","sampleNames","pbind")	
+	"Subset","%on%","overlay","applyControlGates","summaryStats","sampleNames","fpbind")	
 	
 export("makePhenoData","read.flowPlate","getIsoGates","getLinIsoGates","applyIsoGates",
 	"getMarkers","calcIsoRatio","plateBasicSumm","getCompGates","plateCompensate","eventCheck",

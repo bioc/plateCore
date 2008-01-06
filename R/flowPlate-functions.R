@@ -89,10 +89,10 @@ makePlateLayout <- function(plateDesc,abName="Ab.Name",sampleType="Sample.Type",
 
 	
 	plateLayout$Row.Id <- sapply(plateLayout$Well.Id,function(x) {
-						substr(x,nchar(x)-2,nchar(x)-2)
+						substr(x,1,1)
 					})
 	plateLayout$Column.Id <- sapply(plateLayout$Well.Id,function(x) {
-						substr(x,nchar(x)-1,nchar(x))
+						substr(x,2,3)
 					})
 				
 	
