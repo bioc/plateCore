@@ -31,4 +31,4 @@ setGeneric("summaryStats", function(data,...) standardGeneric("summaryStats"))
 
 setGeneric("getGroups", function(data,...) standardGeneric("getGroups"))
 
-setGeneric("pbind", function(p1,p2,...) standardGeneric("pbind"))
+setGeneric("fpbind", function(p1,p2,...) standardGeneric("fpbind"))
