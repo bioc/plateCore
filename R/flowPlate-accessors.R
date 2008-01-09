@@ -42,12 +42,17 @@ setMethod("fpbind",signature("flowPlate","flowPlate"),function(p1,p2,...) {
 				wellAnnotation <- rbind(wellAnnotation,annl[[i]])
 			}
 			
-			frames <- unlist(lapply(argl,function(x) {
+			frames <- unlist(lapply(argl,function(x) {			
 					temp <- as(x@plateSet@frames,"list")
 					fnames <- pData(phenoData(plateSet(x)))$name
 					fIds <- pData(phenoData(plateSet(x)))$Well.Id
 					names(temp) <- sapply(1:length(fnames),function(y) {paste(fIds[y],".",x@plateName,fnames[y],sep="")})
-					temp
+					fsList <- lapply(1:length(fnames),function(y){ 
+								temp[[y]]@description[["GUID"]] <- names(temp)[y]
+								temp[[y]]
+					})		
+					names(fsList) <- names(temp)
+					fsList
 				}))
 			
 			np <- flowPlate(as(frames,"flowSet"),wellAnnotation)
