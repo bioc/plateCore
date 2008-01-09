@@ -27,8 +27,9 @@ setMethod("fpbind",signature("flowPlate","flowPlate"),function(p1,p2,...) {
 			
 			annl <- lapply(annl,function(x) { 
 					x$Well.Id <- apply(x,1,function(y) {paste(y['Well.Id'],y['plateName'],sep=".")})
-					x$Negative.Control <- apply(x,1,function(y) {paste(y['Negative.Control'],y['plateName'],sep="")})
+					x$Negative.Control <- apply(x,1,function(y) {paste(y['Negative.Control'],y['plateName'],sep=".")})
 					x$name<- apply(x,1,function(y) {paste(y['Well.Id'],y['name'],sep="")}) 
+					x
 					})
 			
 			for(i in 2:length(argl)) {
@@ -45,20 +46,11 @@ setMethod("fpbind",signature("flowPlate","flowPlate"),function(p1,p2,...) {
 					temp <- as(x@plateSet@frames,"list")
 					fnames <- pData(phenoData(plateSet(x)))$name
 					fIds <- pData(phenoData(plateSet(x)))$Well.Id
-					names(temp) <- sapply(1:length(fnames),function(y) {paste(x@plateName,fIds[y],fnames[y],sep="")})
+					names(temp) <- sapply(1:length(fnames),function(y) {paste(fIds[y],".",x@plateName,fnames[y],sep="")})
 					temp
 				}))
 			
-			fs <- as(frames,"flowSet")	
-
-			config <- makePlateLayout(wellAnnotation)
-				
-			fs <- flowPhenoMerge(fs,config)
-			
-			np <- new("flowPlate")
-			
-			np@plateSet <- fs
-			np@wellAnnotation <- wellAnnotation
+			np <- flowPlate(as(frames,"flowSet"),wellAnnotation)
 
 			return(np)
 		})
