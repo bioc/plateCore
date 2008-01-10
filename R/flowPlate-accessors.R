@@ -354,8 +354,8 @@ setMethod("[",c("flowPlate"),function(x,i,j,...,drop=FALSE) {
 setMethod("[[","flowPlate",function(x,i,j,...) {
 			if(length(i)!=1)
 				stop("subscript out of bounds (index must have length 1)")
-			
-			fr <- sampleNames(x@plateSet)[pData(phenoData(x@plateSet))[,"Well.Id"] == i]
+			if(i %in% sampleNames(x)) fr <- i
+			else fr <- sampleNames(x)[pData(phenoData(x@plateSet))[,"Well.Id"] == i]
 			if(is.na(fr)) stop("subscript out of bounds")
 			fr <- x@plateSet[[fr]]
 			
