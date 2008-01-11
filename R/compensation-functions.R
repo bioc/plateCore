@@ -37,29 +37,29 @@ getCompGates <- function(data,dyeCols,cutOff=0.99,fsc="FSC.A") {
 	return(compHash)
 }
 
-#########################################################################################################
-##
-## Function: plateCompensate
-##
-## Description:  Compensate only for channels which have a dye
-##
-#########################################################################################################
-
-plateCompensate <- function(plateSet,comp.mat,chanCols) {
-
-	dyeCols <- unlist(lapply(chanCols,function(x) {paste(x,".dye",sep="")}))
-	
-	plateSet <- fsApply(plateSet,function(x) {
-		fileName <- attributes(x)$descriptio[["$FIL"]]
-		dyeCols <- pData(phenoData(plateSet))[fileName,dyeCols]!=""
-		if(sum(dyeCols)>=2) {
-			x <- compensate(x,comp.mat[chanCols[dyeCols],chanCols[dyeCols]])
-			
-		} else {
-			x
-		}
-	})	
-	
-	return(plateSet)
-}
+##########################################################################################################
+###
+### Function: plateCompensate
+###
+### Description:  Compensate only for channels which have a dye
+###
+##########################################################################################################
+#
+#plateCompensate <- function(plateSet,comp.mat,chanCols) {
+#
+#	dyeCols <- unlist(lapply(chanCols,function(x) {paste(x,".dye",sep="")}))
+#	
+#	plateSet <- fsApply(plateSet,function(x) {
+#		fileName <- attributes(x)$descriptio[["$FIL"]]
+#		dyeCols <- pData(phenoData(plateSet))[fileName,dyeCols]!=""
+#		if(sum(dyeCols)>=2) {
+#			x <- compensate(x,comp.mat[chanCols[dyeCols],chanCols[dyeCols]])
+#			
+#		} else {
+#			x
+#		}
+#	})	
+#	
+#	return(plateSet)
+#}
 	

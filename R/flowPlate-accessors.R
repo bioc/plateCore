@@ -23,17 +23,10 @@ setMethod("fpbind",signature("flowPlate","flowPlate"),function(p1,p2,...) {
 			
 			if(length(plateIds) != length(unique(plateIds))) stop("Binding flowPlates with identical plateNames is not supported.")
 			
-			annl <- lapply(argl,function(x) data.frame(plateName=x@plateName,x@wellAnnotation))
-			
-			annl <- lapply(annl,function(x) { 
-					x$Well.Id <- apply(x,1,function(y) {paste(y['Well.Id'],y['plateName'],sep=".")})
-					x$Negative.Control <- apply(x,1,function(y) {paste(y['Negative.Control'],y['plateName'],sep=".")})
-					x$name<- apply(x,1,function(y) {paste(y['Well.Id'],y['name'],sep="")}) 
-					x
-					})
-			
+			annl <- lapply(argl,function(x) x@wellAnnotation)	
+		
 			for(i in 2:length(argl)) {
-				if(!all.equal(colnames(annl[[1]]),colnames(annl[[i]]))) stop("flowPllate Well Annotations must have identical column names.")
+				if(!all.equal(colnames(annl[[1]]),colnames(annl[[i]]))) stop("flowPlate Well Annotations must have identical column names.")
 			}
 					
 			wellAnnotation <- annl[[1]]
@@ -42,16 +35,19 @@ setMethod("fpbind",signature("flowPlate","flowPlate"),function(p1,p2,...) {
 				wellAnnotation <- rbind(wellAnnotation,annl[[i]])
 			}
 			
+			sampNames <- unlist(lapply(argl,sampleNames))
+			
+			uniqNames <- make.unique(sampNames)
+			
+			uniqName <- list(uniqNames)
+			names(uniqNames) <- sampNames
+
+			wellAnnotation$name <- unlist(lapply(wellAnnotation$name,function(x) uniqNames[[x]]))
+			
 			frames <- unlist(lapply(argl,function(x) {			
-					temp <- as(x@plateSet@frames,"list")
+					fsList <- as(x@plateSet@frames,"list")
 					fnames <- pData(phenoData(plateSet(x)))$name
-					fIds <- pData(phenoData(plateSet(x)))$Well.Id
-					names(temp) <- sapply(1:length(fnames),function(y) {paste(fIds[y],".",x@plateName,fnames[y],sep="")})
-					fsList <- lapply(1:length(fnames),function(y){ 
-								temp[[y]]@description[["GUID"]] <- names(temp)[y]
-								temp[[y]]
-					})		
-					names(fsList) <- names(temp)
+					names(fsList) <- uniqNames[fnames]
 					fsList
 				}))
 			
@@ -102,7 +98,7 @@ setMethod("flowPlate",signature("flowSet"),function(data,wellAnnot,plateName=cha
 			
 			temp <- new("flowPlate")
 			
-			temp@plateName=plateName
+			
 			
 			## Get rid of dashes in flowSet because they're annoying for lattice
 			data <- fsApply(data,function(x) {
@@ -119,6 +115,10 @@ setMethod("flowPlate",signature("flowSet"),function(data,wellAnnot,plateName=cha
 			
 			wellAnnot$Channel <- gsub("-",".",wellAnnot$Channel)
 			wellAnnot <- subset(wellAnnot,name %in% sampleNames(data))
+			
+			temp@plateName=plateName
+			wellAnnot <- data.frame(wellAnnot,plateName=plateName,stringsAsFactors=FALSE)
+			
 			temp@wellAnnotation <- wellAnnot
 	
 	
@@ -183,20 +183,28 @@ setMethod("fixAutoFl",signature("flowPlate"),
 
 setMethod("compensate", signature(x="flowPlate"), function(x,spillover) {
 
-	plateSet <- fsApply(x@plateSet,function(y) {
-		fileName <- attributes(y)$descriptio[["$FIL"]]
-		well <- pData(phenoData(x@plateSet))[fileName,]	
-		dyeCols <- colnames(spillover)[!is.na(well[,colnames(spillover)])]
-		
-		if(length(dyeCols)>=2) {
-			y <- compensate(y,spillover[dyeCols,dyeCols])
+	temp <- as(x@plateSet@frames,"list")
 			
-		} else {
-			y
-		}
-	})	
+	names(temp) <- sampleNames(x)
+	
+	frames <- lapply(names(temp),function(fileName) {
+			well <- pData(phenoData(x@plateSet))[fileName,]		
+			dyeCols <- colnames(spillover)[!is.na(well[,colnames(spillover)])]
+			
+			if(length(dyeCols)>=2) {
+				compensate(temp[[fileName]],spillover[dyeCols,dyeCols])
+					
+			} else {
+				temp[[fileName]]
+			}								
+	})
+	names(frames) <- names(temp)	
+	
+	plateSet <- as(frames,"flowSet")
+	phenoData(plateSet) <- phenoData(x@plateSet)
 	
 	x@plateSet <- plateSet
+	
 	return(x)
 })
 
@@ -240,8 +248,8 @@ setMethod("setContolGates", signature("flowPlate"), function(data,gateType="Nega
 
 		isoWells <- subset(data@wellAnnotation,Sample.Type=="Isotype" & !is.na(Channel))
 		
-		isoGates <- lapply(unique(isoWells$Well.Id), function(x) {
-			sapply(isoWells[isoWells$Well.Id==x,"Channel"], function(i) {	
+		isoGates <- lapply(unique(isoWells$name), function(x) {
+			sapply(isoWells[isoWells$name==x,"Channel"], function(i) {	
 				mfi <- median(exprs(data[[x]])[,i])
 				mfi.mad <- mad(exprs(data[[x]])[,i])
 				isoMad <- numMads
@@ -252,16 +260,17 @@ setMethod("setContolGates", signature("flowPlate"), function(data,gateType="Nega
 				thresh
 			})		
 		 })
-		names(isoGates) <- unique(isoWells$Well.Id)
+		names(isoGates) <- unique(isoWells$name)
 
 		data@wellAnnotation$Isogate <- apply(data@wellAnnotation,1,function(x) {
-			well <- x[["Negative.Control"]]	
-			if(well %in% names(isoGates)) {
+
+			well <- subset(data@wellAnnotation, Well.Id== x[["Negative.Control"]] & plateName == x[["plateName"]],select=name)[1,]
+			
+			if(length(well) && well %in% names(isoGates)) {
 				isoGates[[well]][x[["Channel"]]]
-			} else if (x[["Well.Id"]] %in% unique(isoWells$Well.Id)) {
-				isoGates[[x[["Well.Id"]]]][x[["Channel"]]]
-			}
-			else NA
+			} else if (x[["name"]] %in% unique(isoWells$name)) {
+				isoGates[[x[["name"]]]][x[["Channel"]]]
+			} else NA
 		}) 
 	}
 
@@ -341,8 +350,8 @@ setMethod("[",c("flowPlate"),function(x,i,j,...,drop=FALSE) {
 		if(is.numeric(i) || is.logical(i)) {
 				copy = sampleNames(x)[i]
 		} else {
-			copy = i
-			i    = match(i,sampleNames(x))
+			copy = i[i %in% sampleNames(x)]
+			if(length(copy) != length(i)) copy <- c(copy,sampleNames(x)[pData(phenoData(x@plateSet))[,"Well.Id"] %in% i[!(i %in% sampleNames(x))]])
 		}
 
 		x@plateSet <- x@plateSet[copy]
@@ -354,8 +363,10 @@ setMethod("[",c("flowPlate"),function(x,i,j,...,drop=FALSE) {
 setMethod("[[","flowPlate",function(x,i,j,...) {
 			if(length(i)!=1)
 				stop("subscript out of bounds (index must have length 1)")
-			if(i %in% sampleNames(x)) fr <- i
+			if(is.numeric(i)) fr <- sampleNames(x)[[i]]
+			else if(i %in% sampleNames(x)) fr <- i
 			else fr <- sampleNames(x)[pData(phenoData(x@plateSet))[,"Well.Id"] == i]
+			
 			if(is.na(fr)) stop("subscript out of bounds")
 			fr <- x@plateSet[[fr]]
 			
