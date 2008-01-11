@@ -86,7 +86,11 @@ makePlateLayout <- function(plateDesc,abName="Ab.Name",sampleType="Sample.Type",
 	plateLayout$Well.Id <- unlist(lapply(plateLayout$name,function(x) {
 					subset(plateDesc,name==x,select=Well.Id)[1,]
 					}))
-
+	
+	plateLayout$plateName <- unlist(lapply(plateLayout$name,function(x) {
+						subset(plateDesc,name==x,select=plateName)[1,]
+					}))
+	
 	for(wellChan in chans) {
 		temp <- subset(plateDesc,Channel==wellChan,select=c("name",abName,sampleType,negCon))
 		colnames(temp) <- c("name",wellChan,paste(sampleType,wellChan,sep="."),paste(negCon,wellChan,sep="."))

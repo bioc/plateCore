@@ -10,7 +10,10 @@
 ##
 #########################################################################################################
 
-
+################################################
+## This method creates a virtual plate by combining 2 or more flowPlates.
+## If the sample names are not unique, then they are changed using make.unique.
+## ##############################################
 setMethod("fpbind",signature("flowPlate","flowPlate"),function(p1,p2,...) {
 			
 			## Get the number of arguments
@@ -70,12 +73,16 @@ setMethod("fpbind",signature("flowPlate","flowPlate"),function(p1,p2,...) {
 					fsList
 				}))
 	
+			## Now make a flowPlate
 			np <- flowPlate(as(frames,"flowSet"),wellAnnotation)
 
 			return(np)
 		})
 
-
+########################################################
+## Get groups, which are currently just the negative control groups.  These consist of the
+## negative control well and all the associated test wells.
+########################################################
 setMethod("getGroups",signature("flowPlate"),function(data,type="Negative.Control",chan,...) {
 			
 	wellIds <- unique(data@wellAnnotation$Negative.Control)
@@ -98,7 +105,9 @@ setMethod("getGroups",signature("flowPlate"),function(data,type="Negative.Contro
 })
 
 
-
+########################################
+## This is used to transform the flowSet, and also the isotype gates
+########################################
 setMethod("%on%",signature(e2="flowPlate"),function(e1,e2) {
 		
 		if("Isogate" %in% colnames(e2@wellAnnotation)) {
@@ -113,6 +122,9 @@ setMethod("%on%",signature(e2="flowPlate"),function(e1,e2) {
 
 	})
 
+######################################################
+## Constructor for flowPlates
+######################################################
 setMethod("flowPlate",signature("flowSet"),function(data,wellAnnot,plateName="",...) {
 			
 			temp <- new("flowPlate")
@@ -145,6 +157,10 @@ setMethod("flowPlate",signature("flowSet"),function(data,wellAnnot,plateName="",
 			return(temp)
 		})
 
+######################################################################
+## There are sometimes weird fluorescence values in the flowFrame.  This function removes them in a naive fashion.
+## I should change it so it only affects the channels of interest, not time, etc.
+######################################################################
 setMethod("setRange",signature("flowPlate","numeric","numeric","character"), function(x,minF,maxF,type="truncate") {
 			if(type=="truncate") {
 				x@plateSet <- fsApply(x@plateSet,function(z) {
@@ -342,8 +358,9 @@ setMethod("applyControlGates", signature("flowPlate"), function(data,gateType="I
 		return(data)
 	})
 
-
-	
+##############################
+## Some convience functions
+##############################
 
 setMethod("plateSet","flowPlate",function(fp,...) {
 		 return(fp@plateSet)
@@ -358,10 +375,9 @@ setMethod("sampleNames","flowPlate",function(object) {
 			sampleNames(phenoData(object@plateSet))
 		})
 
-## ==========================================================================
+####################################
 ## subsetting methods
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
+####################################
 setMethod("[",c("flowPlate"),function(x,i,j,...,drop=FALSE) {
 		if(missing(drop)) drop = FALSE
 		if(missing(i)) return(x)
