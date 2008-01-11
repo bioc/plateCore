@@ -18,7 +18,7 @@ library(plateCore)
 data(plateCore)
 
 ls()
-#[1] "compensationSet"  "pbmcPlate"        "plateDescription" "wellAnnotation" 
+#[1] "compensationSet" "pbmcPlate"       "wellAnnotation"
 
 ## The pbmcPlate is a flowSet represent a large flow experiment ran on a 96 well
 ## plate.  The compensationSet is a flowSet containing the compensation controls.
@@ -36,21 +36,13 @@ pbmcPlate
 #column names:
 #		FSC-H SSC-H FL1-H FL2-H FL3-H FL1-A FL4-H Time
 
-
-## The plateDescription name column must contain some mapping to the rowNames
-## in the flowSet
-plateDescription[1,]
-#name Well.Id Row Column Well.Number
-#1  A01     A01   A      1           1
-
 ## wellAnnotation describes what is in well
 wellAnnotation[1,]
 #Well.Id Channel       Dye Isotype.Group Sample.Type Target
 #1     A01   FL1.H Alexa 488            12     Isotype     NA
 
 ## Create a flowPlate object 
-platePBMC <- flowPlate(pbmcPlate,config=plateDescription,wellAnnot=wellAnnotation)
-data <- flowPlate(pbmcPlate,config=plateDescription,wellAnnot=wellAnnotation)
+platePBMC <- flowPlate(pbmcPlate,wellAnnot=wellAnnotation,plateName="pbmc1")
 
 ## Calculate the compensation matrix using the spillover function from flowCore
 comp.mat <- spillover(x=compensationSet,unstained=sampleNames(compensationSet)[5],patt=".*H",fsc="FSC.H",ssc="SSC.H",method="median")
@@ -76,7 +68,7 @@ platePBMC <- setContolGates(platePBMC,gateType="Isotype")
 
 
 #
-#wellAnnotation <- read.csv("wellAnnotationMP1.csv", as.is=TRUE,header=TRUE,stringsAsFactors=FALSE)
-#x=flowPlate(pbmcPlate,config=plateDescription,wellAnnot=wellAnnotation)
+#wellAnnotation <- read.delim("tmp/pmbcPlateLayout.csv", as.is=TRUE,header=TRUE,stringsAsFactors=FALSE)
+#x=flowPlate(pbmcPlate,wellAnnot=wellAnnotation)
 #
-#save(compensationSet,pbmcPlate,plateDescription,wellAnnotation,file="plateCore.rda")
+save(compensationSet,pbmcPlate,wellAnnotation,file="plateCore.rda")
