@@ -23,7 +23,11 @@ flowPhenoMerge <- function(data, newDF) {
 	newIds <- newDF[,1]
 	dataNames <- origDF[,1]
 	
-	idOrder <- sapply(newIds,function(x) {grep(x,dataNames)})
+	if(colnames(newDF)[1] == "Well.Id") {
+		idOrder <- sapply(newIds,function(x) {grep(x,dataNames)})
+	} else {
+		idOrder <- sapply(newIds,function(x) {which(x==dataNames)})
+	}
 	
 	## Should warn users if ids are missing
 	newDF <- newDF[!is.na(idOrder>0),]
@@ -68,6 +72,8 @@ makePlateLayout <- function(plateDesc,abName="Ab.Name",sampleType="Sample.Type",
 	
 	## Add some validity check function
 	
+	if(colnames(plateDesc)[1]=="Well.Id") 	plateDesc <- cbind(name=plateDesc$Well.Id,plateDesc)
+	
 	
 	## Now get the unique channels, and remove dashes make them legal column names
 	chans <- unique(plateDesc$Channel)
@@ -75,17 +81,21 @@ makePlateLayout <- function(plateDesc,abName="Ab.Name",sampleType="Sample.Type",
 	plateDesc$Channel <- gsub("-",".",plateDesc$Channel)
 	
 	## Make a plate layout data.frame
-	plateLayout <- data.frame(Well.Id=as.character(unique(plateDesc$Well.Id)),stringsAsFactors=FALSE)
-	
+	plateLayout <- data.frame(name=as.character(unique(plateDesc$name)),stringsAsFactors=FALSE)
+
+	plateLayout$Well.Id <- unlist(lapply(plateLayout$name,function(x) {
+					subset(plateDesc,name==x,select=Well.Id)[1,]
+					}))
+
 	for(wellChan in chans) {
-		temp <- subset(plateDesc,Channel==wellChan,select=c("Well.Id",abName,sampleType,negCon))
-		colnames(temp) <- c("Well.Id",wellChan,paste(sampleType,wellChan,sep="."),paste(negCon,wellChan,sep="."))
-		plateLayout <- merge(plateLayout,temp,by="Well.Id",all.x=TRUE)
+		temp <- subset(plateDesc,Channel==wellChan,select=c("name",abName,sampleType,negCon))
+		colnames(temp) <- c("name",wellChan,paste(sampleType,wellChan,sep="."),paste(negCon,wellChan,sep="."))
+		plateLayout <- merge(plateLayout,temp,by="name",all.x=TRUE)
 	}
 	
 	
-	temp <- subset(plateDesc,Channel=="",select=c("Well.Id",sampleType))
-	plateLayout <- merge(plateLayout,temp,by="Well.Id",all.x=TRUE)
+	temp <- subset(plateDesc,Channel=="",select=c("name",sampleType))
+	plateLayout <- merge(plateLayout,temp,by="name",all.x=TRUE)
 
 	
 	plateLayout$Row.Id <- sapply(plateLayout$Well.Id,function(x) {
@@ -96,7 +106,6 @@ makePlateLayout <- function(plateDesc,abName="Ab.Name",sampleType="Sample.Type",
 					})
 				
 	
-	cbind(name=plateLayout$Well.Id,plateLayout)
-	
-	
+	plateLayout
+
 }

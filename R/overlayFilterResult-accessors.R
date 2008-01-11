@@ -23,16 +23,15 @@ setMethod("overlay",signature("flowPlate"),function(data,type,channel,...) {
 				
 				frames <- lapply(names(temp),function(fileName) {
 							if(fileName %in% wellIds$name) {
-								negName <- wellIds[wellIds$name==sampName,"Negative.Control"]
-								if(length(negName)) negName <- wellIds[wellIds$Well.Id==negName,"name"]
-								if(negName %in% wellIds$name) {	
-									exprs(temp[[filename]]) <- rbind(exprs(temp[[filename]]),exprs(temp[[negName]]))
+								negName <- wellIds[wellIds$name==fileName,c("Negative.Control","plateName")]
+								if(length(negName)) negName <- wellIds[wellIds$Well.Id==negName[1,1] & wellIds$plateName==negName[1,2],"name"]
+								if(length(negName) & negName %in% wellIds$name) {	
+									exprs(temp[[fileName]]) <- rbind(exprs(temp[[fileName]]),exprs(temp[[negName]]))
 								}
 							}	
-							temp[[filename]]								
+							temp[[fileName]]								
 						})
 				names(frames) <- names(temp)	
-				
 				
 				plateSet <- as(frames,"flowSet")
 				phenoData(plateSet) <- phenoData(data@plateSet)
@@ -41,9 +40,9 @@ setMethod("overlay",signature("flowPlate"),function(data,type,channel,...) {
 				
 				temp <- lapply(sampleNames(data@plateSet),function(sampName) {
 							if(sampName %in% wellIds$name) {
-								negName <- wellIds[wellIds$name==sampName,"Negative.Control"]	
-								if(length(negName)) negName <- wellIds[wellIds$Well.Id==negName,"name"]
-								if(negName %in% wellIds$name) {
+								negName <- wellIds[wellIds$name==sampName,c("Negative.Control","plateName")]
+								if(length(negName)) negName <- wellIds[wellIds$Well.Id==negName[1,1] & wellIds$plateName==negName[1,2],"name"]
+								if(length(negName) & negName %in% wellIds$name) {
 									return(overlayFilterResult(c(rep(0,wellIds[wellIds$name==sampName,"eventCount"]),
 															rep(1,wellIds[wellIds$name==negName,"eventCount"]))))
 								}

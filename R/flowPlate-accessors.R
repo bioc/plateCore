@@ -13,44 +13,63 @@
 
 setMethod("fpbind",signature("flowPlate","flowPlate"),function(p1,p2,...) {
 			
+			## Get the number of arguments
 			na <- nargs()
 			argl <- list(p1,p2,...)
 			
+			## Get rid of anything that's not a flowPlate'
 			while(na > 0 && is.null(argl[[na]])) { argl <- argl[-na]; na <- na - 1 }
 			argl <- argl[sapply(argl,class)=="flowPlate"]
 			
-			plateIds <- sapply(argl,function(x) x@plateName)
-			
+			## For now, don't bind two plates with the same name, use subsetting instead
+			plateIds <- unlist(sapply(argl,function(x) unique(x@wellAnnotation$plateName))	)
 			if(length(plateIds) != length(unique(plateIds))) stop("Binding flowPlates with identical plateNames is not supported.")
 			
+			## This method can only bind flowPlates where the well annotation data frames have the same column headers
+			## I think I'll change this later, since well annotation changes over the course of an analysis (eg results columns are added)
 			annl <- lapply(argl,function(x) x@wellAnnotation)	
-		
 			for(i in 2:length(argl)) {
 				if(!all.equal(colnames(annl[[1]]),colnames(annl[[i]]))) stop("flowPlate Well Annotations must have identical column names.")
 			}
-					
-			wellAnnotation <- annl[[1]]
+	
+			## The sample names have to be unique in order for the phenoData on the flowSet to work correctly.
+			## Can't have rows with identical names
+			sampNames <- unlist(lapply(argl,sampleNames))
 			
+			uniqNames <-make.unique(sampNames)
+			
+			sampLength <- lapply(argl,function(x) length(sampleNames(x)))
+			
+			uniqList <- vector("list",length=length(sampLength))
+			index <- 1
+			for(i in 1:length(sampLength)) {
+				uniqList[[i]] <- uniqNames[index:(index-1+sampLength[[i]])]
+				names(uniqList[[i]]) <- sampleNames(argl[[i]])
+				index <- index + sampLength[[i]]		
+			}
+
+			## Remake the annotation list with the unique names
+			annl <- lapply(1:length(argl),function(i) {			
+						anndf <- argl[[i]]@wellAnnotation
+						anndf$name <- uniqList[[i]][anndf$name]
+						anndf <- data.frame(name=anndf$name,subset(anndf,select=-name),stringsAsFactors=FALSE)
+					})
+			
+			## rbind the annotations into a single data frame
+			wellAnnotation <- annl[[1]]
 			for(i in 2:length(annl)) {
 				wellAnnotation <- rbind(wellAnnotation,annl[[i]])
 			}
 			
-			sampNames <- unlist(lapply(argl,sampleNames))
-			
-			uniqNames <- make.unique(sampNames)
-			
-			uniqName <- list(uniqNames)
-			names(uniqNames) <- sampNames
-
-			wellAnnotation$name <- unlist(lapply(wellAnnotation$name,function(x) uniqNames[[x]]))
-			
-			frames <- unlist(lapply(argl,function(x) {			
+			## Get the frames		
+			frames <- unlist(lapply(1:length(argl),function(i) {			
+					x <- argl[[i]]
 					fsList <- as(x@plateSet@frames,"list")
 					fnames <- pData(phenoData(plateSet(x)))$name
-					names(fsList) <- uniqNames[fnames]
+					names(fsList) <- uniqList[[i]][fnames]
 					fsList
 				}))
-			
+	
 			np <- flowPlate(as(frames,"flowSet"),wellAnnotation)
 
 			return(np)
@@ -94,11 +113,9 @@ setMethod("%on%",signature(e2="flowPlate"),function(e1,e2) {
 
 	})
 
-setMethod("flowPlate",signature("flowSet"),function(data,wellAnnot,plateName=character(0),...) {
+setMethod("flowPlate",signature("flowSet"),function(data,wellAnnot,plateName="",...) {
 			
 			temp <- new("flowPlate")
-			
-			
 			
 			## Get rid of dashes in flowSet because they're annoying for lattice
 			data <- fsApply(data,function(x) {
@@ -111,7 +128,9 @@ setMethod("flowPlate",signature("flowSet"),function(data,wellAnnot,plateName=cha
 	
 			data <- flowPhenoMerge(data,config)
 
-			wellAnnot$name <- sapply(wellAnnot$Well.Id,function(x) pData(phenoData(data))[pData(phenoData(data))$Well.Id==x,"name"])
+			if(colnames(wellAnnot)[1]=="Well.Id") {
+				wellAnnot$name <- sapply(wellAnnot$Well.Id,function(x) pData(phenoData(data))[pData(phenoData(data))$Well.Id==x,"name"])
+			} 
 			
 			wellAnnot$Channel <- gsub("-",".",wellAnnot$Channel)
 			wellAnnot <- subset(wellAnnot,name %in% sampleNames(data))
