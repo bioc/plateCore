@@ -362,6 +362,10 @@ setMethod("applyControlGates", signature("flowPlate"), function(data,gateType="I
 ## Some convience functions
 ##############################
 
+setMethod("phenoData","flowPlate",function(object) {
+			return(phenoData(object@plateSet))
+		})
+
 setMethod("plateSet","flowPlate",function(fp,...) {
 		 return(fp@plateSet)
 		})

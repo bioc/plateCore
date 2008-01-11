@@ -3,12 +3,12 @@ importClassesFrom("flowCore", "flowSet", "filterSet")
 
 importFrom("flowViz")
 
-importFrom("Biobase","sampleNames")
+importFrom("Biobase","sampleNames","phenoData")
 
 
 exportClasses("flowPlate")
 
-exportMethods("compensate","flowPlate","setRange","fixAutoFl","plateSet","getGroups",
+exportMethods("compensate","flowPlate","setRange","fixAutoFl","plateSet","getGroups","phenoData",
 	"Subset","%on%","overlay","applyControlGates","summaryStats","sampleNames","fpbind")	
 	
 export("makePhenoData","read.flowPlate","getIsoGates","getLinIsoGates","applyIsoGates",
