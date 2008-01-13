@@ -16,7 +16,7 @@ library(plateCore)
 
 ## Load the data from plateCore
 data(plateCore)
-
+wellAnnotation <- read.delim("pmbcPlateLayout.csv")
 ls()
 #[1] "compensationSet" "pbmcPlate"       "wellAnnotation"
 
