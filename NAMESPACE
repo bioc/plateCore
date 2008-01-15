@@ -12,6 +12,6 @@ exportMethods("compensate","flowPlate","setRange","fixAutoFl","plateSet","getGro
 	"Subset","%on%","overlay","applyControlGates","summaryStats","sampleNames","fpbind")	
 	
 export("makePhenoData","read.flowPlate","getIsoGates","getLinIsoGates","applyIsoGates",
-	"getMarkers","calcIsoRatio","plateBasicSumm","getCompGates","eventCheck",
+	"getMarkers","calcIsoRatio","getCompGates","eventCheck",
 	"callPops","setContolGates","checkIsoGates","checkIsoGates2")
 		
