@@ -135,11 +135,13 @@ setMethod("flowPlate",signature("flowSet"),function(data,wellAnnot,plateName="",
 						colnames(exprs(x)) <- newNames
 						x
 					})
-
+			
+			wellAnnot <- data.frame(wellAnnot,plateName=plateName,stringsAsFactors=FALSE)		
 			config <- makePlateLayout(wellAnnot)
 	
 			data <- flowPhenoMerge(data,config)
 
+			
 			if(colnames(wellAnnot)[1]=="Well.Id") {
 				wellAnnot$name <- sapply(wellAnnot$Well.Id,function(x) pData(phenoData(data))[pData(phenoData(data))$Well.Id==x,"name"])
 			} 
@@ -148,7 +150,7 @@ setMethod("flowPlate",signature("flowSet"),function(data,wellAnnot,plateName="",
 			wellAnnot <- subset(wellAnnot,name %in% sampleNames(data))
 			
 			temp@plateName=plateName
-			wellAnnot <- data.frame(wellAnnot,plateName=plateName,stringsAsFactors=FALSE)
+
 			
 			temp@wellAnnotation <- wellAnnot
 	
