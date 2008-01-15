@@ -24,7 +24,8 @@ flowPhenoMerge <- function(data, newDF) {
 	dataNames <- origDF[,1]
 	
 	## Well Ids are equal to sample names on the first pass
-	if(all.equal(newDF$Well.Id,newDF$name)) {
+
+	if(identical(newDF$Well.Id,newDF$name)) {
 		idOrder <- sapply(newDF$Well.Id,function(x) {grep(x,dataNames)})
 	} else {
 		idOrder <- sapply(newIds,function(x) {which(x==dataNames)})
@@ -74,7 +75,7 @@ makePlateLayout <- function(plateDesc,abName="Ab.Name",sampleType="Sample.Type",
 	## Add some validity check function
 	
 	if(!("name" %in% colnames(plateDesc))) 	plateDesc <- cbind(name=plateDesc$Well.Id,plateDesc)
-	
+	else plateDesc <- cbind(name=unlist(plateDesc$name),subset(plateDesc,select=-name))
 	
 	## Now get the unique channels, and remove dashes make them legal column names
 	chans <- unique(plateDesc$Channel)
@@ -111,6 +112,6 @@ makePlateLayout <- function(plateDesc,abName="Ab.Name",sampleType="Sample.Type",
 					})
 				
 	
-	plateLayout
+	plateLayout <- plateLayout[order(plateLayout$Well.Id),]
 
 }

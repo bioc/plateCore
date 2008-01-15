@@ -67,9 +67,12 @@ setMethod("fpbind",signature("flowPlate","flowPlate"),function(p1,p2,...) {
 			## Get the frames		
 			frames <- unlist(lapply(1:length(argl),function(i) {			
 					x <- argl[[i]]
-					fsList <- as(x@plateSet@frames,"list")
+					temp <- x@plateSet@frames
+					fsList <- lapply(ls(temp),function(fileName) {
+									temp[[fileName]]							
+							})
 					fnames <- pData(phenoData(plateSet(x)))$name
-					names(fsList) <- uniqList[[i]][fnames]
+					names(fsList) <- ls(temp)
 					fsList
 				}))
 	
@@ -140,8 +143,7 @@ setMethod("flowPlate",signature("flowSet"),function(data,wellAnnot,plateName="",
 			config <- makePlateLayout(wellAnnot)
 	
 			data <- flowPhenoMerge(data,config)
-
-			
+		
 			if(colnames(wellAnnot)[1]=="Well.Id") {
 				wellAnnot$name <- sapply(wellAnnot$Well.Id,function(x) pData(phenoData(data))[pData(phenoData(data))$Well.Id==x,"name"])
 			} 
@@ -220,25 +222,24 @@ setMethod("fixAutoFl",signature("flowPlate"),
 
 setMethod("compensate", signature(x="flowPlate"), function(x,spillover) {
 
-	temp <- as(x@plateSet@frames,"list")
-			
-	names(temp) <- sampleNames(x)
+	temp <- x@plateSet@frames
 	
-	frames <- lapply(names(temp),function(fileName) {
+	frames <- lapply(ls(temp),function(fileName) {
 			well <- pData(phenoData(x@plateSet))[fileName,]		
 			dyeCols <- colnames(spillover)[!is.na(well[,colnames(spillover)])]
 			
 			if(length(dyeCols)>=2) {
-				compensate(temp[[fileName]],spillover[dyeCols,dyeCols])
-					
+				compensate(temp[[fileName]],spillover[dyeCols,dyeCols])			
 			} else {
 				temp[[fileName]]
 			}								
 	})
-	names(frames) <- names(temp)	
+			
+	names(frames) <- ls(temp)	
 	
-	plateSet <- as(frames,"flowSet")
-	phenoData(plateSet) <- phenoData(x@plateSet)
+	config <- makePlateLayout(x@wellAnnotation)
+	
+	plateSet <- flowPhenoMerge(as(frames,"flowSet"),config)
 	
 	x@plateSet <- plateSet
 	
@@ -301,8 +302,8 @@ setMethod("setContolGates", signature("flowPlate"), function(data,gateType="Nega
 
 		data@wellAnnotation$Isogate <- apply(data@wellAnnotation,1,function(x) {
 
-			well <- subset(data@wellAnnotation, Well.Id== x[["Negative.Control"]] & plateName == x[["plateName"]],select=name)[1,]
-			
+			well <- subset(data@wellAnnotation, Well.Id== x[["Negative.Control"]] & plateName == x[["plateName"]],select=name)[1,][[1]]
+
 			if(length(well) && well %in% names(isoGates)) {
 				isoGates[[well]][x[["Channel"]]]
 			} else if (x[["name"]] %in% unique(isoWells$name)) {
@@ -391,6 +392,7 @@ setMethod("[",c("flowPlate"),function(x,i,j,...,drop=FALSE) {
 		if(is.numeric(i) || is.logical(i)) {
 				copy = sampleNames(x)[i]
 		} else {
+			i <- unlist(i)
 			copy = i[i %in% sampleNames(x)]
 			if(length(copy) != length(i)) copy <- c(copy,sampleNames(x)[pData(phenoData(x@plateSet))[,"Well.Id"] %in% i[!(i %in% sampleNames(x))]])
 		}
