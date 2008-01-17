@@ -108,9 +108,10 @@ setMethod("getGroups",signature("flowPlate"),function(data,type="Negative.Contro
 })
 
 
-########################################
-## This is used to transform the flowSet, and also the isotype gates
-########################################
+#########################################################
+## This is used to transform the flowSet and  the isotype gates.  Other types
+## of gates should be included later. 
+#########################################################
 setMethod("%on%",signature(e2="flowPlate"),function(e1,e2) {
 		
 		if("Isogate" %in% colnames(e2@wellAnnotation)) {
@@ -132,32 +133,36 @@ setMethod("flowPlate",signature("flowSet"),function(data,wellAnnot,plateName="",
 			
 			temp <- new("flowPlate")
 			
-			## Get rid of dashes in flowSet because they're annoying for lattice
+			## Get rid of dashes in flowSet because they're really annoying for lattice
 			data <- fsApply(data,function(x) {
 						newNames <- gsub("-",".",colnames(exprs(x)))
 						colnames(exprs(x)) <- newNames
 						x
 					})
 			
+			## Add plateName to well annotation
 			wellAnnot <- data.frame(wellAnnot,plateName=plateName,stringsAsFactors=FALSE)		
+			## Create a data.frame that corresponds to phenoData.  All info about a well is on a single row
 			config <- makePlateLayout(wellAnnot)
 	
+			##Add the phenoData to the flowSet
 			data <- flowPhenoMerge(data,config)
 		
+			## When a flowPlate is created from a plateLayout template, the names initially missing and need to be added.  Names correspond
+			## to filenames
 			if(colnames(wellAnnot)[1]=="Well.Id") {
 				wellAnnot$name <- sapply(wellAnnot$Well.Id,function(x) pData(phenoData(data))[pData(phenoData(data))$Well.Id==x,"name"])
 			} 
 			
+			## Get rid of the dashes again
 			wellAnnot$Channel <- gsub("-",".",wellAnnot$Channel)
+			## Only keep annotation for samples that are in  the dataset
 			wellAnnot <- subset(wellAnnot,name %in% sampleNames(data))
 			
-			temp@plateName=plateName
-
-			
+			temp@plateName <- plateName
 			temp@wellAnnotation <- wellAnnot
-	
-	
 			temp@plateSet <- data
+			
 			return(temp)
 		})
 
@@ -184,6 +189,10 @@ setMethod("setRange",signature("flowPlate","numeric","numeric","character"), fun
 			return(x)		
 		})
 
+######################################################################
+## Fit linear model to FSC vs channel of interest.  Correct for autofluoresence and then set the median back to it's orignal
+## value.  The fitting is performed on log  transformed data.
+######################################################################
 setMethod("fixAutoFl",signature("flowPlate"), 
 		function(fp,fsc,chanCols,unstain=NULL) {
 			
@@ -206,7 +215,7 @@ setMethod("fixAutoFl",signature("flowPlate"),
 			## Get a matrix of mean slopes
 			coeff.mat <- matrix(apply(unstainFits,2,mean),nrow=1)
 			
-			## Apply the correction to the channels of interest in chanCols\
+			## Apply the correction to the channels of interest in chanCols
 			## Truncate values less than 0 at 0
 			plateSet <- fsApply(plateSet,function(x) {
 						initMFIs <- log(apply(exprs(x)[,chanCols],2,median))	
@@ -220,6 +229,10 @@ setMethod("fixAutoFl",signature("flowPlate"),
 			return(fp)
 		})
 
+######################################################################
+## Compensate, but only for dyes that were added.  I shouldn't need to make a copy of the flowSet, but I did in case it 
+## would save me trouble with environments hanging around.
+######################################################################
 setMethod("compensate", signature(x="flowPlate"), function(x,spillover) {
 
 	temp <- x@plateSet@frames
@@ -247,7 +260,10 @@ setMethod("compensate", signature(x="flowPlate"), function(x,spillover) {
 })
 
 
-
+######################################################################
+## Compensate, but only for dyes that were added.  I shouldn't need to make a copy of the flowSet, but I did in case it 
+## would save me trouble with environments hanging around.
+######################################################################
 setMethod("summaryStats", signature("flowPlate"), function(data,...) {
 
 	wellAnnotation <- data@wellAnnotation

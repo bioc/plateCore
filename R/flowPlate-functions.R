@@ -24,7 +24,6 @@ flowPhenoMerge <- function(data, newDF) {
 	dataNames <- origDF[,1]
 	
 	## Well Ids are equal to sample names on the first pass
-
 	if(identical(newDF$Well.Id,newDF$name)) {
 		idOrder <- sapply(newDF$Well.Id,function(x) {grep(x,dataNames)})
 	} else {
