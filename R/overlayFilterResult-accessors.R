@@ -19,10 +19,9 @@ setMethod("overlay",signature("flowPlate"),function(data,type,channel,...) {
 
 				wellIds$eventCount <- sapply(wellIds$name,function(x) nrow(exprs(data@plateSet[[x]])))
 
-				temp <- as(data@plateSet@frames,"list")				
-				names(temp) <- sampleNames(data)
+				temp <- data@plateSet@frames	
 
-				frames <- lapply(names(temp),function(fileName) {
+				frames <- lapply(ls(temp),function(fileName) {
 							if(fileName %in% wellIds$name) {
 								negName <- wellIds[wellIds$name==fileName,c("Negative.Control","plateName")]
 
@@ -35,7 +34,7 @@ setMethod("overlay",signature("flowPlate"),function(data,type,channel,...) {
 							}	
 							temp[[fileName]]								
 						})
-				names(frames) <- names(temp)	
+				names(frames) <- ls(temp)	
 				
 				plateSet <- as(frames,"flowSet")
 				phenoData(plateSet) <- phenoData(data@plateSet)
