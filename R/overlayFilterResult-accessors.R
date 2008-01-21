@@ -25,15 +25,19 @@ setMethod("overlay",signature("flowPlate"),function(data,type,channel,...) {
 							if(fileName %in% wellIds$name) {
 								negName <- wellIds[wellIds$name==fileName,c("Negative.Control","plateName")]
 
+								## If there is more than one negative, just use the first.  It should be too hard to extend this to multiple negatives though
 								if(length(negName)) negName <- wellIds[wellIds$Well.Id==negName[1,1] & wellIds$plateName==negName[1,2],"name"]
-
+									
+								frame <- temp[[fileName]]
+								
 								if(length(negName) & negName %in% wellIds$name) {
 									negName <- unlist(negName)
-									exprs(temp[[fileName]]) <- rbind(exprs(temp[[fileName]]),exprs(temp[[negName]]))
+									exprs(frame) <- rbind(exprs(frame),exprs(temp[[negName]]))
 								}
 							}	
-							temp[[fileName]]								
+							frame								
 						})
+				
 				names(frames) <- ls(temp)	
 				
 				plateSet <- as(frames,"flowSet")
