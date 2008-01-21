@@ -54,7 +54,7 @@ setMethod("fpbind",signature("flowPlate","flowPlate"),function(p1,p2,...) {
 			## Remake the annotation list with the unique names
 			annl <- lapply(1:length(argl),function(i) {			
 						anndf <- argl[[i]]@wellAnnotation
-						anndf$name <- uniqList[[i]][anndf$name]
+						anndf$name <- uniqList[[i]][unlist(anndf$name)]
 						anndf <- data.frame(name=anndf$name,subset(anndf,select=-name),stringsAsFactors=FALSE)
 					})
 			
@@ -63,16 +63,15 @@ setMethod("fpbind",signature("flowPlate","flowPlate"),function(p1,p2,...) {
 			for(i in 2:length(annl)) {
 				wellAnnotation <- rbind(wellAnnotation,annl[[i]])
 			}
-			
+
 			## Get the frames		
 			frames <- unlist(lapply(1:length(argl),function(i) {			
 					x <- argl[[i]]
 					temp <- x@plateSet@frames
-					fsList <- lapply(ls(temp),function(fileName) {
+					fsList <- lapply(names(uniqList[[i]]),function(fileName) {
 									temp[[fileName]]							
 							})
-					fnames <- pData(phenoData(plateSet(x)))$name
-					names(fsList) <- ls(temp)
+					names(fsList) <- uniqList[[i]]
 					fsList
 				}))
 	
