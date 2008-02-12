@@ -20,7 +20,7 @@ setMethod("overlay",signature("flowPlate"),function(data,type,channel,...) {
 				wellIds$eventCount <- sapply(wellIds$name,function(x) nrow(exprs(data@plateSet[[x]])))
 
 				temp <- data@plateSet@frames	
-
+				
 				frames <- lapply(ls(temp),function(fileName) {
 							frame <- temp[[fileName]]					
 							if(fileName %in% wellIds$name) {
