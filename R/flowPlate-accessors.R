@@ -306,8 +306,8 @@ setMethod("setContolGates", signature("flowPlate"), function(data,gateType="Nega
 				mfi <- median(exprs(data[[x]])[,i])
 				mfi.mad <- mad(exprs(data[[x]])[,i])
 				isoMad <- numMads
-				while(quantile(exprs(data[[x]])[,i],probs=0.975)>(mfi+isoMad*mfi.mad)) {
-					isoMad <- isoMad + 0.1
+				while(quantile(exprs(data[[x]])[,i],probs=0.985)>(mfi+isoMad*mfi.mad)) {
+					isoMad <- isoMad + 0.05
 				}
 				thresh <- mfi+isoMad*mfi.mad	
 				thresh

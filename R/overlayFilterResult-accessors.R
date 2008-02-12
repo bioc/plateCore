@@ -15,22 +15,21 @@ setMethod("overlayFilterResult",signature("vector"),function(subSet,...) {
 
 setMethod("overlay",signature("flowPlate"),function(data,type,channel,...) {
 			if(type=="Negative.Control") {
-				wellIds <- subset(data@wellAnnotation,Channel==channel)
+				wellIds <- subset(data@wellAnnotation,Channel==channel & Negative.Control!="")
 
 				wellIds$eventCount <- sapply(wellIds$name,function(x) nrow(exprs(data@plateSet[[x]])))
 
 				temp <- data@plateSet@frames	
 
 				frames <- lapply(ls(temp),function(fileName) {
+							frame <- temp[[fileName]]					
 							if(fileName %in% wellIds$name) {
 								negName <- wellIds[wellIds$name==fileName,c("Negative.Control","plateName")]
 
 								## If there is more than one negative, just use the first.  It should be too hard to extend this to multiple negatives though
 								if(length(negName)) negName <- wellIds[wellIds$Well.Id==negName[1,1] & wellIds$plateName==negName[1,2],"name"]
 									
-								frame <- temp[[fileName]]
-								
-								if(length(negName) & negName %in% wellIds$name) {
+								if(length(negName)>0 & negName %in% wellIds$name) {
 									negName <- unlist(negName)
 									exprs(frame) <- rbind(exprs(frame),exprs(temp[[negName]]))
 								}
