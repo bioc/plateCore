@@ -21,6 +21,8 @@ setGeneric("setContolGates", function(data,...) standardGeneric("setContolGates"
 
 setGeneric("plateSet", function(fp,...) standardGeneric("plateSet"))
 
+setGeneric("wellAnnotation", function(fp,...) standardGeneric("wellAnnotation"))
+
 setGeneric("overlayFilterResult", function(subSet,...) standardGeneric("overlayFilterResult"))
 
 setGeneric("overlay", function(data,...) standardGeneric("overlay"))

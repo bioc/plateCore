@@ -81,30 +81,30 @@ setMethod("fpbind",signature("flowPlate","flowPlate"),function(p1,p2,...) {
 			return(np)
 		})
 
-########################################################
-## Get groups, which are currently just the negative control groups.  These consist of the
-## negative control well and all the associated test wells.
-########################################################
-setMethod("getGroups",signature("flowPlate"),function(data,type="Negative.Control",chan,...) {
-			
-	wellIds <- unique(data@wellAnnotation$Negative.Control)
-	wellIds <- wellIds[wellIds %in% pData(phenoData(data@plateSet))$Well.Id]
-	
-	wells <- list()
-	
-	if(type=="Negative.Control") {
-		wells <- lapply(wellIds,function(x) {
-			wells <- unlist(subset(data@wellAnnotation,Channel==chan & Negative.Control==x,select=name))
-			wells <- c(unlist(subset(data@wellAnnotation,Channel==chan & Well.Id==x,select=name)),wells)
-			wells <- unique(wells)	
-			if(!length(wells)) NA
-			else wells
-		})
-	}
-	
-	wells <- wells[!is.na(wells)]
-	return(wells)
-})
+#########################################################
+### Get groups, which are currently just the negative control groups.  These consist of the
+### negative control well and all the associated test wells.
+#########################################################
+#setMethod("getGroups",signature("flowPlate"),function(data,type="Negative.Control",chan,...) {
+#			
+#	wellIds <- unique(data@wellAnnotation$Negative.Control)
+#	wellIds <- wellIds[wellIds %in% pData(phenoData(data@plateSet))$Well.Id]
+#	
+#	wells <- list()
+#	
+#	if(type=="Negative.Control") {
+#		wells <- lapply(wellIds,function(x) {
+#			wells <- unlist(subset(data@wellAnnotation,Channel==chan & Negative.Control==x,select=name))
+#			wells <- c(unlist(subset(data@wellAnnotation,Channel==chan & Well.Id==x,select=name)),wells)
+#			wells <- unique(wells)	
+#			if(!length(wells)) NA
+#			else wells
+#		})
+#	}
+#	
+#	wells <- wells[!is.na(wells)]
+#	return(wells)
+#})
 
 
 #########################################################
@@ -260,8 +260,6 @@ setMethod("compensate", signature(x="flowPlate"), function(x,spillover) {
 
 
 ######################################################################
-## Compensate, but only for dyes that were added.  I shouldn't need to make a copy of the flowSet, but I did in case it 
-## would save me trouble with environments hanging around.
 ######################################################################
 setMethod("summaryStats", signature("flowPlate"), function(data,...) {
 
@@ -395,6 +393,10 @@ setMethod("Subset","flowPlate",function(x,subset,...) {
 
 setMethod("sampleNames","flowPlate",function(object) {
 			sampleNames(phenoData(object@plateSet))
+		})
+
+setMethod("wellAnnotation","flowPlate",function(fp,...) {
+			return(fp@wellAnnotation)
 		})
 
 ####################################
