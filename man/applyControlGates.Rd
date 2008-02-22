@@ -1,9 +1,11 @@
 \name{applyControlGates}
 \alias{applyControlGates}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{ ~~function to do ... ~~ }
+\title{ Once the function setControlGates() has been used to create gates, apply the gates to test
+samples using this function. }
 \description{
-  ~~ A concise (1-5 lines) description of what the function does. ~~
+  The applyControlGates() function is separate from setControlGates since the gates may be adjusted
+  outside of setControlGates.  
 }
 \usage{
 applyControlGates(data, ...)

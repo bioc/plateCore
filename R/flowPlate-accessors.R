@@ -85,26 +85,26 @@ setMethod("fpbind",signature("flowPlate","flowPlate"),function(p1,p2,...) {
 ### Get groups, which are currently just the negative control groups.  These consist of the
 ### negative control well and all the associated test wells.
 #########################################################
-#setMethod("getGroups",signature("flowPlate"),function(data,type="Negative.Control",chan,...) {
-#			
-#	wellIds <- unique(data@wellAnnotation$Negative.Control)
-#	wellIds <- wellIds[wellIds %in% pData(phenoData(data@plateSet))$Well.Id]
-#	
-#	wells <- list()
-#	
-#	if(type=="Negative.Control") {
-#		wells <- lapply(wellIds,function(x) {
-#			wells <- unlist(subset(data@wellAnnotation,Channel==chan & Negative.Control==x,select=name))
-#			wells <- c(unlist(subset(data@wellAnnotation,Channel==chan & Well.Id==x,select=name)),wells)
-#			wells <- unique(wells)	
-#			if(!length(wells)) NA
-#			else wells
-#		})
-#	}
-#	
-#	wells <- wells[!is.na(wells)]
-#	return(wells)
-#})
+setMethod("getGroups",signature("flowPlate"),function(data,type="Negative.Control",chan,...) {
+			
+	wellIds <- unique(data@wellAnnotation$Negative.Control)
+	wellIds <- wellIds[wellIds %in% pData(phenoData(data@plateSet))$Well.Id]
+	
+	wells <- list()
+	
+	if(type=="Negative.Control") {
+		wells <- lapply(wellIds,function(x) {
+			wells <- unlist(subset(data@wellAnnotation,Channel==chan & Negative.Control==x,select=name))
+			wells <- c(unlist(subset(data@wellAnnotation,Channel==chan & Well.Id==x,select=name)),wells)
+			wells <- unique(wells)	
+			if(!length(wells)) NA
+			else wells
+		})
+	}
+	
+	wells <- wells[!is.na(wells)]
+	return(wells)
+})
 
 
 #########################################################
@@ -297,7 +297,7 @@ setMethod("setContolGates", signature("flowPlate"), function(data,gateType="Nega
 	if(gateType=="Negative.Control") {
 		## First get the control gate for each of the isotype groups.	
 
-		isoWells <- subset(data@wellAnnotation,Sample.Type=="Isotype" & !is.na(Channel))
+		isoWells <- subset(data@wellAnnotation,(Sample.Type %in% c("Isotype","Negative.Control")) & !is.na(Channel))
 		
 		isoGates <- lapply(unique(isoWells$name), function(x) {
 			sapply(isoWells[isoWells$name==x,"Channel"], function(i) {	
