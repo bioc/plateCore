@@ -329,9 +329,9 @@ setMethod("setContolGates", signature("flowPlate"), function(data,gateType="Nega
 })
 		
 
-setMethod("applyControlGates", signature("flowPlate"), function(data,gateType="Isogate",...) {
+setMethod("applyControlGates", signature("flowPlate"), function(data,gateType="Negative.Control",...) {
 			
-		if(gateType=="Isogate") {
+		if(gateType %in% c("Isogate","Negative.Control") {
 			## First get the control gate for each of the isotype groups.	
 			wa <- data@wellAnnotation 
 			wa$Percent.Positive <- apply(data@wellAnnotation,1,function(x) {
@@ -375,7 +375,7 @@ setMethod("applyControlGates", signature("flowPlate"), function(data,gateType="I
 	})
 
 ##############################
-## Some convience functions
+## Some convenience functions
 ##############################
 
 setMethod("phenoData","flowPlate",function(object) {

@@ -8,7 +8,7 @@ importFrom("Biobase","sampleNames","phenoData")
 
 exportClasses("flowPlate")
 
-exportMethods("compensate","flowPlate","setRange","fixAutoFl","plateSet","phenoData","getGroups",
+exportMethods("compensate","flowPlate","setRange","fixAutoFl","plateSet","phenoData","getGroups","wellAnnotation",
 	"Subset","%on%","overlay","applyControlGates","summaryStats","sampleNames","fpbind")	
 	
 

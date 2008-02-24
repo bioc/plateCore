@@ -8,7 +8,7 @@ samples using this function. }
   outside of setControlGates.  
 }
 \usage{
-applyControlGates(data, ...)
+applyControlGates(data, gateType="Negative.Control", ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
