@@ -292,7 +292,7 @@ setMethod("summaryStats", signature("flowPlate"), function(data,...) {
 
 })
 
-setMethod("setContolGates", signature("flowPlate"), function(data,gateType="Negative.Control",numMads=5,...) {
+setMethod("setControlGates", signature("flowPlate"), function(data,gateType="Negative.Control",numMads=5,...) {
 			
 	if(gateType=="Negative.Control") {
 		## First get the control gate for each of the isotype groups.	
