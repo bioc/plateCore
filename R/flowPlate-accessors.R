@@ -331,7 +331,7 @@ setMethod("setContolGates", signature("flowPlate"), function(data,gateType="Nega
 
 setMethod("applyControlGates", signature("flowPlate"), function(data,gateType="Negative.Control",...) {
 			
-		if(gateType %in% c("Isogate","Negative.Control") {
+		if(gateType %in% c("Isogate","Negative.Control")) {
 			## First get the control gate for each of the isotype groups.	
 			wa <- data@wellAnnotation 
 			wa$Percent.Positive <- apply(data@wellAnnotation,1,function(x) {

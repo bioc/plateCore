@@ -1,10 +1,10 @@
 \name{applyControlGates}
 \alias{applyControlGates}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{ Once the function setControlGates() has been used to create gates, apply the gates to test
+\title{ Once the function setControlGates() has been used to create gates for a flowPlate object, then apply the gates to test
 samples using this function. }
 \description{
-  The applyControlGates() function is separate from setControlGates since the gates may be adjusted
+  The applyControlGates() function is separate from setControlGates since the gates may need be adjusted
   outside of setControlGates.  
 }
 \usage{
@@ -12,35 +12,27 @@ applyControlGates(data, gateType="Negative.Control", ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{data}{ ~~Describe \code{data} here~~ }
-  \item{\dots}{ ~~Describe \code{\dots} here~~ }
-}
-\details{
-  ~~ If necessary, more details than the description above ~~
+  \item{data}{ A flowPlate dataset. }
+  \item{gateType}{ ~~Describe \code{\dots} here~~ }
 }
 \value{
-  ~Describe the value returned
-  If it is a LIST, use
-  \item{comp1 }{Description of 'comp1'}
-  \item{comp2 }{Description of 'comp2'}
-  ...
+  \item{data }{A flowPlate where the wellAnnotation now contains additional 
+  columns correspondin to }
 }
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
-\note{ ~~further notes~~ 
+\author{ Errol Strain }
 
- ~Make other sections like Warning with \section{Warning }{....} ~
-}
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
+\seealso{ See Also \code{\link{setControlGates}}, ~~~ }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+library(plateCore)
+data(plateCore)
 
-## The function is currently defined as
-function(data,...) standardGeneric("applyControlGates")
+# Create a flowPlate from the sample data in plateCore
+fp <- flowPlate(pbmcPlate,wellAnnotation,plateName="P1")
+
+fp <- setControlGates(fp,gateType="Negative.Control")
+fp <- applyControlGates(fp,gateType="Negative.Control")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ flowPlate }
+
