@@ -1,7 +1,7 @@
 \name{applyControlGates}
 \alias{applyControlGates}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{ applyControlGates }
+\title{ Apply control gates to a flowPlate }
 \description{
   Once the function setControlGates has been used to create gates for a flowPlate object, then apply the gates to test
 samples using this function. The applyControlGates function is separated from setControlGates since gates may need be adjusted
@@ -45,5 +45,5 @@ head(wellAnnotation(fp))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ flowPlate }
+\keyword{ methods }
 

@@ -1,44 +1,47 @@
 \name{compensate}
 \alias{compensate}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{ Function to compensate a flowPlate for the effects of fluorescence spillover. }
+\title{ Compensate a flowPlate to correct for the effects of spillover. }
 \description{
-  ~~ A concise (1-5 lines) description of what the function does. ~~
-}
+  Flow samples are often stained with multiple types fluorophores, and their
+  emission spectra can overlap. Compensate adjusts for spillover using the 
+  method implemented in the package flowCore. Unlike flowCore, compensate 
+  only adjusts for the dyes/fluorophores listed in wellAnnotation.
+  }
 \usage{
 compensate(x, spillover)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{ ~~Describe \code{x} here~~ }
-  \item{spillover}{ ~~Describe \code{spillover} here~~ }
-}
-\details{
-  ~~ If necessary, more details than the description above ~~
+  \item{x}{ flowPlate }
+  \item{spillover}{ The compensation matrix where the row and column names match the 
+  fluorescence channels of the flowPlate. }
 }
 \value{
-  ~Describe the value returned
-  If it is a LIST, use
-  \item{comp1 }{Description of 'comp1'}
-  \item{comp2 }{Description of 'comp2'}
-  ...
-}
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
-\note{ ~~further notes~~ 
+  \item{data }{Returns a compensated flowPlate.}
 
- ~Make other sections like Warning with \section{Warning }{....} ~
 }
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
+\author{ Errol Strain }
+\seealso{ See Also \code{\link[flowCore:flowCore-package]{compensate}} }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+library(plateCore)
+data(plateCore)
 
-## The function is currently defined as
-function(x,spillover) standardGeneric("compensate")
+# Create the compensation matrix
+comp.mat <- spillover(x=compensationSet,unstained=sampleNames(compensationSet)[5],
+patt=".*H",fsc="FSC.H",ssc="SSC.H",method="median")
+
+## Get the lymphocytes
+rectGate <- rectangleGate("FSC.H"=c(300,700),"SSC.H"=c(50,400))
+normGate <- norm2Filter("SSC.H","FSC.H",scale.factor=1.5)
+pbmcPlate <- Subset(pbmcPlate, rectGate & normGate)
+
+# Create a flowPlate from the sample data in plateCore
+fp <- flowPlate(pbmcPlate,wellAnnotation,plateName="P1")
+
+# apply the compensation matrix
+fp <- compensate(fp,comp.mat)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ methods }

@@ -1,12 +1,12 @@
-\name{setContolGates}
-\alias{setContolGates}
+\name{setControlGates}
+\alias{setControlGates}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ ~~function to do ... ~~ }
 \description{
   ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-setContolGates(data, ...)
+setControlGates(data, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -36,7 +36,7 @@ setContolGates(data, ...)
 ##--	or do  help(data=index)  for the standard data sets.
 
 ## The function is currently defined as
-function(data,...) standardGeneric("setContolGates")
+function(data,...) standardGeneric("setControlGates")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
