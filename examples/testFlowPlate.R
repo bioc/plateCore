@@ -16,9 +16,6 @@ library(plateCore)
 
 ## Load the data from plateCore
 data(plateCore)
-wellAnnotation <- read.delim("pmbcPlateLayout.csv")
-ls()
-#[1] "compensationSet" "pbmcPlate"       "wellAnnotation"
 
 ## The pbmcPlate is a flowSet represent a large flow experiment ran on a 96 well
 ## plate.  The compensationSet is a flowSet containing the compensation controls.
@@ -42,7 +39,7 @@ wellAnnotation[1,]
 #1     A01   FL1.H Alexa 488            12     Isotype     NA
 
 ## Create a flowPlate object 
-platePBMC <- flowPlate(pbmcPlate,wellAnnot=wellAnnotation,plateName="pbmc1")
+platePBMC <- flowPlate(pbmcPlate,wellAnnot=wellAnnotation,plateName="P1")
 
 ## Calculate the compensation matrix using the spillover function from flowCore
 comp.mat <- spillover(x=compensationSet,unstained=sampleNames(compensationSet)[5],patt=".*H",fsc="FSC.H",ssc="SSC.H",method="median")
@@ -54,21 +51,15 @@ comp.mat[upper.tri(comp.mat)] <- 0
 ## Compensate the data.  Wells will only be compensated in channels for which they contain a dye.
 platePBMC <- compensate(platePBMC,comp.mat)
 
-## Truncate the values that are outside the detector range.
-
-## Correct for autofluorescence
-
-## QA/QC stuff
-
 ## Calculate the isotype gates.
 platePBMC <- setContolGates(platePBMC,gateType="Isotype")
 
-## Create a FlowJo workspace with the gates.
+# Create a set of negative control gates and then apply them
+platePBMC <- setControlGates(platePBMC,gateType="Negative.Control")
+platePBMC <- applyControlGates(platePBMC,gateType="Negative.Control")
 
+# Compute summary statistics
+platePBMC <- summaryStats(platePBMC)
 
-
-#
-#wellAnnotation <- read.delim("tmp/pmbcPlateLayout.csv", as.is=TRUE,header=TRUE,stringsAsFactors=FALSE)
-#x=flowPlate(pbmcPlate,wellAnnot=wellAnnotation)
-#
-save(compensationSet,pbmcPlate,wellAnnotation,file="plateCore.rda")
+## Plot the data
+xyplot(FL1.H ~ FSC.H | as.factor(Well.Id), platePBMC,smooth=FALSE)
