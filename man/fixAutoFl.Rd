@@ -1,12 +1,12 @@
 \name{fixAutoFl}
 \alias{fixAutoFl}
 
-\title{Correct for the effects of cell size (FSC) on autofluorescence.}
+\title{Correct for the effects of cell size (FSC) on autofluorescence}
 \description{
-  The 'fixAutoFl' function uses the method of Hahne et al. 2006 (Genome Biology) to fit
+  The \code{fixAutoFl} function uses the method of Hahne et al. 2006 (Genome Biology) to fit
   a robust regression to the fluorescence channel of interest versus forward scatter (FSC). 
   The current implementation scales the corrected data so the median fluorescence intensity
-  (MFI) is the same before and after fixAutoFl().
+  (MFI) is the same before and after \code{fixAutoFl}.
 }
 \usage{
 fixAutoFl(fp,fsc="FSC.A",chanCols,unstain,...) 
