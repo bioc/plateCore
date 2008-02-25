@@ -18,7 +18,7 @@ compensate(x, spillover)
   fluorescence channels of the flowPlate. }
 }
 \value{
-  \item{data }{Returns a compensated flowPlate.}
+  Returns a compensated \code{flowPlate}.
 
 }
 \author{ Errol Strain }

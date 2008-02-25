@@ -1,45 +1,42 @@
 \name{fpbind}
 \alias{fpbind}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{ ~~function to do ... ~~ }
+
+\title{ Merge multiple \code{flowPlates} into a single virtual \code{flowPlate} }
 \description{
-  ~~ A concise (1-5 lines) description of what the function does. ~~
+  A function to combine multiple \code{flowPlates} into a single \code{flowPlate} object. The 
+  \code{plateName} identifiers for the \code{flowPlates} must be unique within the set to be
+  bound, otherwise the bind will fail.
 }
 \usage{
 fpbind(p1, p2, ...)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{p1}{ ~~Describe \code{p1} here~~ }
-  \item{p2}{ ~~Describe \code{p2} here~~ }
-  \item{\dots}{ ~~Describe \code{\dots} here~~ }
+  \item{p1}{ First \code{flowPlate} }
+  \item{p2}{ Second \code{flowPlate} }
+  \item{\dots}{ Additional \code{flowPlates} }
 }
-\details{
-  ~~ If necessary, more details than the description above ~~
-}
+
 \value{
-  ~Describe the value returned
-  If it is a LIST, use
-  \item{comp1 }{Description of 'comp1'}
-  \item{comp2 }{Description of 'comp2'}
-  ...
+ Returns a \code{flowPlate}
 }
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
-\note{ ~~further notes~~ 
-
- ~Make other sections like Warning with \section{Warning }{....} ~
-}
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
+\author{ Errol Strain }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+library(plateCore)
+data(plateCore)
 
-## The function is currently defined as
-function(p1,p2,...) standardGeneric("fpbind")
+# Get the lymphocytes
+rectGate <- rectangleGate("FSC.H"=c(300,700),"SSC.H"=c(50,400))
+normGate <- norm2Filter("SSC.H","FSC.H",scale.factor=1.5)
+pbmcPlate <- Subset(pbmcPlate, rectGate & normGate)
+
+# Create a flowPlate object from the platePBMC and the wellAnnotation
+fp1 <- flowPlate(pbmcPlate,wellAnnotation,plateName="P1")
+fp2 <- flowPlate(pbmcPlate,wellAnnotation,plateName="P2")
+
+# Combine the plates.
+virtPlate <- fpbind(fp1,fp2)
+
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ methods }

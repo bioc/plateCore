@@ -6,7 +6,7 @@
   ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-setControlGates(data, ...)
+setControlGates(data,gateType,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -35,9 +35,7 @@ setControlGates(data, ...)
 ##-- ==>  Define data, use random,
 ##--	or do  help(data=index)  for the standard data sets.
 
-## The function is currently defined as
-function(data,...) standardGeneric("setControlGates")
-}
+
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ ~kwd1 }

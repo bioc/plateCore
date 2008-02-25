@@ -40,6 +40,6 @@ pbmcPlate <- Subset(pbmcPlate, rectGate & normGate)
 fp <- flowPlate(pbmcPlate,wellAnnotation,plateName="P1")
 
 ## Correct for autofluorescence in FL1.H-FL4.H
-fp <- fixAutoFl(fp,chanCols=c("FL1.H","FL2.H","FL3.","FL4.H")) 
+fp <- fixAutoFl(fp,fsc="FSC.H",chanCols=c("FL1.H","FL2.H","FL3.","FL4.H")) 
 }
 \keyword{methods}

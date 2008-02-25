@@ -16,7 +16,7 @@ applyControlGates(data, gateType="Negative.Control", ...)
   \item{gateType}{ The type of gate to be applied to the flowPlate. Currently on "Negative.Control" gates are supported. }
 }
 \value{
-  \item{data }{A flowPlate where the wellAnnotation now contains additional 
+  Returns a \code{flowPlate} where the wellAnnotation now contains additional 
   columns corresponding to the percentage of cells above background (Percent.Positive) and the number
   of positive cells (Positive.Count). }
 }
