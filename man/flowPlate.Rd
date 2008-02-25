@@ -1,44 +1,36 @@
 \name{flowPlate}
 \alias{flowPlate}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{ ~~function to do ... ~~ }
+\title{ Create a flowPlate }
 \description{
-  ~~ A concise (1-5 lines) description of what the function does. ~~
+  Constructor for a \code{\link{flowPlate-class}} object. \code{sampleNames} for the \code{flowSet} 
+  should match the Well.Id column of \code{wellAnnotation}. Well.Ids must be unique to \code{sampleNames},
+  which is usually ensured by using the 3 character designations for wells (e.g. "A01","A02",...,"H12").
 }
 \usage{
-flowPlate(data, ...)
+flowPlate(data,wellAnnotation,plateName ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{data}{ ~~Describe \code{data} here~~ }
-  \item{\dots}{ ~~Describe \code{\dots} here~~ }
+  \item{data}{ \code{flowSet} object to be made into a \code{flowPlate} }
+  \item{wellAnnotation}{ \code{data.frame} describing the layout and contents of the \code{flowPlate} }
+  \item{plateName} {Name of the \code{flowPate}, should be unique within the set \code{flowPlates} under consideration}
 }
-\details{
-  ~~ If necessary, more details than the description above ~~
-}
+
 \value{
-  ~Describe the value returned
-  If it is a LIST, use
-  \item{comp1 }{Description of 'comp1'}
-  \item{comp2 }{Description of 'comp2'}
-  ...
+  Returns a \code{flowPate} object.
 }
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
-\note{ ~~further notes~~ 
-
- ~Make other sections like Warning with \section{Warning }{....} ~
-}
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
+\author{ Errol Strain }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+library(plateCore)
+data(plateCore)
 
-## The function is currently defined as
-function(data,...) standardGeneric("flowPlate")
+## Get the lymphocytes
+rectGate <- rectangleGate("FSC.H"=c(300,700),"SSC.H"=c(50,400))
+normGate <- norm2Filter("SSC.H","FSC.H",scale.factor=1.5)
+pbmcPlate <- Subset(pbmcPlate, rectGate & normGate)
+
+## Create a flowPlate object from the platePBMC and the wellAnnotation
+fp <- flowPlate(pbmcPlate,wellAnnotation,plateName="P1")
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ methods }
