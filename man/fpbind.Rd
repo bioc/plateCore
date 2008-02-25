@@ -1,7 +1,7 @@
 \name{fpbind}
 \alias{fpbind}
 
-\title{ Merge multiple \code{flowPlates} into a single virtual \code{flowPlate} }
+\title{ Merge multiple flowPlates into a single virtual flowPlate }
 \description{
   A function to combine multiple \code{flowPlates} into a single \code{flowPlate} object. The 
   \code{plateName} identifiers for the \code{flowPlates} must be unique within the set to be

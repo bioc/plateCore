@@ -1,7 +1,7 @@
 \name{summaryStats}
 \alias{summaryStats}
 
-\title{ Compute summary statistics on a \code{flowPlate} }
+\title{ Compute summary statistics on a flowPlate }
 \description{
   This function computes the median fluorescence intensity (MFI) and the
   MFI ratio (ratio of test well MFI to negative control MFI) for each

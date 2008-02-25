@@ -1,7 +1,7 @@
 \name{setControlGates}
 \alias{setControlGates}
 
-\title{ Create control gates for a \code{flowPlate} }
+\title{ Create control gates for a flowPlate }
 \description{
   A function to estimate the threshold between positive and negative cells. This threshold corresponds to
   a one-dimensional gate, and cells above the gate are considered positive. The gate is initially set by 

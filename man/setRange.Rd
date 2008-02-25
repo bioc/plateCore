@@ -1,7 +1,7 @@
 \name{setRange}
 \alias{setRange}
 
-\title{ Truncate the signal values on a \code{flowPlate} }
+\title{ Truncate the signal values on a flowPlate }
 \description{
   Cytometers occasionally output values that are outside the range of the instrument.
   These values are either truncated or removed at the limits set by minF and maxF.

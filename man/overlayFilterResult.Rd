@@ -1,7 +1,7 @@
 \name{overlayFilterResult}
 \alias{overlayFilterResult}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{  }
+\title{ Result from an overlay filter operation }
 \description{
   Contains the result from an \code{overlay} operation. \code{overlayFilterResults} are used
   for plotting and should not be accessed directly.

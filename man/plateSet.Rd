@@ -1,7 +1,7 @@
 \name{plateSet}
 \alias{plateSet}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{ Get the \code{flowSet} from a \code{flowPlate} object }
+\title{ Get the flowSet from a flowPlate object }
 \description{
   A function to retrieve the \code{flowSet} from a \code{flowPlate}.
 }

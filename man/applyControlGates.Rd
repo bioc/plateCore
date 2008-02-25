@@ -18,7 +18,7 @@ applyControlGates(data, gateType="Negative.Control", ...)
 \value{
   Returns a \code{flowPlate} where the wellAnnotation now contains additional 
   columns corresponding to the percentage of cells above background (Percent.Positive) and the number
-  of positive cells (Positive.Count). }
+  of positive cells (Positive.Count). 
 }
 \author{ Errol Strain }
 
