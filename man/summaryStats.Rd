@@ -1,44 +1,50 @@
 \name{summaryStats}
 \alias{summaryStats}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{ ~~function to do ... ~~ }
+
+\title{ Compute summary statistics on a \code{flowPlate} }
 \description{
-  ~~ A concise (1-5 lines) description of what the function does. ~~
+  This function computes the median fluorescence intensity (MFI) and the
+  MFI ratio (ratio of test well MFI to negative control MFI) for each
+  well/channel in a \code{flowPlate}. These results are stored in the
+  \code{wellAnnotation data.fame}.
 }
 \usage{
 summaryStats(data, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{data}{ ~~Describe \code{data} here~~ }
-  \item{\dots}{ ~~Describe \code{\dots} here~~ }
+  \item{data}{ A \code{flowPlate} }
 }
-\details{
-  ~~ If necessary, more details than the description above ~~
-}
+
 \value{
-  ~Describe the value returned
-  If it is a LIST, use
-  \item{comp1 }{Description of 'comp1'}
-  \item{comp2 }{Description of 'comp2'}
-  ...
+  Returns a \code{flowPlate}
 }
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
-\note{ ~~further notes~~ 
 
- ~Make other sections like Warning with \section{Warning }{....} ~
-}
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
+\author{ Errol Strain }
+
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+library(plateCore)
+data(plateCore)
 
-## The function is currently defined as
-function(data,...) standardGeneric("summaryStats")
+## Get the lymphocytes
+rectGate <- rectangleGate("FSC.H"=c(300,700),"SSC.H"=c(50,400))
+normGate <- norm2Filter("SSC.H","FSC.H",scale.factor=1.5)
+pbmcPlate <- Subset(pbmcPlate, rectGate & normGate)
+
+# Create a flowPlate from the sample data in plateCore
+fp <- flowPlate(pbmcPlate,wellAnnotation,plateName="P1")
+
+# Create a set of negative control gates and then apply them
+fp <- setControlGates(fp,gateType="Negative.Control")
+fp <- applyControlGates(fp,gateType="Negative.Control")
+
+# Compute summary statistics
+fp <- summaryStats(fp)
+
+# There should now be MFI and MFI.ratio columns in the wellAnnotation
+head(wellAnnotation(fp))
+
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ methods }
