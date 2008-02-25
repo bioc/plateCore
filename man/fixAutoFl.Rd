@@ -9,11 +9,11 @@
   (MFI) is the same before and after fixAutoFl().
 }
 \usage{
-fixAutoFl(flowPlate,fsc="FSC.A",chanCols,unstain) 
+fixAutoFl(fp,fsc="FSC.A",chanCols,unstain,...) 
 }
 
 \arguments{
-  \item{flowSet}{ A flowSet object from flowCore. }
+  \item{fp}{ A \code{flowPlate} }
   \item{chanCols}{ Selected channels to correct for autofluorescence. }
   \item{unstain}{ Name(s) of the unstained samples. The function will try to find samples with
   Sample.Type="Unstained" if no names are given. If there are multiple unstained samples the

@@ -8,7 +8,7 @@
   which is usually ensured by using the 3 character designations for wells (e.g. "A01","A02",...,"H12").
 }
 \usage{
-flowPlate(data,wellAnnotation,plateName ...)
+flowPlate(data,wellAnnotation,plateName,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
