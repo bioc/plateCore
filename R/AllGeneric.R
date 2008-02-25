@@ -11,13 +11,13 @@
 #########################################################################################################
 
 
-setGeneric("flowPlate", function(data,...) standardGeneric("flowPlate"))
+setGeneric("flowPlate", function(data,wellAnnotation,plateName,...) standardGeneric("flowPlate"))
 
-setGeneric("setRange", function(x,minF,maxF,type) standardGeneric("setRange"))
+setGeneric("setRange", function(x,minF,maxF,type="truncate") standardGeneric("setRange"))
 
-setGeneric("fixAutoFl", function(fp,...) standardGeneric("fixAutoFl"))
+setGeneric("fixAutoFl", function(fp,fsc="FSC.A",chanCols,unstain,...) standardGeneric("fixAutoFl"))
 
-setGeneric("setControlGates", function(data,...) standardGeneric("setControlGates"))
+setGeneric("setControlGates", function(data,gateType="Negative.Control",numMads=5,...) standardGeneric("setControlGates"))
 
 setGeneric("plateSet", function(fp,...) standardGeneric("plateSet"))
 
@@ -27,7 +27,7 @@ setGeneric("overlayFilterResult", function(subSet,...) standardGeneric("overlayF
 
 setGeneric("overlay", function(data,...) standardGeneric("overlay"))
 
-setGeneric("applyControlGates", function(data,...) standardGeneric("applyControlGates"))
+setGeneric("applyControlGates", function(data,gateType="Negative.Control",...) standardGeneric("applyControlGates"))
 
 setGeneric("summaryStats", function(data,...) standardGeneric("summaryStats"))
 

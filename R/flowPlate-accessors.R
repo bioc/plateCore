@@ -128,7 +128,7 @@ setMethod("%on%",signature(e2="flowPlate"),function(e1,e2) {
 ######################################################
 ## Constructor for flowPlates
 ######################################################
-setMethod("flowPlate",signature("flowSet"),function(data,wellAnnot,plateName="",...) {
+setMethod("flowPlate",signature("flowSet"),function(data,wellAnnotation,plateName="",...) {
 			
 			temp <- new("flowPlate")
 			
@@ -140,7 +140,7 @@ setMethod("flowPlate",signature("flowSet"),function(data,wellAnnot,plateName="",
 					})
 			
 			## Add plateName to well annotation
-			wellAnnot <- data.frame(wellAnnot,plateName=plateName,stringsAsFactors=FALSE)		
+			wellAnnot <- data.frame(wellAnnotation,plateName=plateName,stringsAsFactors=FALSE)		
 			## Create a data.frame that corresponds to phenoData.  All info about a well is on a single row
 			config <- makePlateLayout(wellAnnot)
 	
@@ -313,7 +313,7 @@ setMethod("setControlGates", signature("flowPlate"), function(data,gateType="Neg
 		 })
 		names(isoGates) <- unique(isoWells$name)
 
-		data@wellAnnotation$Isogate <- apply(data@wellAnnotation,1,function(x) {
+		data@wellAnnotation$Negative.Control.Gate <- apply(data@wellAnnotation,1,function(x) {
 
 			well <- subset(data@wellAnnotation, Well.Id== x[["Negative.Control"]] & plateName == x[["plateName"]],select=name)[1,][[1]]
 
@@ -335,7 +335,7 @@ setMethod("applyControlGates", signature("flowPlate"), function(data,gateType="N
 			## First get the control gate for each of the isotype groups.	
 			wa <- data@wellAnnotation 
 			wa$Percent.Positive <- apply(data@wellAnnotation,1,function(x) {
-					thresh <- as.numeric(x[["Isogate"]])	
+					thresh <- as.numeric(x[["Negative.Control.Gate"]])	
 					chan <- x[["Channel"]]
 					frame <- data@plateSet[[x[["name"]]]]
 
@@ -347,7 +347,7 @@ setMethod("applyControlGates", signature("flowPlate"), function(data,gateType="N
 				})	
 		
 			wa$Total.Count <- apply(data@wellAnnotation,1,function(x) {
-					thresh <- as.numeric(x[["Isogate"]])	
+					thresh <- as.numeric(x[["Negative.Control.Gate"]])	
 					chan <- x[["Channel"]]
 					frame <- data@plateSet[[x[["name"]]]]
 					
@@ -357,7 +357,7 @@ setMethod("applyControlGates", signature("flowPlate"), function(data,gateType="N
 				})	
 		
 			wa$Positive.Count <- apply(data@wellAnnotation,1,function(x) {
-					thresh <- as.numeric(x[["Isogate"]])	
+					thresh <- as.numeric(x[["Negative.Control.Gate"]])	
 					chan <- x[["Channel"]]
 					frame <- data@plateSet[[x[["name"]]]]
 					
