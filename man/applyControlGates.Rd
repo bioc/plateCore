@@ -13,7 +13,7 @@ applyControlGates(data, gateType="Negative.Control", ...)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{data}{ A flowPlate dataset. }
-  \item{gateType}{ The type of gate to be applied to the flowPlate. Currently on "Negative.Control" gates are supported. }
+  \item{gateType}{ The type of gate to be applied to the flowPlate. Currently only "Negative.Control" gates are supported. }
 }
 \value{
   Returns a \code{flowPlate} where the wellAnnotation now contains additional 

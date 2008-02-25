@@ -2,9 +2,7 @@
 \alias{plateCore-package}
 \alias{plateCore}
 \docType{package}
-\title{
-What the package does (short line)
-~~ package title ~~
+\title{ plateCore: A Bioconductor package for high throughput analysis of flow cytometry data
 }
 \description{
 More about what it does (maybe more than one line)
