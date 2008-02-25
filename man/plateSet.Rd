@@ -1,44 +1,36 @@
 \name{plateSet}
 \alias{plateSet}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{ ~~function to do ... ~~ }
+\title{ Get the \code{flowSet} from a \code{flowPlate} object }
 \description{
-  ~~ A concise (1-5 lines) description of what the function does. ~~
+  A function to retrieve the \code{flowSet} from a \code{flowPlate}.
 }
 \usage{
 plateSet(fp, ...)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{fp}{ ~~Describe \code{fp} here~~ }
-  \item{\dots}{ ~~Describe \code{\dots} here~~ }
+  \item{fp}{ A \code{flowPlate} }
 }
-\details{
-  ~~ If necessary, more details than the description above ~~
-}
+
 \value{
-  ~Describe the value returned
-  If it is a LIST, use
-  \item{comp1 }{Description of 'comp1'}
-  \item{comp2 }{Description of 'comp2'}
-  ...
+ Returns a \code{flowSet}
 }
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
-\note{ ~~further notes~~ 
+\author{ Errol Strain }
 
- ~Make other sections like Warning with \section{Warning }{....} ~
-}
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+library(plateCore)
+data(plateCore)
 
-## The function is currently defined as
-function(fp,...) standardGeneric("plateSet")
+## Get the lymphocytes
+rectGate <- rectangleGate("FSC.H"=c(300,700),"SSC.H"=c(50,400))
+normGate <- norm2Filter("SSC.H","FSC.H",scale.factor=1.5)
+pbmcPlate <- Subset(pbmcPlate, rectGate & normGate)
+
+## Create a flowPlate object from the platePBMC and the wellAnnotation
+fp <- flowPlate(pbmcPlate,wellAnnotation,plateName="P1")
+
+## Retrieves the flowSet
+fs <- plateSet(fp)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+
+\keyword{ methods }
