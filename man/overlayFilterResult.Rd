@@ -19,7 +19,7 @@ overlayFilterResult(subSet, ...)
 \author{ Errol Strain }
 
 \examples{
-# \code{overlayFilterResults} should not be accessed directly.
+# overlayFilterResults is used for plotting and should not be accessed directly.
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

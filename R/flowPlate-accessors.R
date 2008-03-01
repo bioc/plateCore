@@ -6,7 +6,7 @@
 ##
 ## Data: Oct 10, 2007
 ##
-## Description:
+## Description: Methods for accessing flowPlate objects. 
 ##
 #########################################################################################################
 

@@ -91,7 +91,6 @@ setMethod("xyplot",
 				filterResults = NULL,
 				displayFilter = TRUE,
 				flowStrip=NULL,
-				flowStripCex=1,
 				strip=function(...,style=1) strip.default(...,style=1),
 				...)
 		{
@@ -132,12 +131,12 @@ setMethod("xyplot",
 				}
 			}
 
-			if(is.character(filter) && filter=="Isogate") {
+			if(is.character(filter) && (filter=="Isogate" || filter=="Negative.Control")) {
 
 				isoGates <- subset(data@wellAnnotation,Channel==channel.y.name)
 
 				filter <- lapply(pd[[uniq.name]],function(x) {
-						thresh <- subset(isoGates,name==pd[x,"name"],select=Isogate)[[1]]
+						thresh <- subset(isoGates,Well.Id==pd[x,"Well.Id"] & plateName==pd[x,"plateName"],select=Isogate)[[1]]
 						if(!(pd[x,"Well.Id"] %in% isoGates$Well.Id)) {
 							return(NULL)
 						} else {
@@ -145,7 +144,6 @@ setMethod("xyplot",
 							xx <- range(xx, finite = TRUE)
 							yy <- evalInFlowFrame(channel.y, (flowData@frames)[[as.character(x)]])
 							yy <- range(yy, finite = TRUE)
-
 							yy[[1]] <- thresh
 							minrect <- c(xx[1],yy[1])
 							maxrect <- c(xx[2],yy[2])
@@ -181,7 +179,7 @@ setMethod("xyplot",
 					temp
 				})
 				
-				strip=strip.custom(factor.levels=labels,par.strip.text=list(cex=flowStripCex))
+				strip=strip.custom(factor.levels=labels)
 			}
 			
 			
