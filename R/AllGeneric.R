@@ -15,7 +15,7 @@ setGeneric("flowPlate", function(data,wellAnnotation,plateName,...) standardGene
 
 setGeneric("setRange", function(x,minF,maxF,type="truncate") standardGeneric("setRange"))
 
-setGeneric("fixAutoFl", function(fp,fsc="FSC.A",chanCols,unstain,...) standardGeneric("fixAutoFl"))
+setGeneric("fixAutoFl", function(fp,fsc="FSC.A",chanCols,unstain=NULL,...) standardGeneric("fixAutoFl"))
 
 setGeneric("setControlGates", function(data,gateType="Negative.Control",numMads=5,...) standardGeneric("setControlGates"))
 

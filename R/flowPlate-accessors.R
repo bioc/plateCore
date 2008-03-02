@@ -14,7 +14,7 @@
 ## This method creates a virtual plate by combining 2 or more flowPlates.
 ## If the sample names are not unique, then they are changed using make.unique.
 ## ##############################################
-setMethod("fpbind",signature("flowPlate","flowPlate"),function(p1,p2,...) {
+setMethod("fpbind",signature("flowPlate","flowPlate"),function(p1,p2,...,plateName="VirtPlate") {
 			
 			## Get the number of arguments
 			na <- nargs()
@@ -44,17 +44,21 @@ setMethod("fpbind",signature("flowPlate","flowPlate"),function(p1,p2,...) {
 			sampLength <- lapply(argl,function(x) length(sampleNames(x)))
 			
 			uniqList <- vector("list",length=length(sampLength))
-			index <- 1
-			for(i in 1:length(sampLength)) {
-				uniqList[[i]] <- uniqNames[index:(index-1+sampLength[[i]])]
-				names(uniqList[[i]]) <- sampleNames(argl[[i]])
-				index <- index + sampLength[[i]]		
-			}
+#			index <- 1
+
+			uniqList <- lapply(1:length(sampLength), function(i) {
+						index2 <- sum(sapply(sampLength[1:i],function(x) x[[1]]))
+						index1 <- index2 - sampLength[[i]] + 1
+						temp <- uniqNames[index1:index2]
+						names(temp) <- sampleNames(argl[[i]])
+						temp
+					})
 
 			## Remake the annotation list with the unique names
 			annl <- lapply(1:length(argl),function(i) {			
 						anndf <- argl[[i]]@wellAnnotation
 						anndf$name <- uniqList[[i]][unlist(anndf$name)]
+						anndf$name[1]
 						anndf <- data.frame(name=anndf$name,subset(anndf,select=-name),stringsAsFactors=FALSE)
 					})
 			
@@ -76,7 +80,7 @@ setMethod("fpbind",signature("flowPlate","flowPlate"),function(p1,p2,...) {
 				}))
 	
 			## Now make a flowPlate
-			np <- flowPlate(as(frames,"flowSet"),wellAnnotation)
+			np <- flowPlate(as(frames,"flowSet"),wellAnnotation,plateName=plateName)
 
 			return(np)
 		})
