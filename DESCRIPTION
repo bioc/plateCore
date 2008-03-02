@@ -3,7 +3,7 @@ Version: 0.1
 Date: 2007-07-15
 Title: Statistical tools and data structures for plate-based flow cytometry
 Author: E. Strain and P. Haaland
-Maintainer:Errol Strain <errol_strain@bd.com>
+Maintainer:Errol Strain <estrain@gmail.com>
 Depends: R (>= 2.5.0), flowCore, flowViz
 Imports: flowCore, flowViz
 Description: Provides basic S4 data structures and routines for

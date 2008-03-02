@@ -117,10 +117,10 @@ setMethod("getGroups",signature("flowPlate"),function(data,type="Negative.Contro
 #########################################################
 setMethod("%on%",signature(e2="flowPlate"),function(e1,e2) {
 		
-		if("Isogate" %in% colnames(e2@wellAnnotation)) {
+		if("Negative.Control.Gate" %in% colnames(e2@wellAnnotation)) {
 			for(y in e1@transforms) {
 				wellList <- which(e2@wellAnnotation$Channel %in% y@input)	
-				e2@wellAnnotation[wellList,"Isogate"] <- y@f(e2@wellAnnotation[wellList,"Isogate"])			  	
+				e2@wellAnnotation[wellList,"Negative.Control.Gate"] <- y@f(e2@wellAnnotation[wellList,"Negative.Control.Gate"])			  	
 			}
 		}
 			

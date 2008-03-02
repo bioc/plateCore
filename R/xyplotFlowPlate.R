@@ -136,7 +136,7 @@ setMethod("xyplot",
 				isoGates <- subset(data@wellAnnotation,Channel==channel.y.name)
 
 				filter <- lapply(pd[[uniq.name]],function(x) {
-						thresh <- subset(isoGates,Well.Id==pd[x,"Well.Id"] & plateName==pd[x,"plateName"],select=Isogate)[[1]]
+						thresh <- subset(isoGates,Well.Id==pd[x,"Well.Id"] & plateName==pd[x,"plateName"],select=Negative.Control.Gate)[[1]]
 						if(!(pd[x,"Well.Id"] %in% isoGates$Well.Id)) {
 							return(NULL)
 						} else {
