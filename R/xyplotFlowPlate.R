@@ -91,6 +91,7 @@ setMethod("xyplot",
 				filterResults = NULL,
 				displayFilter = TRUE,
 				flowStrip=NULL,
+				flowStripCex=1,
 				strip=function(...,style=1) strip.default(...,style=1),
 				...)
 		{
@@ -179,7 +180,7 @@ setMethod("xyplot",
 					temp
 				})
 				
-				strip=strip.custom(factor.levels=labels)
+				strip=strip.custom(factor.levels=labels,par.strip.text=list(cex=flowStripCex))
 			}
 			
 			
