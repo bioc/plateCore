@@ -11,21 +11,47 @@ setMethod("plotPlate",signature("flowPlate"),function(fp,x,method="median",main,
 					
 	nrwell <- ncol*nrow
 
-	if(missing(values) & x %in% colnames(exprs(plateSet(fp)[[1]]))   ) {
+	if(missing(values) & method=="mahalanobis" & all(x %in% colnames(plateSet(fp)))){
+
+		mat <- fsApply(plateSet(fp), each_col, median)
+		mat <- mat[,x]
+		mat.cov <- cov.rob(mat)
+		mat.mean <- apply(mat, 2, mean)
+		values <- mahalanobis(mat, mat.cov$center, mat.cov$cov, method="mcd")
+
+	} else if(missing(values) & length(x) == 1 & x %in% colnames(plateSet(fp))) {
 		values <- fsApply(plateSet(fp),function(ff) {
 			 eval(parse(text=paste(method,"(exprs(ff)[,\"",x,"\"])",sep="")))
-		})
+		})[,1]
 	} else if (missing(values) & x == "events"){
 		values <- fsApply(plateSet(fp),function(ff) {
 					nrow(exprs(ff))
-				})
+				})[,1]
 	} else if(!missing(values)) {
 		if(!is.numeric(values) || !is.vector(values) || length(values)!=nrwell)
-			stop("'x' must be a numeric vector of length 'ncol*nrow'")		
+			stop("'values' must be a numeric vector of length 'ncol*nrow'")		
 	} else {
 		stop("x is not valid")
 	}
+	
+	## Put the data in order and check for missing values
+	colIds <- unique((pData(phenoData(fp)))[,"Column.Id"])
+	rowIds <- unique((pData(phenoData(fp)))[,"Row.Id"])
+	
+	sampNames <- unlist(lapply(colIds,function(col) {
+		lapply(rowIds,function(row){
+			subset(pData(phenoData(fp)),Column.Id==col & Row.Id==row, select=name)[1,1]		
+		})
+	}))
+	
+	tempValues <- rep(NA,length(sampNames))
+	names(tempValues) <- sampNames
+	
+	tempValues[names(values)] <- values
+	
+	values <- tempValues
 
+	
 	valuesRange=range(values, na.rm=TRUE)
 	
 		
