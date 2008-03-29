@@ -34,3 +34,5 @@ setGeneric("summaryStats", function(data,...) standardGeneric("summaryStats"))
 setGeneric("getGroups", function(data,...) standardGeneric("getGroups"))
 
 setGeneric("fpbind", function(p1,p2,...) standardGeneric("fpbind"))
+
+setGeneric("plotPlate", function(fp,x,method="median",main,col,values,width=1,na.action="zero",...) standardGeneric("plotPlate"))
