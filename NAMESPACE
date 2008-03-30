@@ -10,7 +10,7 @@ exportClasses("flowPlate")
 
 exportMethods("compensate","flowPlate","setRange","fixAutoFl","plateSet","phenoData","getGroups","wellAnnotation",
 	"Subset","%on%","overlay","applyControlGates","summaryStats","sampleNames","fpbind","setControlGates",
-	"plotPlate")	
+	"plotPlate","gutterPlot")	
 	
 
 		

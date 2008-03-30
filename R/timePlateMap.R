@@ -1,4 +1,4 @@
-`timePlateMap` <-
+`timePlateMap2` <-
 function (aFlowSet, plateSize=96, parameter=1, trim=c(0.05, 0.95)) {
 
   def.par <- par(no.readonly = TRUE) # save default, for resetting...

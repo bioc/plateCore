@@ -3,27 +3,25 @@
 # Author: straine
 ###############################################################################
 
-setMethod("plotPlate",signature("flowPlate"),function(fp,x,method="median",main,col,values,
-						width=1,na.action="zero",...) {
+setMethod("plotPlate",signature("flowPlate"),function(fp,x=NA,method="median",main,col,values,
+						width=2,na.action="zero",...) {
 					
 	ncol = length(unique((pData(phenoData(fp)))[,"Column.Id"]))		
 	nrow = length(unique((pData(phenoData(fp)))[,"Row.Id"]))		
 					
 	nrwell <- ncol*nrow
 
-	if(missing(values) & method=="mahalanobis" & all(x %in% colnames(plateSet(fp)))){
-
+	if(missing(values) & !is.na(x) & method=="mahalanobis" & all(x %in% plateSet(fp)@colnames)){
 		mat <- fsApply(plateSet(fp), each_col, median)
 		mat <- mat[,x]
 		mat.cov <- cov.rob(mat)
 		mat.mean <- apply(mat, 2, mean)
 		values <- mahalanobis(mat, mat.cov$center, mat.cov$cov, method="mcd")
-
-	} else if(missing(values) & length(x) == 1 & x %in% colnames(plateSet(fp))) {
+	} else if(missing(values) & !is.na(x) & length(x) == 1 & x %in% plateSet(fp)@colnames) {
 		values <- fsApply(plateSet(fp),function(ff) {
 			 eval(parse(text=paste(method,"(exprs(ff)[,\"",x,"\"])",sep="")))
 		})[,1]
-	} else if (missing(values) & x == "events"){
+	} else if (missing(values) & !is.na(x) & x == "events"){
 		values <- fsApply(plateSet(fp),function(ff) {
 					nrow(exprs(ff))
 				})[,1]
@@ -38,8 +36,8 @@ setMethod("plotPlate",signature("flowPlate"),function(fp,x,method="median",main,
 	colIds <- unique((pData(phenoData(fp)))[,"Column.Id"])
 	rowIds <- unique((pData(phenoData(fp)))[,"Row.Id"])
 	
-	sampNames <- unlist(lapply(colIds,function(col) {
-		lapply(rowIds,function(row){
+	sampNames <- unlist(lapply(rowIds,function(row) {
+		lapply(colIds,function(col){
 			subset(pData(phenoData(fp)),Column.Id==col & Row.Id==row, select=name)[1,1]		
 		})
 	}))
@@ -140,3 +138,89 @@ setMethod("plotPlate",signature("flowPlate"),function(fp,x,method="median",main,
 	res <- list(which=wh, coord=floor(cbind(x1, y1, x2, y2) + 0.5))
 	invisible(res)
 })
+
+setMethod("gutterPlot",signature("flowPlate"),function(fp,chans=c("FSC.H","SSC.H","FL1.H","FL2.H","FL3.H","FL4.H"),...) {
+
+	resultMat <- fsApply(plateSet(fp),function(x) {
+		apply(exprs(x)[,chans],2,function(y) {
+			if(min(y) < max(y)) {
+				(sum(y==max(y)) + sum(y=min(y)))/length(y)
+			} else {
+				sum(y=min(y))/length(y)
+			}		
+		})
+	})
+
+	# Create the main plot window
+	plot(1, 0.5, type="n", xlim=c(1,nrow(resultMat)), ylim=c(0,1),
+			xaxt="n",
+			xlab="Well ID",
+			ylab="% Events Pegged Full or Min Scale", 
+			main=fp@plateName, ...)
+	
+	for (i in chans) {
+		points(1:nrow(resultMat), resultMat[,i], type="b", pch=which(chans==i), col=which(chans==i))
+	}
+	
+	axis(1, at=1:nrow(resultMat), labels=pData(phenoData(fp))$Well.Id);
+	legend(x="topleft", legend=chans, cex=1, 
+			bty="n", pch=1:length(chans), col=1:length(chans));
+	
+})
+
+setMethod("timePlateMap",signature("flowPlate"),function(fp,parameter=1,trim=c(0.05, 0.95),...) {
+	
+	ncol = length(unique((pData(phenoData(fp)))[,"Column.Id"]))		
+	nrow = length(unique((pData(phenoData(fp)))[,"Row.Id"]))				
+
+	nrwell <- ncol*nrow
+						
+#	def.par <- par(no.readonly = TRUE) # save default, for resetting...
+	# Create a 8 X 12 layout of plots
+#	mat = textPlateMap(1:nrwell)
+	nf  = layout(matrix(1:nrwell,nrow=nrow,ncol=ncol, byrow=TRUE))
+	layout.show(nf)
+	par(mar=c(0,0,0,0))
+	
+#	plateMap   = setUpPlateMap(aFlowSet)
+	rangeMat   = fsApply(plateSet(fp), each_col, range)
+	quantRange = fsApply(plateSet(fp), each_col, quantile, probs=trim)
+
+	# Really, just take the middle of the 5th and 95th percentiles
+	yLim     = quantile(quantRange[,parameter])[c(2,4)]
+	xLim     = as.numeric(range(rangeMat[,"Time"]))
+	
+	goodIndex = 1
+	for (i in 1:length(plateMap$wellMapVec)) {
+		if (plateMap$wellMapVec[i] == TRUE) {
+			
+			# Note this bit of indirection is necessary as the flowSet wells may
+			# not be in the "correct" order or even of the length of a full plate.  
+			# However, the wellMapVec will be in correct order.
+			j = plateMap$plotOrder[goodIndex]      
+			x = as.vector(aFlowSet[[j]]@exprs[, "Time"])
+			y = as.vector(aFlowSet[[j]]@exprs[, parameter])
+			goodIndex = goodIndex + 1
+		} else {
+			x = mean(xLim)
+			y = mean(yLim)
+		}
+		
+		plot(x, y, pch=".", xlim=xLim, ylim=yLim,
+				xaxt="n", yaxt="n",col="blue")
+		# And plot a smoothed line over the data
+		loSmooth = lowess(x,y, f=0.66)
+		lines(loSmooth, col="black", lwd=2)
+	}
+	
+	# Finish up the plate figure
+#	par(def.par)
+	plotTitle   = fp@plateName
+	if (is.numeric(parameter)) {
+		plotTitle = paste(plotTitle, "by", names(aFlowSet[[1]])[parameter])
+	}
+	
+	mtext(plotTitle, side=3)
+	mtext("Time", side=1, cex=0.75)
+})
+

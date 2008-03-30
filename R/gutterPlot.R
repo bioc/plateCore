@@ -1,6 +1,6 @@
 # Count the number of gutter events in a flowSet
 
-gutterPlot <- function (aFlowSet, ...) {
+gutterPlot2 <- function (aFlowSet, ...) {
 
   setLength = length(aFlowSet);
   numParams = length(getParameterNames(aFlowSet));

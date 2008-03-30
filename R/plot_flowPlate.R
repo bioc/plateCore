@@ -6,7 +6,7 @@
 ###############################################################################
 
 
-plotPlate  = function(x, nrow=8, ncol=12, main, col,channel,
+plotPlate2  = function(x, nrow=8, ncol=12, main, col,channel,
 	 width, na.action="zero") {
 	
     data <- subset(x@wellAnnotation,Channel==channel)
