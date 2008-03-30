@@ -14,7 +14,8 @@ plotPlate(fp, x = NA, method = "median", main, col, values, width = 1, na.action
   \item{x}{ A \code{character} indicating the variable of interest.  Valid choices are 
   "events", any single channel name (e.g. FSC.H, SSC.H, FL1.H, etc.), or vector of channel names
    if the method is mahalanobis. }
-  \item{method}{ Valid choices are mean, median, sd, mad, or mahalanobis. }
+  \item{method}{ Valid choices are mean, median, sd, mad, mahalanobis, or one of the numeric columns in the 
+   wellAnnotation data.frame (e.g. Percent.Positive, Positive.Count, MFI, MFI.Ratio) }
   \item{main}{ Main text for  the plot }
   \item{col}{ Character vector of two colors. }
   \item{values}{ Optional list of values, with names corresponding to sampleNames, that will be 

@@ -17,6 +17,10 @@ setMethod("plotPlate",signature("flowPlate"),function(fp,x=NA,method="median",ma
 		mat.cov <- cov.rob(mat)
 		mat.mean <- apply(mat, 2, mean)
 		values <- mahalanobis(mat, mat.cov$center, mat.cov$cov, method="mcd")
+	} else if(missing(values) & !is.na(x) & length(x) == 1 & x %in% plateSet(fp)@colnames & method %in% colnames(fp@wellAnnotation)) {
+		temp <- fp@wellAnnotation[fp@wellAnnotation$Channel==x,c("name",method)]
+		values <- temp[,2]
+		names(values) <- temp[,1]		
 	} else if(missing(values) & !is.na(x) & length(x) == 1 & x %in% plateSet(fp)@colnames) {
 		values <- fsApply(plateSet(fp),function(ff) {
 			 eval(parse(text=paste(method,"(exprs(ff)[,\"",x,"\"])",sep="")))

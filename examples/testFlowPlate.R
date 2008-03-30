@@ -51,9 +51,6 @@ comp.mat[upper.tri(comp.mat)] <- 0
 ## Compensate the data.  Wells will only be compensated in channels for which they contain a dye.
 platePBMC <- compensate(platePBMC,comp.mat)
 
-## Calculate the isotype gates.
-platePBMC <- setContolGates(platePBMC,gateType="Isotype")
-
 # Create a set of negative control gates and then apply them
 platePBMC <- setControlGates(platePBMC,gateType="Negative.Control")
 platePBMC <- applyControlGates(platePBMC,gateType="Negative.Control")
