@@ -146,6 +146,7 @@ setMethod("xyplot",
 							yy <- evalInFlowFrame(channel.y, (flowData@frames)[[as.character(x)]])
 							yy <- range(yy, finite = TRUE)
 							yy[[1]] <- thresh
+							if(thresh>yy[[2]]) yy[[2]] <- thresh
 							minrect <- c(xx[1],yy[1])
 							maxrect <- c(xx[2],yy[2])
 							names(minrect) <- names(maxrect) <- c(channel.x.name,channel.y.name)
