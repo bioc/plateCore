@@ -5,6 +5,7 @@ importFrom("flowViz")
 
 importFrom("Biobase","sampleNames","phenoData")
 
+export("adjustGateLog10","setGate")
 
 exportClasses("flowPlate")
 
