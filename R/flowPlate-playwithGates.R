@@ -19,7 +19,7 @@ setGate <- function(fp,chan,wells,newGate,type="Negative.Control.Gate") {
 	return(fp)
 }
 
-adjustGateLog10 <- function(fp,wells,chan,xlim,ylim,fsc="FSC.A",asFact="Well.Id",numEvents=250,type="Negative.Control.Gate") {
+adjustGateLog10 <- function(fp,wells,chan,xlim,ylim,fsc="FSC-A",asFact="Well.Id",numEvents=250,type="Negative.Control.Gate") {
 	
 	require(playwith)
 	
@@ -57,7 +57,7 @@ adjustGateLog10 <- function(fp,wells,chan,xlim,ylim,fsc="FSC.A",asFact="Well.Id"
 		playReplot(playState)
 	}	
 	
-	latForm <- as.formula(paste("log10(",chan,") ~ ",fsc," | as.factor(",asFact,")",sep=""))
+	latForm <- as.formula(paste("log10(",gsub("-",".",chan),") ~ ",gsub("-",".",fsc)," | as.factor(",asFact,")",sep=""))
 	
 	playwith(xyplot(latForm, 
 					groupDf,xlim=xlim,ylim=ylim,NegGate=NegGate,

@@ -137,11 +137,11 @@ setMethod("flowPlate",signature("flowSet"),function(data,wellAnnotation,plateNam
 			temp <- new("flowPlate")
 			
 			## Get rid of dashes in flowSet because they're really annoying for lattice
-			data <- fsApply(data,function(x) {
-						newNames <- gsub("-",".",colnames(exprs(x)))
-						colnames(exprs(x)) <- newNames
-						x
-					})
+#			data <- fsApply(data,function(x) {
+#						newNames <- gsub("-",".",colnames(exprs(x)))
+#						colnames(exprs(x)) <- newNames
+#						x
+#					})
 			
 			## Add plateName to well annotation
 			wellAnnot <- data.frame(wellAnnotation,plateName=plateName,stringsAsFactors=FALSE)		
@@ -158,7 +158,7 @@ setMethod("flowPlate",signature("flowSet"),function(data,wellAnnotation,plateNam
 			} 
 			
 			## Get rid of the dashes again
-			wellAnnot$Channel <- gsub("-",".",wellAnnot$Channel)
+#			wellAnnot$Channel <- gsub("-",".",wellAnnot$Channel)
 			## Only keep annotation for samples that are in  the dataset
 			wellAnnot <- subset(wellAnnot,name %in% sampleNames(data))
 			
@@ -211,12 +211,13 @@ setMethod("fixAutoFl",signature("flowPlate"),
 			unstainFits <- fsApply(plateSet[unstainWells], function(x) {
 						unlist(lapply(chanCols,function(y) {
 											exprData <- exprs(x)[(exprs(x)[,y]> 1),]	
-											ltsReg(as.formula(paste(y," ~ ",fsc,sep="")), log(data.frame(exprData)))$coefficients[fsc]
+											ltsReg(as.formula(paste(gsub("-",".",y)," ~ ",gsub("-",".",fsc),sep="")), log(data.frame(exprData)))$coefficients[gsub("-",".",fsc)]
 										}))
 					})	
 			
 			## Get a matrix of mean slopes
 			coeff.mat <- matrix(apply(unstainFits,2,mean),nrow=1)
+			colnames(coeff.mat) <- chanCols
 			
 			## Apply the correction to the channels of interest in chanCols
 			## Truncate values less than 0 at 0
@@ -242,7 +243,7 @@ setMethod("compensate", signature(x="flowPlate"), function(x,spillover) {
 	
 	frames <- lapply(ls(temp),function(fileName) {
 			well <- pData(phenoData(x@plateSet))[fileName,]		
-			dyeCols <- colnames(spillover)[!is.na(well[,colnames(spillover)])]
+			dyeCols <- colnames(spillover)[!is.na(well[,gsub("-",".",colnames(spillover))])]
 			
 			if(length(dyeCols)>=2) {
 				compensate(temp[[fileName]],spillover[dyeCols,dyeCols])			
