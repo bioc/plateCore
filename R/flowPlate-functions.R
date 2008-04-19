@@ -31,6 +31,7 @@ flowPhenoMerge <- function(data, newDF) {
 	##Also assume that the ids in the first column of pData(newADF) 
 	
 	origDF <- pData(phenoData(data))
+#	origDF$name <- sampleNames(data)
 	
 	## Make sure merging columns are unique, otherwise throw an error
 	
@@ -41,7 +42,7 @@ flowPhenoMerge <- function(data, newDF) {
 	if(identical(newDF$Well.Id,newDF$name)) {
 		idOrder <- sapply(newDF$Well.Id,function(x) {grep(x,dataNames)})
 	} else {
-		idOrder <- sapply(newIds,function(x) {which(x==dataNames)})
+		idOrder <- sapply(newIds,function(x) {grep(x,dataNames)})
 	}
 	
 	## Should warn users if ids are missing
@@ -57,16 +58,16 @@ flowPhenoMerge <- function(data, newDF) {
 	##Give users a warning that if any frames are removed
 	data <- data[sampleNames(data)[idOrder]]
 	
+	tempMeta.df <- rbind(varMetadata(phenoData(data)),data.frame(labelDescription=colnames(newDF)))
+	rownames(tempMeta.df) <- c(rownames(varMetadata(phenoData(data))),colnames(newDF))
+
 	newDF <- cbind(pData(phenoData(data)),newDF)
 	
-	tempMeta.df <- data.frame(colnames(newDF))
-	rownames(tempMeta.df) <- colnames(newDF)
-	
 	tempPheno.adf <- new("AnnotatedDataFrame", data=newDF, varMetadata=tempMeta.df, dimLabels=c("rowNames", "colNames"))
-	sampleNames(tempPheno.adf) <- newDF$name
+	sampleNames(tempPheno.adf) <- sampleNames(data)
 	
 	phenoData(data) <- tempPheno.adf
-	
+
 	return(data)
 }
 

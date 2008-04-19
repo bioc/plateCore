@@ -136,13 +136,6 @@ setMethod("flowPlate",signature("flowSet"),function(data,wellAnnotation,plateNam
 			
 			temp <- new("flowPlate")
 			
-			## Get rid of dashes in flowSet because they're really annoying for lattice
-#			data <- fsApply(data,function(x) {
-#						newNames <- gsub("-",".",colnames(exprs(x)))
-#						colnames(exprs(x)) <- newNames
-#						x
-#					})
-			
 			## Add plateName to well annotation
 			wellAnnot <- data.frame(wellAnnotation,plateName=plateName,stringsAsFactors=FALSE)		
 			## Create a data.frame that corresponds to phenoData.  All info about a well is on a single row
@@ -154,13 +147,13 @@ setMethod("flowPlate",signature("flowSet"),function(data,wellAnnotation,plateNam
 			## When a flowPlate is created from a plateLayout template, the names initially missing and need to be added.  Names correspond
 			## to filenames
 			if(colnames(wellAnnot)[1]=="Well.Id") {
-				wellAnnot$name <- sapply(wellAnnot$Well.Id,function(x) pData(phenoData(data))[pData(phenoData(data))$Well.Id==x,"name"])
-			} 
-			
-			## Get rid of the dashes again
-#			wellAnnot$Channel <- gsub("-",".",wellAnnot$Channel)
+				wellAnnot$name <- sapply(wellAnnot$Well.Id,function(x) {
+						rownames(pData(phenoData(data))[pData(phenoData(data))$Well.Id==x,])
+					}) 
+			}
+
 			## Only keep annotation for samples that are in  the dataset
-			wellAnnot <- subset(wellAnnot,name %in% sampleNames(data))
+			wellAnnot <- subset(wellAnnot,name %in% sampleNames(data) )
 			
 			temp@plateName <- plateName
 			temp@wellAnnotation <- wellAnnot
@@ -202,7 +195,7 @@ setMethod("fixAutoFl",signature("flowPlate"),
 			plateSet <- fp@plateSet
 			## Identify the wells containing unstained samples
 			if(is.null(unstain)) {
-				unstainWells <- unlist(subset(pData(phenoData(plateSet)),as.logical((Sample.Type=="Unstained") ),select="name"))
+				unstainWells <- unique(unlist(subset(fp@wellAnnotation,Sample.Type=="Unstained",select="name")))
 			} else {
 				unstainWells <- unstain
 			}
