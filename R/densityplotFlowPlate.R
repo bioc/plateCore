@@ -92,23 +92,20 @@ panel.density.flowPlate <-
 
 
 
-#setMethod("densityplot",
-#		signature(x = "formula", data = "flowPlate"),
-densityplot2 <- function(x, data, xlab,
+setMethod("densityplot",
+		signature(x = "formula", data = "flowPlate"),
+ 	function(x, data, xlab,
 				prepanel = prepanel.density.flowPlate,
 				panel = panel.density.flowPlate,
 				as.table = TRUE,
-#				darg = list(n = 5), 
 				...)
 		{
 			
-			browser()
 			flowData <- plateSet(data)
 			pd <- pData(phenoData(flowData))
 			ocall <- sys.call(sys.parent())
 			ccall <- match.call(expand.dots = FALSE)
 			ccall <- manipulate.call(ocall, ccall)
-#			pd <- pData(phenoData(data))
 			uniq.name <- createUniqueColumnName(pd)
 			## ugly hack to suppress warnings about coercion introducing NAs
 			pd[[uniq.name]] <- factor(sampleNames(flowData))
@@ -130,9 +127,9 @@ densityplot2 <- function(x, data, xlab,
 			ccall$xlab <- xlab
 			ccall$frames <- flowData@frames
 			ccall$channel <- channel
-#			ccall$darg <- darg
 			ccall[[1]] <- quote(lattice::densityplot)
 			ans <- eval.parent(ccall)
 			ans$call <- ocall
 			ans
 		}
+)
