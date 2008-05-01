@@ -33,44 +33,49 @@ panel.density.flowPlate <-
 				frames, channel,
 				groups=NULL,
 				subscripts,
-#				darg,
-#				col = superpose.symbol$col,
-#				col.points = col,
-#				pch = superpose.symbol$pch,
-#				cex = superpose.symbol$cex,
-#				col.line = col,
+				col = superpose.symbol$col,
+				col.points = col,
+				pch = superpose.symbol$pch,
+				cex = superpose.symbol$cex,
+				col.line = col,
 #				lty = superpose.line$lty,
 #				lwd = superpose.line$lwd,
 				...)
 {
 
+	superpose.symbol <- trellis.par.get("superpose.symbol")
+	superpose.line <- trellis.par.get("superpose.line")
 	
-#	if (is.null(groups))
-#	{
-#		nx <- length(x)
-#		col.points <- rep(col.points, length = nx)
-#		col.line <- rep(col.line, length = nx)
-#		pch <- rep(pch, length = nx)
-#		cex <- rep(cex, length = nx)
+	if (is.null(groups))
+	{
+		nx <- length(x)
+		col.points <- rep(col.points, length = nx)
+		col.line <- rep(col.line, length = nx)
+		pch <- rep(pch, length = nx)
+		cex <- rep(cex, length = nx)
 #		lty <- rep(lty, length = nx)
 #		lwd <- rep(lwd, length = nx)
-#		alpha <- rep(alpha, length = nx)
-#	}
-#	else
-#	{
-#		groups <- as.factor(groups)[subscripts]
-#		stopifnot(length(groups) == length(x))
-#		## goal: make colors etc vectors as before, but
-#		## associate by group
-#		
-#		ng <- nlevels(groups)
-#		gcode <- as.numeric(groups)
+		alpha <- rep(alpha, length = nx)
+	}
+	else
+	{
+		groups <- as.factor(groups)[subscripts]
+		stopifnot(length(groups) == length(x))
+		## goal: make colors etc vectors as before, but
+		## associate by group
+		
+		ng <- nlevels(groups)
+		gcode <- as.numeric(groups)
+		col.points <- rep(col.points, length = ng)[gcode]
+		col.line <- rep(col.line, length = ng)[gcode]
 #		pch <- rep(pch, length = ng)[gcode]
 #		cex <- rep(cex, length = ng)[gcode]
 #		lty <- rep(lty, length = ng)[gcode]
 #		lwd <- rep(lwd, length = ng)[gcode]
-#	}
-#	browser()
+#		alpha <- rep(alpha, length = ng)[gcode]
+	}
+	
+
 	x <- as.character(x)
 	for (i in seq_along(x))
 	{
@@ -78,8 +83,8 @@ panel.density.flowPlate <-
 		xx <- evalInFlowFrame(channel, frames[[nm]])
 
 		panel.densityplot(xx,plot.points=FALSE,
-#				darg=darg,
-#				col = col[i],
+				col.line = col.line[i],
+				col = col[i],
 #				cex = cex[i],
 #				pch = pch[i],
 #				lty = lty[i],
