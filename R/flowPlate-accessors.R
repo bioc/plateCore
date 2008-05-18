@@ -267,7 +267,7 @@ setMethod("summaryStats", signature("flowPlate"), function(data,...) {
 		chan <- x[["Channel"]]
 		frame <- data@plateSet[[x[["name"]]]]
 
-		if(chan %in% colnames(exprs(frame))) {
+		if(chan %in% colnames(exprs(frame)) && nrow(exprs(frame))>0) {
 			return(median(exprs(frame)[,chan]))
 		} else { NA }	
 	})
@@ -278,7 +278,7 @@ setMethod("summaryStats", signature("flowPlate"), function(data,...) {
 			negMFI <- subset(wellAnnotation,Well.Id==negWell & Channel==chan,select=MFI)
 			frame <- data@plateSet[[x[["name"]]]]
 			
-			if(chan %in% colnames(exprs(frame)) && negWell!="") {
+			if(chan %in% colnames(exprs(frame)) && negWell!="" && nrow(exprs(frame))>0) {
 				negMFI <- subset(wellAnnotation,Well.Id==negWell & Channel==chan,select=MFI)
 				if(!is.na(negMFI) && !is.na(x[["MFI"]])) return(as.numeric(x[["MFI"]])/as.numeric(negMFI))
 			} else { NA }	
@@ -337,7 +337,7 @@ setMethod("applyControlGates", signature("flowPlate"), function(data,gateType="N
 					chan <- x[["Channel"]]
 					frame <- data@plateSet[[x[["name"]]]]
 
-					if(!is.na(thresh) && chan %in% colnames(exprs(frame))) {
+					if(!is.na(thresh) && chan %in% colnames(exprs(frame)) && nrow(exprs(frame))>0 ) {
 						iso <- new("rectangleGate",filterId="rectangleGate",parameters=chan,min=thresh,max=Inf)
 						isoResult <- filter(frame,iso)
 						return(100*(sum(isoResult@subSet)/nrow(exprs(frame))))
@@ -349,7 +349,7 @@ setMethod("applyControlGates", signature("flowPlate"), function(data,gateType="N
 					chan <- x[["Channel"]]
 					frame <- data@plateSet[[x[["name"]]]]
 					
-					if(!is.na(thresh) && chan %in% colnames(exprs(frame))) {
+					if(!is.na(thresh) && chan %in% colnames(exprs(frame)) && nrow(exprs(frame))>0 ) {
 						return(nrow(exprs(frame)))
 					} else { NA }	
 				})	
@@ -359,7 +359,7 @@ setMethod("applyControlGates", signature("flowPlate"), function(data,gateType="N
 					chan <- x[["Channel"]]
 					frame <- data@plateSet[[x[["name"]]]]
 					
-					if(!is.na(thresh) && chan %in% colnames(exprs(frame))) {
+					if(!is.na(thresh) && chan %in% colnames(exprs(frame)) && nrow(exprs(frame))>0 ) {
 						iso <- new("rectangleGate",filterId="rectangleGate",parameters=chan,min=thresh,max=Inf)
 						isoResult <- filter(frame,iso)
 						return(sum(isoResult@subSet))

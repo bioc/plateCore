@@ -55,7 +55,7 @@ panel.density.flowPlate <-
 		cex <- rep(cex, length = nx)
 #		lty <- rep(lty, length = nx)
 #		lwd <- rep(lwd, length = nx)
-		alpha <- rep(alpha, length = nx)
+#		alpha <- rep(alpha, length = nx)
 	}
 	else
 	{
