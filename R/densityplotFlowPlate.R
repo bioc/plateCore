@@ -30,32 +30,23 @@ prepanel.density.flowPlate <-
 
 panel.density.flowPlate <-
 		function(x, 
-				frames, channel,
+				frames, channel, wellAnnotation,
 				groups=NULL,
 				subscripts,
 				col = superpose.symbol$col,
 				col.points = col,
-				pch = superpose.symbol$pch,
-				cex = superpose.symbol$cex,
 				col.line = col,
-#				lty = superpose.line$lty,
-#				lwd = superpose.line$lwd,
+				filterResults=NULL,
 				...)
 {
 
 	superpose.symbol <- trellis.par.get("superpose.symbol")
-	superpose.line <- trellis.par.get("superpose.line")
-	
+
 	if (is.null(groups))
 	{
-		nx <- length(x)
+		nx <- length(x)+1
 		col.points <- rep(col.points, length = nx)
 		col.line <- rep(col.line, length = nx)
-		pch <- rep(pch, length = nx)
-		cex <- rep(cex, length = nx)
-#		lty <- rep(lty, length = nx)
-#		lwd <- rep(lwd, length = nx)
-#		alpha <- rep(alpha, length = nx)
 	}
 	else
 	{
@@ -68,28 +59,31 @@ panel.density.flowPlate <-
 		gcode <- as.numeric(groups)
 		col.points <- rep(col.points, length = ng)[gcode]
 		col.line <- rep(col.line, length = ng)[gcode]
-#		pch <- rep(pch, length = ng)[gcode]
-#		cex <- rep(cex, length = ng)[gcode]
-#		lty <- rep(lty, length = ng)[gcode]
-#		lwd <- rep(lwd, length = ng)[gcode]
-#		alpha <- rep(alpha, length = ng)[gcode]
 	}
 	
 
 	x <- as.character(x)
+
 	for (i in seq_along(x))
 	{
 		nm <- x[i]
 		xx <- evalInFlowFrame(channel, frames[[nm]])
 
-		panel.densityplot(xx,plot.points=FALSE,
+		panel.densityplot(xx,data=data,plot.points=FALSE,
 				col.line = col.line[i],
 				col = col[i],
-#				cex = cex[i],
-#				pch = pch[i],
-#				lty = lty[i],
-#				lwd = lwd[i],
 				...)
+		
+		if(!missing(filterResults) && filterResults=="Negative.Control") {
+			nc <- subset(wellAnnotation,name==nm & Channel==as.character(channel[[1]]))$Negative.Control
+			nc <- subset(wellAnnotation,Well.Id==nc)$name
+			xx <- evalInFlowFrame(channel, frames[[nc]])
+			
+			panel.densityplot(xx,data=data,plot.points=FALSE,
+					col.line = col.line[nx],
+					col = col[nx],
+					...)
+		}
 	}
 }
 
@@ -103,6 +97,7 @@ setMethod("densityplot",
 				prepanel = prepanel.density.flowPlate,
 				panel = panel.density.flowPlate,
 				as.table = TRUE,
+				filterResult=NULL,
 				...)
 		{
 			
@@ -124,8 +119,10 @@ setMethod("densityplot",
 			channel.name <- expr2char(channel)
 			channel <- as.expression(channel)
 			if (missing(xlab)) xlab <- channel.name
+#			browser()
 			ccall$x <- x
 			ccall$data <- pd
+			ccall$wellAnnotation <- data@wellAnnotation
 			ccall$prepanel <- prepanel
 			ccall$panel <- panel
 			ccall$as.table <- as.table
