@@ -36,7 +36,7 @@ panel.density.flowPlate <-
 				col = superpose.symbol$col,
 				col.points = col,
 				col.line = col,
-				filterResults=NULL,
+				filterResult=NULL,
 				...)
 {
 
@@ -44,9 +44,9 @@ panel.density.flowPlate <-
 
 	if (is.null(groups))
 	{
-		nx <- length(x)+1
-		col.points <- rep(col.points, length = nx)
-		col.line <- rep(col.line, length = nx)
+		ng <- length(x)+1
+		col.points <- rep(col.points, length = ng)
+		col.line <- rep(col.line, length = ng)
 	}
 	else
 	{
@@ -74,15 +74,26 @@ panel.density.flowPlate <-
 				col = col[i],
 				...)
 		
-		if(!missing(filterResults) && filterResults=="Negative.Control") {
+		if(!missing(filterResult) && class(filterResult)=="character" && filterResult=="Negative.Control") {
+			panel.abline(v=subset(wellAnnotation,name==nm & Channel==as.character(channel[[1]]))$Negative.Control.Gate)
 			nc <- subset(wellAnnotation,name==nm & Channel==as.character(channel[[1]]))$Negative.Control
-			nc <- subset(wellAnnotation,Well.Id==nc)$name
-			xx <- evalInFlowFrame(channel, frames[[nc]])
+			if(nc %in% wellAnnotation$Well.Id) {
+				nc <- subset(wellAnnotation,Well.Id==nc)$name
+				xx <- evalInFlowFrame(channel, frames[[nc]])
 			
-			panel.densityplot(xx,data=data,plot.points=FALSE,
-					col.line = col.line[nx],
-					col = col[nx],
+				panel.densityplot(xx,data=data,plot.points=FALSE,
+					col.line = col.line[ng],
+					col = col[ng],
 					...)
+			}
+		} else if (class(filterResult)=="flowFrame") {
+			panel.abline(v=subset(wellAnnotation,name==nm & Channel==as.character(channel[[1]]))$Negative.Control.Gate)
+			xx <- evalInFlowFrame(channel, filterResult)
+	
+			panel.densityplot(xx,data=data,plot.points=FALSE,
+				col.line = col.line[ng],
+				col = col[ng],
+				...)		
 		}
 	}
 }
@@ -119,7 +130,7 @@ setMethod("densityplot",
 			channel.name <- expr2char(channel)
 			channel <- as.expression(channel)
 			if (missing(xlab)) xlab <- channel.name
-#			browser()
+
 			ccall$x <- x
 			ccall$data <- pd
 			ccall$wellAnnotation <- data@wellAnnotation

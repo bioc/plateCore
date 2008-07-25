@@ -32,8 +32,15 @@ panel.xyplot.flowplate <-
 				filterResults = NULL,
 				displayFilter = TRUE,
 				pch, smooth,
+				wellAnnotation = NULL,
+				col = superpose.symbol$col,
 				...)
 {
+	
+	superpose.symbol <- trellis.par.get("superpose.symbol")
+	
+#	browser()
+	
 	x <- as.character(x)
 	if (length(x) > 1) stop("must have only one flow frame per panel")
 	if (length(x) < 1) return()
@@ -44,25 +51,41 @@ panel.xyplot.flowplate <-
 	
 	this.filter.result <- NULL
 	
-	groups <- 
-			if (!is.null(filterResults))
-			{
-				filterResults[[nm]]@subSet
-			}
-			else if (!is.null(filter) && !is.null(filter[[nm]]))
+	groups <- if (!is.null(filter) && !is.null(filter[[nm]]))
 			{
 				this.filter.result <- filter(frames[[nm]], filter[[nm]])
 				this.filter.result@subSet
 			}
 			else NULL
 	
+	nx <- 2
+	if(!is.null(groups)) nx <- length(unique(groups))+1 
+
+	col <- rep(col, length = nx)
+#	browser()
+	
 	if (smooth) {
 		panel.smoothScatter(xx, yy, ...)
 	}
-	else panel.xyplot(xx, yy, pch = pch,
+	else {
+		panel.xyplot(xx, yy, pch = pch,
 				groups = groups,
 				subscripts = seq_along(groups),
+				col=col[1:(nx-1)],
 				...)
+
+		if(!missing(filterResults) && filterResults=="Negative.Control") {
+			nc <- subset(wellAnnotation,name==nm & Channel==as.character(channel.y[[1]]))$Negative.Control
+			if(nc %in% wellAnnotation$Well.Id) {
+				nc <- subset(wellAnnotation,Well.Id==nc)$name
+				xx <- evalInFlowFrame(channel.x, frames[[nc]])
+				yy <- evalInFlowFrame(channel.y, frames[[nc]])
+			
+				panel.xyplot(xx,yy,pch=pch,col = col[nx],...)
+			}
+		}
+		
+	}
 	
 	if ((!is.null(filter) && !is.null(filter[[nm]])) && (is.list(displayFilter) || displayFilter))
 	{
@@ -71,8 +94,7 @@ panel.xyplot.flowplate <-
 		filter.boundary <-
 				filterBoundary(filter = filter[[nm]],
 						parameters = c(channel.x.name, channel.y.name),
-						frame = frames[[nm]],
-						result = this.filter.result)
+						frame = frames[[nm]])
 		do.call(panel.polygon,
 				c(filter.boundary, display.pars))
 	}
@@ -124,13 +146,6 @@ setMethod("xyplot",
 			if (missing(xlab)) xlab <- channel.x.name
 			if (missing(ylab)) ylab <- channel.y.name
 			
-			if(!missing(filterResults) && is.character(filterResults)) {
-				if(filterResults=="Negative.Control") {		
-					data <- overlay(data,type="Negative.Control",channel=channel.y.name)
-					flowData <- plateSet(data)
-					filterResults <- data@overlayFilterResults
-				}
-			}
 
 			if(is.character(filter) && (filter=="Isogate" || filter=="Negative.Control")) {
 
@@ -161,6 +176,8 @@ setMethod("xyplot",
 				names(filter) <- pd[[uniq.name]]
 			}
 
+#			browser()
+			
 			if(!is.null(flowStrip)) {
 				
 				if(!("Well.Id" %in% flowStrip)) flowStrip <- c("Well.Id",flowStrip)
@@ -195,7 +212,7 @@ setMethod("xyplot",
 					channel.y = channel.y,
 					channel.x.name = channel.x.name,
 					channel.y.name = channel.y.name,
-					
+					wellAnnotation = data@wellAnnotation,
 					filter = filter,
 					filterResults = filterResults,
 					displayFilter = displayFilter,
