@@ -32,5 +32,6 @@ Automated analysis in Matlab.
 \subsection*{Bioconductor}
  
 \section*{Analysis Strategy}
+\section*{}
 
 \end{document}
