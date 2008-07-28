@@ -8,6 +8,25 @@
 \author{straine}
 
 \maketitle
+\section*{Recent Related Publications}
+\subsection*{flowCore, Cytometry}
+Gives an overview of flowCore data structures, transformation and gating examples, quality control checks (flowQ), and 
+flowCore analysis philosophy.
+. 
+\subsection*{flowViz, Bioinformatics}
+Using flowViz to make xyplots, ecdfplots, and time plots of GvHD data.
+
+\subsection*{Quality Assessment of Ungated Flow Cytometry data in High Throughput experiments, Cytometry A, GvHD data}
+Visualizing data: xyplots, histograms, ecdfplots, boxplots, and countour plots.\\
+Outlier detection (Grubbs and KS)\\
+Using flowViz/Core graphical output for quality assessment\\
+
+\subsection*{Analysis of flow cytometry data using an automatic processing tool, Cytometry Part A}
+Automated analysis in Matlab.
+
+\section*{Data}
+
+
 \section*{Introduction}
 \subsection*{FC-HCS}
 \subsection*{Bioconductor}
