@@ -1,20 +1,56 @@
-% 
-\documentclass[a4paper]{article}
-\usepackage[OT1]{fontenc}
-\usepackage{Sweave}
+\documentclass[12pt]{article}
+
+\usepackage{amsmath,pstricks}
+\usepackage[authoryear,round]{natbib}
+\usepackage{hyperref}
+
+\SweaveOpts{keep.source=TRUE}
+
+\textwidth=6.2in
+\textheight=8.5in
+\oddsidemargin=.1in
+\evensidemargin=.1in
+\headheight=-.3in
+
+\newcommand{\scscst}{\scriptscriptstyle}
+\newcommand{\scst}{\scriptstyle}
+\newcommand{\Rfunction}[1]{{\texttt{#1()}}}
+\newcommand{\Rmethod}[1]{{\texttt{#1}}}  
+\newcommand{\Rclass}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+\newcommand{\code}[1]{{\texttt{#1}}}
+\bibliographystyle{plainnat}
+
+\title{Outline: Analysis of High Throughput Flow Cytometry Data using \Rpackage{plateCore}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
-
-\title{plateCore Outline}
-\author{straine}
-
 \maketitle
+
+
+
+
+\section*{Abstract/Overview}
+\Rpackage{plateCore} is a Bioconductor packaged created to make processing and analysis of large, complex flow datasets
+in R easier. High throughput flow studies are often run in a 96 or 384-well plate format, with a number of different samples, 
+controls, and antibodies-dye conjugates present on the plate. Analyzing the output from the cytometer requires keeping track of the contents
+of each well, matching sample wells with control wells, gating each well/channel separately, making the appropriate plots, quality assessment, and
+summarizing the results. \Rpackage{plateCore} extends the \Rpackage{flowCore} and \Rpackage{flowViz} packages to work on
+\Rclass{flowPlate} objects that represent these large flow datasets. For those familiar with \Rpackage{flowCore} and \Rpackage{flowViz}, 
+the gating (filtering), transformation, and other data manipulations for \Rclass{flowPlates} are very similar to \Rclass{flowSets}. 
+
+In this document we show how setup a \Rpackage{plateCore} analysis and provide examples for one(?) publicly available dataset(s). 
+(add description of data and results).
+
+
 \section*{Recent Related Publications}
-\subsection*{flowCore, Cytometry}
+\subsection*{flowCore manuscript in Cytometry A}
 Gives an overview of flowCore data structures, transformation and gating examples, quality control checks (flowQ), and 
 flowCore analysis philosophy.
 . 
-\subsection*{flowViz, Bioinformatics}
-Using flowViz to make xyplots, ecdfplots, and time plots of GvHD data.
+\subsection*{Using flowViz to Visualize Flow Cytometry Data, Bioinformatics}
+Uses flowViz to make xyplots, ecdfplots, and time plots of GvHD data. Makes the case that visualizations can be used to aid automation.
 
 \subsection*{Quality Assessment of Ungated Flow Cytometry data in High Throughput experiments, Cytometry A, GvHD data}
 Visualizing data: xyplots, histograms, ecdfplots, boxplots, and countour plots.\\
