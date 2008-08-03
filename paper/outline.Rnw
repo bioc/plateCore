@@ -44,28 +44,54 @@ In this document we show how setup a \Rpackage{plateCore} analysis and provide e
 (add description of data and results).
 
 
-\section*{Recent Related Publications}
-\subsection*{flowCore manuscript in Cytometry A}
-Gives an overview of flowCore data structures, transformation and gating examples, quality control checks (flowQ), and 
-flowCore analysis philosophy.
-. 
-\subsection*{Using flowViz to Visualize Flow Cytometry Data, Bioinformatics}
-Uses flowViz to make xyplots, ecdfplots, and time plots of GvHD data. Makes the case that visualizations can be used to aid automation.
-
-\subsection*{Quality Assessment of Ungated Flow Cytometry data in High Throughput experiments, Cytometry A, GvHD data}
-Visualizing data: xyplots, histograms, ecdfplots, boxplots, and countour plots.\\
-Outlier detection (Grubbs and KS)\\
-Using flowViz/Core graphical output for quality assessment\\
-
-\subsection*{Analysis of flow cytometry data using an automatic processing tool, Cytometry Part A}
-Automated analysis in Matlab.
-
-\section*{Data}
+%\section*{Recent Related Publications}
+%\subsection*{flowCore manuscript in Cytometry A}
+%Gives an overview of flowCore data structures, transformation and gating examples, quality control checks (flowQ), and 
+%flowCore analysis philosophy.
+%. 
+%\subsection*{Using flowViz to Visualize Flow Cytometry Data, Bioinformatics}
+%Uses flowViz to make xyplots, ecdfplots, and time plots of GvHD data. Makes the case that visualizations can be used to aid automation.
+%
+%\subsection*{Quality Assessment of Ungated Flow Cytometry data in High Throughput experiments, Cytometry A, GvHD data}
+%Visualizing data: xyplots, histograms, ecdfplots, boxplots, and contour plots.\\
+%Outlier detection (Grubbs and KS)\\
+%Using flowViz/Core graphical output for quality assessment\\
+%
+%\subsection*{Analysis of flow cytometry data using an automatic processing tool, Cytometry Part A}
+%Automated analysis in Matlab.
+%
+%\section*{Data}
+%FACS CAP PBMC Data (currently on ficcs.org, but it is not clear if we will be able to release AB names)\\
+%GvHD Data\\
 
 
 \section*{Introduction}
-\subsection*{FC-HCS}
-\subsection*{Bioconductor}
+Analysis of flow cytometry high content screening (FC-HCS) experiments requires a systematic approach to
+preprocessing, gating (i.e., filtering), and summarizing large amounts of data. Ideally these steps would be automated,
+allowing analysis pipelines to match the high-throughput capacity of modern cytometers. Current approaches to
+FC-HCS analysis semi-automated at best, often requiring significant manual intervention to identify cells of interest and
+set the appropriate gates. 
+
+
+
+Manual making
+it difficult to develop standards and reproduce analyses. 
+
+A lack of tools for managing the raw data and for providing access to the
+results also inhibits collaborative develop of . 
+
+
+
+
+Flow cytometry packages available through Bioconductor provide an open analysis platform that
+can be used by cytometrists, bioinformaticians, and statisticians to develop new analysis approaches that
+enable automated processing. The \Rpackage{flowCore} package contains the framework for importing, transforming, gating, and
+organizing raw flow cytometry data. \Rpackage{flowViz} provides sophisticated visualizations based on Trellis displays. 
+\Rpackage{flowClust} implements model-based clustering approaches for automated gating. 
+
+
+
+
  
 \section*{Analysis Strategy}
 \section*{}
