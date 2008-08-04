@@ -28,9 +28,6 @@
 \begin{document}
 \maketitle
 
-
-
-
 \section*{Abstract}
 \Rpackage{plateCore} is a Bioconductor packaged created to make processing and analysis of large, complex flow datasets
 in R easier. High throughput flow studies are often run in a 96 or 384-well plate format, with a number of different samples, 
@@ -81,11 +78,21 @@ organizing raw flow cytometry data. \Rpackage{flowViz} supports sophisticated vi
 \Rpackage{flowClust} implements model-based clustering approaches for automated gating. The combination of
 these packages provides a set of freely available, flexible, and computationally efficient FC-HCS tools.
 
-\Rpackage{plateCore}
+Add paragraph on \Rpackage{plateCore}.
 
 
+\begin{figure}
+\centering
+\includegraphics{analysisSteps}
+\caption{plateCore analysis.}
+\end{figure}
  
-\section*{Analysis Strategy}
-\section*{}
+
+\section*{Example Data}
+
+\section*{Data import, compensation, and QC}
+
+\section*{Results}
+
 
 \end{document}
