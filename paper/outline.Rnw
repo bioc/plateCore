@@ -31,7 +31,7 @@
 
 
 
-\section*{Abstract/Overview}
+\section*{Abstract}
 \Rpackage{plateCore} is a Bioconductor packaged created to make processing and analysis of large, complex flow datasets
 in R easier. High throughput flow studies are often run in a 96 or 384-well plate format, with a number of different samples, 
 controls, and antibodies-dye conjugates present on the plate. Analyzing the output from the cytometer requires keeping track of the contents
@@ -68,28 +68,20 @@ In this document we show how setup a \Rpackage{plateCore} analysis and provide e
 \section*{Introduction}
 Analysis of flow cytometry high content screening (FC-HCS) experiments requires a systematic approach to
 preprocessing, gating (i.e., filtering), and summarizing large amounts of data. Ideally these steps would be automated,
-allowing analysis pipelines to match the high-throughput capacity of modern cytometers. Current approaches to
-FC-HCS analysis semi-automated at best, often requiring significant manual intervention to identify cells of interest and
-set the appropriate gates. 
+allowing analysis pipelines to be robust, objective, and match the high-throughput capacity of modern cytometers. 
+Unfortunately, current approaches to FC-HCS analysis methods are semi-automated at best,
+often requiring significant manual intervention to identify cells of interest and set the appropriate gates. 
+Since the manual contribution is subjective and prone to error when working with large numbers of samples, it
+is desirable to develop programmatic approaches to process the data.
 
-
-
-Manual making
-it difficult to develop standards and reproduce analyses. 
-
-A lack of tools for managing the raw data and for providing access to the
-results also inhibits collaborative develop of . 
-
-
-
-
-Flow cytometry packages available through Bioconductor provide an open analysis platform that
+Flow cytometry packages available through the Bioconductor project provide an open analysis platform that
 can be used by cytometrists, bioinformaticians, and statisticians to develop new analysis approaches that
 enable automated processing. The \Rpackage{flowCore} package contains the framework for importing, transforming, gating, and
-organizing raw flow cytometry data. \Rpackage{flowViz} provides sophisticated visualizations based on Trellis displays. 
-\Rpackage{flowClust} implements model-based clustering approaches for automated gating. 
+organizing raw flow cytometry data. \Rpackage{flowViz} supports sophisticated visualizations based on Trellis displays. 
+\Rpackage{flowClust} implements model-based clustering approaches for automated gating. The combination of
+these packages provides a set of freely available, flexible, and computationally efficient FC-HCS tools.
 
-
+\Rpackage{plateCore}
 
 
  
