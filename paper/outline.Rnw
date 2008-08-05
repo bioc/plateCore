@@ -78,7 +78,9 @@ The progression from raw FCM data files to a completed \Rpackage{plateCore} anal
 \begin{figure}
 \centering
 \includegraphics{analysisSteps.pdf}
-\caption{Typical plateCore analysis. If necessary, the threshold control gates are adjusted based on input from flow experts. 
+\caption{Typical plateCore analysis on the left, and examples of each step from a sample analysis are shown on the right.
+Performing quality assessments and generating reports are multi-step actions and the code required is not shown here.
+If necessary, the threshold control gates created automatically from setControlGates are adjusted based on input from flow experts. 
 These new gates are established based on the gap between negative control wells and positive test samples, whereas the automated
 control gates were set using only negative control wells.}
 \label{fig:analysis}
