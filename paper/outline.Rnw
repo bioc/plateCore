@@ -259,6 +259,16 @@ test wells are in magenta.}
 \clearpage
 \section{Conclusions}
 
+The PBMC example shows that a complex analysis of a 96-well plate, stained with 189 antibodies,
+can be constructed in 15-20 lines of code using \Rpackage{plateCore}. Lymphocytes were selected
+using \Rpackage{flowCore} gates and visualized using \Rpackage{flowViz} plots. One-dimensional 
+gates were constructed using isotype wells and applied to the test wells to identify positive cells.
+
+Given a \textit{plate configuration} file, this same approach can be used to analyze any
+negative control based FC-HCS study. Although adjustments to the automatically generated negative control gates may be needed,
+these changes change be incorporated into the analysis script and reproduced at a later time.
+
+(Need some additional paragraphs about why plateCore is wonderful).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{References/Recent Related Publications}
