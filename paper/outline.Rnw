@@ -35,14 +35,14 @@
 \Rpackage{plateCore} is a Bioconductor packaged created to make processing and analysis of large, complex flow datasets
 in R easier. High throughput flow studies are often run in a 96 or 384-well plate format, with a number of different samples, 
 controls, and antibodies-dye conjugates present on the plate. Analyzing the output from the cytometer requires keeping track of the contents
-of each well, matching sample wells with control wells, gating each well/channel separately, making the appropriate plots, quality assessment, and
+of each well, matching sample wells with control wells, gating each well/channel separately, making the appropriate plots, assessing quality, and
 summarizing the results. \Rpackage{plateCore} extends the \Rpackage{flowCore} and \Rpackage{flowViz} packages to work on
 \Rclass{flowPlate} objects that represent these large flow datasets. For those familiar with \Rpackage{flowCore} and \Rpackage{flowViz}, 
 the gating (filtering), transformation, and other data manipulations for \Rclass{flowPlates} are very similar to \Rclass{flowSets}. 
 
-In this document we show how use \Rpackage{plateCore} to analyze a publicly available blood dataset. This peripheral blood
-mononucleocyte (PBMC) data was generated using BD FACS\texttrademark CAP screening to look at the expression profiles of 189 
-different human cell surface markers. The raw PBMC data is read into R using \Rpackage{flowCore}, and then the filtering and 
+In this document we show how use \Rpackage{plateCore} to analyze a publicly available blood dataset for expression of cell surface markers. 
+This peripheral blood mononucleocyte (PBMC) data was generated using BD FACS\texttrademark CAP screening to look at the expression profiles of 189 
+different human markers (add reference). The raw PBMC data is read into R using \Rpackage{flowCore}, and then the filtering and 
 threshold gating are performed in \Rpackage{plateCore}. The output is the fraction of positive (expressing) cells for
 each marker.
 
@@ -65,8 +65,8 @@ these packages provides a set of freely available, flexible, and computationally
 
 \Rpackage{plateCore} provides a convenient way to manage the sample annotation associated with complex FC-HCS experiments, and
 to access the functionality in other Bioconductor flow packages. Since the layout of FC-HCS plates often changes from experiment
-to experiment, the annotation for each well needs to be customized for each \Rclass{flowPlate}. \Rpackage{plateCore}
-uses an approach that is very similar to the cell-based high throughput screening \Rpackage{cellHTS2} package,
+to experiment, the annotation for each well needs to be customized for each \\
+\Rclass{flowPlate}. \Rpackage{plateCore} uses an approach that is very similar to the cell-based high throughput screening \Rpackage{cellHTS2} package,
 where users must provide a \textit{plate configuration} file for each dataset. Once the cell level data has
 been analyzed in \Rpackage{plateCore}, the summary well information (i.e., percentage of positive cells and median
 signal intensities) can be imported into tools like \Rpackage{cellHTS2}, since FC-HCS experiments are just one 
@@ -122,6 +122,8 @@ values for each well, and looking for distributions shifted relative to other we
 \begin{figure}
 \centering
 <<label=morphGate, fig=TRUE, echo=FALSE, results=hide>>=
+library(flowCore)
+library(flowViz)
 library(plateCore)
 data(plateCore)
 pbmcFP <- flowPlate(pbmcPlate,wellAnnotation,plateName="PBMC.001")

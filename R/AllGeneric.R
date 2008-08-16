@@ -45,4 +45,7 @@ setGeneric("setGate",function(fp,chan,wells,newGate,type="Negative.Control.Gate"
 setGeneric("adjustGateLog10",function(fp,wells,chan,xlim,ylim,
 				fsc="FSC.A",asFact="Well.Id",numEvents=250,type="Negative.Control.Gate",...) standardGeneric("adjustGateLog10"))
 			
-
+setGeneric("xyplot", function(x, data, ...)
+			standardGeneric("xyplot"))
+setGeneric("densityplot", function(x, data, ...)
+			standardGeneric("densityplot"))

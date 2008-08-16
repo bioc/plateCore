@@ -10,6 +10,7 @@ expr2char <- function(x) paste(deparse(x), collapse = "")
 
 evalInFlowFrame <- function(expr, envir, enclos = baseenv())
 {
+
     expr <- as.expression(expr)
     flowFrame2env <- function(ff)
     {
@@ -20,7 +21,7 @@ evalInFlowFrame <- function(expr, envir, enclos = baseenv())
 
         ffdata <- exprs(ff)
         e <- new.env()
-        cn <- colnames(ff)
+        cn <- colnames(ffdata)
         for (i in seq_along(cn))
         {
             e[[ cn[i] ]] <- ffdata[, i]

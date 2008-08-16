@@ -5,7 +5,7 @@
 # Author: straine
 ###############################################################################
 
-prepanel.xyplot.flowplate <- 
+prepanel.xyplot.flowPlate <- 
 		function(x, 
 				frames, channel.x, channel.y,
 				...)
@@ -23,7 +23,7 @@ prepanel.xyplot.flowplate <-
 	else list()
 }
 
-panel.xyplot.flowplate <-
+panel.xyplot.flowPlate <-
 		function(x, 
 				frames,
 				channel.x, channel.y,
@@ -106,8 +106,8 @@ setMethod("xyplot",
 		signature(x = "formula", data = "flowPlate"),
 		function(x, data, xlab, ylab,
 				as.table = TRUE,
-				prepanel = prepanel.xyplot.flowplate,
-				panel = panel.xyplot.flowplate,
+				prepanel = prepanel.xyplot.flowPlate,
+				panel = panel.xyplot.flowPlate,
 				pch = ".", smooth = TRUE,
 				filter = NULL,
 				filterResults = NULL,

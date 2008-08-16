@@ -1,9 +1,14 @@
-importFrom("flowCore","compensate","Subset","%on%")
-importClassesFrom("flowCore", "flowSet", "filterSet")
+importFrom(flowCore,"compensate","Subset","%on%")
+importClassesFrom(flowCore, "flowSet", "filterSet")
 
-importFrom("flowViz")
+importFrom(lattice,"xyplot","densityplot")
 
-importFrom("Biobase","sampleNames","phenoData")
+importFrom(geneplotter,
+           "smoothScatter",
+           "densCols",
+           "panel.smoothScatter")
+
+importFrom(Biobase,"sampleNames","phenoData")
 
 exportClasses("flowPlate")
 
@@ -11,6 +16,8 @@ exportMethods("compensate","flowPlate","setRange","fixAutoFl","plateSet","phenoD
 	"Subset","%on%","overlay","applyControlGates","summaryStats","sampleNames","fpbind","setControlGates",
 	"plotPlate","gutterPlot","adjustGateLog10","setGate","densityplot","xyplot")
 		
-	
-
-		
+export("panel.densityplot.flowPlate",
+       "prepanel.densityplot.flowPlate", 
+       "prepanel.xyplot.flowPlate",
+       "panel.xyplot.flowPlate")	
+       

@@ -10,7 +10,7 @@
 #
 ##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-prepanel.density.flowPlate <- 
+prepanel.densityplot.flowPlate <- 
 		function(x, frames, channel, 
 				...)
 {
@@ -28,7 +28,7 @@ prepanel.density.flowPlate <-
 
 
 
-panel.density.flowPlate <-
+panel.densityplot.flowPlate <-
 		function(x, 
 				frames, channel, wellAnnotation,
 				groups=NULL,
@@ -64,6 +64,8 @@ panel.density.flowPlate <-
 
 	x <- as.character(x)
 
+
+	
 	for (i in seq_along(x))
 	{
 		nm <- x[i]
@@ -73,7 +75,7 @@ panel.density.flowPlate <-
 				col.line = col.line[i],
 				col = col[i],
 				...)
-#		browser()
+
 		if(!missing(filterResult) && class(filterResult)=="character" && filterResult=="Negative.Control") {
 			panel.abline(v=subset(wellAnnotation,name==nm & Channel==as.character(channel[[1]]))$Negative.Control.Gate)
 			nc <- subset(wellAnnotation,name==nm & Channel==as.character(channel[[1]]))$Negative.Control
@@ -106,8 +108,8 @@ panel.density.flowPlate <-
 setMethod("densityplot",
 		signature(x = "formula", data = "flowPlate"),
  	function(x, data, xlab,
-				prepanel = prepanel.density.flowPlate,
-				panel = panel.density.flowPlate,
+				prepanel = prepanel.densityplot.flowPlate,
+				panel = panel.densityplot.flowPlate,
 				as.table = TRUE,
 				filterResult=NULL,
 				...)
@@ -120,18 +122,20 @@ setMethod("densityplot",
 			ccall <- manipulate.call(ocall, ccall)
 			uniq.name <- createUniqueColumnName(pd)
 			## ugly hack to suppress warnings about coercion introducing NAs
-			pd[[uniq.name]] <- factor(sampleNames(flowData))
+			pd[[uniq.name]] <- factor(sampleNames(data),
+					levels=unique(sampleNames(data))) 
 			channel <- x[[2]]
 			if (length(channel) == 3)
 			{
 				channel <- channel[[2]]
 				x[[2]][[2]] <- as.name(uniq.name)
-			}
-			else x[[2]] <- as.name(uniq.name)
+			} else x[[2]] <- as.name(uniq.name)
 			channel.name <- expr2char(channel)
 			channel <- as.expression(channel)
 			if (missing(xlab)) xlab <- channel.name
 
+#			browser()
+			
 			ccall$x <- x
 			ccall$data <- pd
 			ccall$wellAnnotation <- data@wellAnnotation
