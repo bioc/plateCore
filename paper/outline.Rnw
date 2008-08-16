@@ -154,9 +154,9 @@ Based on this plot wells E03 and F03 were manually checked, but the differences 
 \clearpage
 Once the plate has passed quality control
 checks, the next step is setting the control gate to establish the cutoff between positive and negative cells.
-Ideally this expression threshold would be established by finding the gap known positive and negative samples, but such information is
-usually not available. Instead, the expression cutoff is generally set according to some type of negative control. 
-\Rpackage{plateCore} supports creating thresholds according to either unstained, unstimulated, isotype, 
+Ideally this expression threshold would be established using known positive and negative samples, but such information is
+usually not available. Instead, the expression cutoff is generally set according to negative controls. 
+For example, \Rpackage{plateCore} supports creating thresholds according to either unstained, unstimulated, isotype, 
 or fluorescence minus one (FMO) controls. One-dimensional expression thresholds are initially set using
 the setControlGates function. 
 <<eval=FALSE>>=
