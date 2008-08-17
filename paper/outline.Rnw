@@ -32,19 +32,20 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Abstract}
-\Rpackage{plateCore} is a Bioconductor packaged created to make processing and analysis of large, complex flow datasets
+\Rpackage{plateCore} is a Bioconductor packaged created to make processing and analysis of large, complex flow cytometry (FCM) datasets
 in R easier. High throughput flow studies are often run in a 96 or 384-well plate format, with a number of different samples, 
 controls, and antibodies-dye conjugates present on the plate. Analyzing the output from the cytometer requires keeping track of the contents
 of each well, matching sample wells with control wells, gating each well/channel separately, making the appropriate plots, assessing quality, and
 summarizing the results. \Rpackage{plateCore} extends the \Rpackage{flowCore} and \Rpackage{flowViz} packages to work on
-\Rclass{flowPlate} objects that represent these large flow datasets. For those familiar with \Rpackage{flowCore} and \Rpackage{flowViz}, 
-the gating (filtering), transformation, and other data manipulations for \Rclass{flowPlates} are very similar to \Rclass{flowSets}. 
+\Rclass{flowPlate} objects that represent these large flow datasets. For those familiar with\\
+\Rpackage{flowCore} and \Rpackage{flowViz}, the gating (filtering), transformation, and other data manipulations for \Rclass{flowPlates} 
+are very similar to \Rclass{flowSets}. 
 
 In this document we show how use \Rpackage{plateCore} to analyze a publicly available blood dataset for expression of cell surface markers. 
 This peripheral blood mononucleocyte (PBMC) data was generated using BD FACS\texttrademark CAP screening to look at the expression profiles of 189 
 different human markers (add reference). The raw PBMC data is read into R using \Rpackage{flowCore}, and then the filtering and 
 threshold gating are performed in \Rpackage{plateCore}. The output is the fraction of positive (expressing) cells for
-each marker.
+each marker, which is then compared to results from expert manual analysis.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
@@ -64,21 +65,21 @@ organizing raw flow cytometry data. \Rpackage{flowViz} supports sophisticated vi
 these packages provides a set of freely available, flexible, and computationally efficient FC-HCS tools.
 
 \Rpackage{plateCore} provides a convenient way to manage the sample annotation associated with complex FC-HCS experiments, and
-to access the functionality in other Bioconductor flow packages. Since the layout of FC-HCS plates often changes from experiment
-to experiment, the annotation for each well needs to be customized for each \\
-\Rclass{flowPlate}. \Rpackage{plateCore} uses an approach that is very similar to the cell-based high throughput screening \Rpackage{cellHTS2} package,
+to access the functionality in other Bioconductor flow packages. 
+The progression from raw FCM data files to a completed \Rpackage{plateCore} analysis is shown in Figure~\ref{fig:analysis}.
+Since the layout of FC-HCS plates often changes from experiment
+to experiment, the annotation for each well needs to be customized for each
+\Rclass{flowPlate}. \Rpackage{plateCore} uses an approach that is very similar to the cell-based high throughput screening \Rpackage{cellHTS2} package (insert ref),
 where users must provide a \textit{plate configuration} file for each dataset. Once the cell level data has
 been analyzed in \Rpackage{plateCore}, the summary well information (i.e., percentage of positive cells and median
 signal intensities) can be imported into tools like \Rpackage{cellHTS2}, since FC-HCS experiments are just one 
 type of cell-based high throughput screens.
 
-The progression from raw FCM data files to a completed \Rpackage{plateCore} analysis is shown in Figure~\ref{fig:analysis}.
-
 
 \begin{figure}
 \centering
-\includegraphics{analysisSteps.pdf}
-\caption{Typical plateCore analysis on the left, and examples of each step from a sample analysis are shown on the right.
+\includegraphics[width=7in,height=6in]{analysisSteps.pdf}
+\caption{Typical plateCore workflow on the left, and examples of each step from a sample analysis are shown on the right.
 Generating reports and plots is a multi-step that typically involves merging output from several plates, and the required
 code is not shown here.
 If necessary, the threshold control gates created automatically from setControlGates are adjusted based on input from flow experts. 
@@ -107,7 +108,8 @@ will be selected using a forward (FSC) and side-scatter (SSC) morphology gate (F
 The \textit{Subset} function is used to select cells inside a rectangular gate, which separates the lymphocytes
 from the monocytes, red blood cells, and debris.
 <<eval=FALSE>>=
-platePBMC <- Subset(platePBMCraw, rectangleGate("FSC-H"=c(300,700),"SSC-H"=c(50,400)))	
+platePBMC <- Subset(platePBMCraw,
+		rectangleGate("FSC-H"=c(300,700),"SSC-H"=c(50,400)))	
 @
 
 After the lymphocytes have been filtered, the plate is then checked for fluidic events.
@@ -130,7 +132,7 @@ pbmcFP <- flowPlate(pbmcPlate,wellAnnotation,plateName="PBMC.001")
 print(xyplot(`SSC-H` ~ `FSC-H` | as.factor(name), plateSet(pbmcFP)[1], smooth=TRUE,
 		filter=rectangleGate("FSC-H"=c(300,600),"SSC-H"=c(50,400)) ))
 @
-\caption{rectangleGate used to select lymphocytes from PBMC data.}
+\caption{A \Rpackage{flowCore} rectangleGate used to select lymphocytes from PBMC data. The gate is displayed using the xyplot function from \Rpackage{flowViz}}
 \label{fig:morphGate}
 \end{figure}
 
@@ -163,7 +165,9 @@ the setControlGates function.
 platePBMC <- setControlGates(platePBMC,gateType="Negative.Control",numMads=6)
 @
 The "numMads" parameter sets the value of the control gate at 6 median absolute deviations (MADs) above 
-the media fluorescence intensity (MFI) the control gate. \Rpackage{flowCore} and \Rpackage{flowClust} potentially offer
+the media fluorescence intensity (MFI) the control gate. The resulting gate for isotype well A03 and its
+associated test wells is shown in Figure~\ref{fig:isoGate}.
+\Rpackage{flowCore} and \Rpackage{flowClust} potentially offer
 more robust methods of establishing this threshold using kernel density approaches, but setting the
 gate at 3 to 6 MADs on linear scale signals often works well in practice for screening quality experiments.
 
@@ -193,22 +197,43 @@ platePBMC <- summaryStats(pbmcFP2)
 wells <- unique(subset(pbmcFP2@wellAnnotation,Negative.Control=="A03")$Well.Id)
 print(densityplot(~ `FL1-H` | as.factor(Well.Id),transform("FL1-H"=log10) %on% pbmcFP2[wells],filterResult="Negative.Control"))
 @
-\caption{Density plots for one isotype and the associated test wells. Isotype results are shown in magenta while the test samples
-are in blue. The vertical bar indicates the negative control gate, estimated using the setControlGates function with numMads=6.}
+\caption{Density plots for the A03 isotype well and the associated test wells. Isotype results are shown in magenta while the test samples
+are in blue. The vertical bar indicates the negative control gate, estimated using the setControlGates function with numMads=6. This
+plot was created using the densityplot function specific to \Robject{flowPlates} from \Rpackage{plateCore}.}
 \label{fig:isoGate}
 \end{figure}
 
 \clearpage
 The wellAnnotation \Robject{data.frame} associated with each analyzed \Robject{flowPlate} can then be exported from R for
-use in other programs. The first few rows from the PBMC plate analyzed in this analysis are shown below.
+use in other programs. Sample output for well B10 in this analysis is given in Table~\ref{tab:wellAnno}. Threshold
+gates created using the isotype control wells are included in the \emph{Negative.Control.Gate} column, allowing the gating to be replicated on other
+software platforms.
 
-
-<<wellAnnotation>>=
-head(wellAnnotation(platePBMC))
-@
-
-
-
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{r|ccc}
+  \hline
+Column & B10 FL2-H &  B10 FL1-H & B10 FL4-H \\
+    \hline
+  Well.Id & B10 & B10 & B10 \\
+  Sample.Type & Test & Test & Test \\
+  Ab.Name & Cdbd28 & Cdbd29 & Cdbd30 \\
+  Channel & FL2-H & FL1-H & FL4-H \\
+  Negative.Control & A03 & A03 & A03 \\
+  plateName & PBMC.001 & PBMC.001 & PBMC.001 \\
+  name & 0877408774.B10 & 0877408774.B10 & 0877408774.B10 \\
+  Negative.Control.Gate & 24 & 23 & 68 \\
+  Percent.Positive &  1 & 15 &  0 \\
+  Total.Count & 7598 & 7598 & 7598 \\
+  Positive.Count &   58 & 1187 &    6 \\
+  MFI &  4.0 &  8.2 & 11.8 \\
+  MFI.Ratio & 0.64 & 1.14 & 0.78 \\
+   \hline
+\end{tabular}
+\caption{Output for well B10 from the wellAnnotation \Robject{data.frame} associated with the PBMC \Robject{flowPlate}.}
+\label{tab:wellAnno}
+\end{center}
+\end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
@@ -263,6 +288,31 @@ test wells are in magenta.}
 \label{fig:pbmcCDbd69}
 \end{figure}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\section{Comparison to Manual Analysis}
+
+
+
+\begin{figure}
+\centering
+<<label=pcVSman,fig=TRUE,echo=FALSE>>=
+
+
+wellDf <- subset(wellAnnotation(platePBMC),Sample.Type=="Test")
+
+tempY <- jitter(as.numeric(wellDf$Percent.Positive),factor=10000)
+tempY[tempY>100]=100
+tempY[tempY<0]=0
+
+
+plot(wellDf$Percent.Positive,tempY,type="n",xlab="plateCore Results",ylab="Manual Analysis")
+text(wellDf$Percent.Positive,tempY,wellDf$Ab.Name)
+abline(0,1,col='red')
+@
+\caption{Percent positive results for 189 markers analyzed using either \Rpackage{plateCore} or manually using FlowJo$^{\text{TM}}$}
+\label{fig:pcVSman}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
