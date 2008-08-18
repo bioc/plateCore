@@ -4,7 +4,7 @@
 \usepackage[authoryear,round]{natbib}
 \usepackage{hyperref}
 
-\SweaveOpts{keep.source=TRUE}
+
 
 \textwidth=6.2in
 \textheight=8.5in
@@ -25,6 +25,7 @@
 \title{Outline: Analysis of High Throughput Flow Cytometry Data using \Rpackage{plateCore}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{/usr/local/lib/R/share/texmf/Sweave}
 \begin{document}
 \maketitle
 
@@ -107,10 +108,12 @@ the cytometer, so there is no need to correct for spillover in R. This analysis 
 will be selected using a forward (FSC) and side-scatter (SSC) morphology gate (Figure ~\ref{fig:morphGate}).
 The \textit{Subset} function is used to select cells inside a rectangular gate, which separates the lymphocytes
 from the monocytes, red blood cells, and debris.
-<<eval=FALSE>>=
-platePBMC <- Subset(platePBMCraw,
-		rectangleGate("FSC-H"=c(300,700),"SSC-H"=c(50,400)))	
-@
+\begin{Schunk}
+\begin{Sinput}
+> platePBMC <- Subset(platePBMCraw,
++ 		rectangleGate("FSC-H"=c(300,700),"SSC-H"=c(50,400)))	
+\end{Sinput}
+\end{Schunk}
 
 After the lymphocytes have been filtered, the plate is then checked for fluidic events.
 These fluidic events can cause a temporary shift in the cytometer detector readings, and affected wells need
@@ -123,30 +126,14 @@ values for each well, and looking for distributions shifted relative to other we
 
 \begin{figure}
 \centering
-<<label=morphGate, fig=TRUE, echo=FALSE, results=hide>>=
-library(flowCore)
-library(flowViz)
-library(plateCore)
-data(plateCore)
-pbmcFP <- flowPlate(pbmcPlate,wellAnnotation,plateName="PBMC.001")
-print(xyplot(`SSC-H` ~ `FSC-H` | as.factor(name), plateSet(pbmcFP)[1], smooth=TRUE,
-		filter=rectangleGate("FSC-H"=c(300,600),"SSC-H"=c(50,400)) ))
-@
+\includegraphics{outline-morphGate}
 \caption{A \Rpackage{flowCore} rectangleGate used to select lymphocytes from PBMC data. The gate is displayed using the xyplot function from \Rpackage{flowViz}}
 \label{fig:morphGate}
 \end{figure}
 
 \begin{figure}
 \centering
-<<label=fluidic, fig=TRUE, echo=FALSE, results=hide>>=
-pbmcFP2 <- Subset(pbmcFP, rectangleGate("FSC-H"=c(300,700),"SSC-H"=c(50,400)))	
-
-col2 = c("darkseagreen","red","royalblue","brown","orange","turquoise", "orchid","yellow","black","green","darkred","lightblue")
-groups2 = c(1:12)
-print(ecdfplot(~`FSC-H`|as.factor(Row.Id),plateSet(pbmcFP),col=col2,lty=c(rep(1,6),rep(2,6)),
-				key = list(lines=list(col=col2), lty=c(rep(1,6),rep(2,6)), cex=1, text =list(as.character(groups2)), columns = 4, title="")))	
-
-@
+\includegraphics{outline-fluidic}
 \caption{Empirical cumulative distribution function (ecdf) plots of FSC-H values for Rows A thru H. There are 12 columns in each row.
 Fluidic events will often show up as a shift in the distribution of FSC-H values. 
 Based on this plot wells E03 and F03 were manually checked, but the differences were not large enough to change fluorescence values.}
@@ -161,9 +148,11 @@ usually not available. Instead, the expression cutoff is generally set according
 For example, \Rpackage{plateCore} supports creating thresholds according to either unstained, unstimulated, isotype, 
 or fluorescence minus one (FMO) controls. One-dimensional expression thresholds are initially set using
 the setControlGates function. 
-<<eval=FALSE>>=
-platePBMC <- setControlGates(platePBMC,gateType="Negative.Control",numMads=6)
-@
+\begin{Schunk}
+\begin{Sinput}
+> platePBMC <- setControlGates(platePBMC,gateType="Negative.Control",numMads=6)
+\end{Sinput}
+\end{Schunk}
 The "numMads" parameter sets the value of the control gate at 6 median absolute deviations (MADs) above 
 the media fluorescence intensity (MFI) the control gate. The resulting gate for isotype well A03 and its
 associated test wells is shown in Figure~\ref{fig:isoGate}.
@@ -173,10 +162,12 @@ gate at 3 to 6 MADs on linear scale signals often works well in practice for scr
 
 Once the Negative.Control gates have been created and applied, we can then use the \Rfunction{summaryStats} to calculate different
 metrics of interest from the \Rclass{flowPlate}. Running \Rfunction{applyControlGates} and \Rfunction{summaryStats} on \Robject{platePBMC}, 
-<<eval=FALSE>>=
-platePBMC <- applyControlGates(platePBMC)
-platePBMC <- summaryStats(platePBMC)
-@
+\begin{Schunk}
+\begin{Sinput}
+> platePBMC <- applyControlGates(platePBMC)
+> platePBMC <- summaryStats(platePBMC)
+\end{Sinput}
+\end{Schunk}
 will result in additional columns created in the \Robject{wellAnnotation} object associated with this
 particular \Robject{flowPlate}.  
 These new columns include percentage of cells above the Negative.Control gate (Percent.Positive),
@@ -185,18 +176,10 @@ the median fluorescence intensity (MFI), and the ratio of the test well MFI to t
 control well (MFI.Ratio). In this PMBC example a number of the samples are heterogeneous, so the MFI and MFI.Ratio
 may not be helpful since they are based on all the cells in a well, and not just the positive cells.
 
-<<echo=FALSE,results=hide>>=
-pbmcFP2 <- setControlGates(pbmcFP2,gateType="Negative.Control",numMads=5)
-pbmcFP2 <- applyControlGates(pbmcFP2)
-platePBMC <- summaryStats(pbmcFP2)
-@
 
 \begin{figure}
 \centering
-<<label=isoGate, fig=TRUE, echo=FALSE, results=hide>>=
-wells <- unique(subset(pbmcFP2@wellAnnotation,Negative.Control=="A03")$Well.Id)
-print(densityplot(~ `FL1-H` | as.factor(Well.Id),transform("FL1-H"=log10) %on% pbmcFP2[wells],filterResult="Negative.Control"))
-@
+\includegraphics{outline-isoGate}
 \caption{Density plots for the A03 isotype well and the associated test wells. Isotype results are shown in magenta while the test samples
 are in blue. The vertical bar indicates the negative control gate, estimated using the setControlGates function with numMads=6. This
 plot was created using the densityplot function specific to \Robject{flowPlates} from \Rpackage{plateCore}.}
@@ -249,29 +232,23 @@ Once a marker of interest has been identified, the next step is usually to make 
 plate. Although these plots can be created individually, it is more convenient to have a combined data object so that results 
 from multiple \Robject{flowPlates} can be quickly summarized. \Rpackage{plateCore} supports combining \Robject{flowPlates} using
 the \Rfunction{fpbind} function. 
-<<eval=FALSE>>=
-virtPlate <- fpbind(plate1,plate2,plate3,plate4,plate5)
-@
+\begin{Schunk}
+\begin{Sinput}
+> virtPlate <- fpbind(plate1,plate2,plate3,plate4,plate5)
+\end{Sinput}
+\end{Schunk}
 This virtual plate can then be used to make histograms for particular markers, such as CDbd69 which showed variable levels of
 expression between the different donors (Figure~\ref{fig:pbmcCDbd69}). 
-<<eval=FALSE>>=
-densityplot(~ `FL2-H` | as.factor(plateName),
-	virtPlate,filterResult="Negative.Control")
-@
+\begin{Schunk}
+\begin{Sinput}
+> densityplot(~ `FL2-H` | as.factor(plateName),
++ 	virtPlate,filterResult="Negative.Control")
+\end{Sinput}
+\end{Schunk}
 
 \begin{figure}
 \centering
-<<label=pbmcHeat,fig=TRUE,echo=FALSE>>=
-library(gplots)
-temp <- read.delim("ppExp.csv",stringsAsFactors=FALSE,header=TRUE)
-rownames(temp) <- temp[,1]
-temp <- temp[,-1]
-
-mapcol <- rev(heat.colors(10))
-b <- seq(0,100,by=10)
-#heatmap.2(as.matrix(temp),col=mapcol,breaks=b,scale='none',trace='none',cexRow=0.3)
-heatmap.2(as.matrix(temp),col=redgreen(10),breaks=b,scale='none',trace='none',cexRow=0.3)
-@
+\includegraphics{outline-pbmcHeat}
 \caption{Heatmap showing the percentage of positive cells from the 5 different PBMC lymphocyte plates. Only the 83 markers
 that had $\ge$ 10\% positive cells are shown here.}
 \label{fig:pbmcHeat}
@@ -279,21 +256,7 @@ that had $\ge$ 10\% positive cells are shown here.}
 
 \begin{figure}
 \centering
-<<label=pbmcCDbd69,fig=TRUE,echo=FALSE>>=
-
-fileNames <- list.files("../../publicationPlateCore/pbmcRData",full.names=TRUE)
-
-plates <- lapply(fileNames,function(x){
-			load(x)
-			platePBMC[c("A03","B06")]
-		})
-
-virtPlate <- fpbind(plates[[1]],plates[[2]],plates[[3]],plates[[4]],plates[[5]])
-
-
-print(densityplot(~ `FL2-H` | as.factor(plateName), transform("FL2-H"=log10) %on% virtPlate,filterResult="Negative.Control"))
-
-@
+\includegraphics{outline-pbmcCDbd69}
 \caption{Dotplots for CDbd69, which is differentially expressed between the 5 PBMC plates. Isotypes are shown in green and
 test wells are in magenta.}
 \label{fig:pbmcCDbd69}
@@ -311,20 +274,7 @@ gates based on positive and negative test samples. Figure~\ref{} shows how the r
 
 \begin{figure}
 \centering
-<<label=pcVSman,fig=TRUE,echo=FALSE>>=
-
-
-wellDf <- subset(wellAnnotation(platePBMC),Sample.Type=="Test")
-
-tempY <- jitter(as.numeric(wellDf$Percent.Positive),factor=10000)
-tempY[tempY>100]=100
-tempY[tempY<0]=0
-
-
-plot(wellDf$Percent.Positive,tempY,type="n",xlab="plateCore Results",ylab="Manual Analysis")
-text(wellDf$Percent.Positive,tempY,wellDf$Ab.Name)
-abline(0,1,col='red')
-@
+\includegraphics{outline-pcVSman}
 \caption{Percent positive results for 189 markers analyzed using either \Rpackage{plateCore} or manually using FlowJo$^{\text{TM}}$.}
 \label{fig:pcVSman}
 \end{figure}
