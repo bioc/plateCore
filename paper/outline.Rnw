@@ -313,7 +313,7 @@ test wells are in magenta.}
 \clearpage
 \section{Comparison to Manual Analysis}
 
-The 5 pmbc plates were also analyzed using FlowJo$^{\text{TM}}$, which is one of more popular FCM data analysis programs.
+The 5 pmbc plates were also analyzed using FlowJo$^{\text{TM}}$, which is one of the standard FCM data analysis platforms.
 BD FACS$^{\text{TM}}$ CAP is designed as a screening tool to help identify markers for additional analysis. Since it is 
 not practical to have controls specific to each of the 189 antibody-dye conjugates, isotypes were chosen according to the
 most common antibody subtypes. Cytometry experts initially set gates according to the isotype controls, and then move the
@@ -335,7 +335,8 @@ plot(wellDf$Percent.Positive,tempY,type="n",xlab="plateCore Results",ylab="Manua
 text(wellDf$Percent.Positive,tempY,wellDf$Ab.Name)
 abline(0,1,col='red')
 @
-\caption{Percent positive results for 189 markers analyzed using either \Rpackage{plateCore} or manually using FlowJo$^{\text{TM}}$.}
+\caption{Percent positive results for 189 markers analyzed using either \Rpackage{plateCore} or manually using FlowJo$^{\text{TM}}$. (Note: Need to get real
+data in this plot)}
 \label{fig:pcVSman}
 \end{figure}
 
