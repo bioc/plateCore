@@ -44,7 +44,7 @@ are very similar to \Rclass{flowSets}.
 In this document we show how use \Rpackage{plateCore} to analyze a publicly available blood dataset for expression of cell surface markers. 
 This peripheral blood mononucleocyte (PBMC) data was generated using BD FACS\texttrademark CAP screening to look at the expression profiles of 189 
 different human markers (add reference). The raw PBMC data is read into R using \Rpackage{flowCore}, and then the filtering and 
-threshold gating are performed in \Rpackage{plateCore}. The output is the fraction of positive (expressing) cells for
+threshold gating are performed in \Rpackage{plateCore}. The output is the fraction of positive, or expressing, cells for
 each marker, which is then compared to results from expert manual analysis.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -82,15 +82,15 @@ type of cell-based high throughput screens.
 \caption{Typical plateCore workflow on the left, and examples of each step from a sample analysis are shown on the right.
 Generating reports and plots is a multi-step that typically involves merging output from several plates, and the required
 code is not shown here.
-If necessary, the threshold control gates created automatically from setControlGates are adjusted based on input from flow experts. 
-These new gates are established based on the gap between negative control wells and positive test samples, whereas the automated
+If necessary, the threshold control gates created automatically from \Rfunction{setControlGates} are adjusted based on input from flow experts. 
+These new gates are established based on the gap between negative and positive test samples, whereas the automated
 control gates were set using only negative control wells.}
 \label{fig:analysis}
 \end{figure}
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
-\section{Example Data}
+\section{Data}
 The PBMC dataset used in this example is available for download from ficcs.org as the "plateData.tar.gz" file. The data consists
 of 5 different peripheral blood mononucleocyte (PBMC) samples that were analyzed with 189 different antibodies on 96-well plates. Each plate has a set of
 unstained, isotype, and control wells. Antibodies and isotype controls are arrayed 3 per well, and the data was compensated
@@ -101,12 +101,21 @@ I'm cautiously optimistic that we will be able to release more information about
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Analysis}
-FCS files for each plate are imported in R using \Rpackage{flowCore}, and a \Robject{flowPlate} named platePBMCraw is created by integrating
-the \textit{plate configuration} with the \Robject{flowSet}. The data in this experiment has already been compensated on
-the cytometer, so there is no need to correct for spillover in R. This analysis will focus on lymphoctyes, which
-will be selected using a forward (FSC) and side-scatter (SSC) morphology gate (Figure ~\ref{fig:morphGate}).
-The \textit{Subset} function is used to select cells inside a rectangular gate, which separates the lymphocytes
-from the monocytes, red blood cells, and debris.
+
+The goal of the PBMC FACS\texttrademark CAP study was to find the percentage of positive lymphocytes for each of the 189 different cell
+surface markers. The raw data consists of signals from a PBMC preparation, including lymphocytes, monocytes, red blood cells, and cellular 
+debris. The first step is to filter the lymphocytes using a morphology gate in the forward (FSC) and side-scatter (SSC) channels. 
+The quality of the data is then assessed by looking for fluidic events and making sure there are a sufficient number of cells in each
+sample. Next the threshold between positive and negative cells are determined using the isoytpe controls, which provide a gross estimate
+of non-specific binding in the primary antibodies. One-dimensional gates are created using using the isotype thresholds, and these
+gates are applied to identify cells that are positively stained for each marker. An example of the code used to analyze an individual
+plate is provided in this section.  The parameter settings for the other 4 plates are identical to the values shown here.
+
+Ninety-six Flow Cytometry Standard (FCS) files, one for each well, are imported in R using \Rpackage{flowCore} to create a \Robject{flowSet}.
+A \Robject{flowPlate} named platePBMCraw is then constructed by integrating the \textit{plate configuration} with the \Robject{flowSet}. 
+The raw data is then visualized using \Rpackage{flowViz}, and a FSC-SSC \Robject{rectangleGate} is used to select lymphocytes (Figure ~\ref{fig:morphGate}).
+
+
 <<eval=FALSE>>=
 platePBMC <- Subset(platePBMCraw,
 		rectangleGate("FSC-H"=c(300,700),"SSC-H"=c(50,400)))	
@@ -241,7 +250,7 @@ Column & B10 FL2-H &  B10 FL1-H & B10 FL4-H \\
 
 FCM files from 5 PBMC plates that had been analyzed using BD FACS$^{\text{TM}}$ CAP were processed using the method
 described in the analysis section. The resulting \Robject{flowPlates} were stored in \emph{RData} files so that individual plots
-can be made without rerunning the analysis. The \Robject{wellAnnotation} for each \Robject[flowPlate} was then merged
+can be made without rerunning the analysis. The \Robject{wellAnnotation} for each \Robject{flowPlate} was then merged
 into a single \Robject{data.frame}, containing the percent positive results from each plate. These values can then visualized
 using microarray tools in R (Figure~\ref{fig:pbmcHeat}). 
 
@@ -307,7 +316,7 @@ The 5 pmbc plates were also analyzed using FlowJo$^{\text{TM}}$, which is one of
 BD FACS$^{\text{TM}}$ CAP is designed as a screening tool to help identify markers for additional analysis. Since it is 
 not practical to have controls specific to each of the 189 antibody-dye conjugates, isotypes were chosen according to the
 most common antibody subtypes. Cytometry experts initially set gates according to the isotype controls, and then move the
-gates based on positive and negative test samples. Figure~\ref{} shows how the results from FlowJo$^{\text{TM}}$ compare to \Rpackage{plateCore}.
+gates based on positive and negative test samples. Figure~\ref{fig:pcVSman} shows how the results from FlowJo$^{\text{TM}}$ compare to \Rpackage{plateCore}.
 
 \begin{figure}
 \centering
@@ -359,5 +368,6 @@ Using flowViz/Core graphical output for quality assessment\\
 \item Analysis of flow cytometry data using an automatic processing tool, Cytometry Part A\\
 Automated analysis in Matlab.\\
 \end{itemize}
+
 
 \end{document}
