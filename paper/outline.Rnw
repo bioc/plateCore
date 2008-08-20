@@ -103,7 +103,7 @@ I'm cautiously optimistic that we will be able to release more information about
 \section{Analysis}
 
 The goal of the PBMC FACS\texttrademark CAP study was to find the percentage of positive lymphocytes for each of the 189 different cell
-surface markers. The raw data consists of signals from a PBMC preparation, including lymphocytes, monocytes, red blood cells, and cellular 
+surface markers. The raw data consists of a PBMC preparation, including lymphocytes, monocytes, red blood cells, and cellular 
 debris. The first step is to filter the lymphocytes using a morphology gate in the forward (FSC) and side-scatter (SSC) channels. 
 The quality of the data is then assessed by looking for fluidic events and making sure there are a sufficient number of cells in each
 sample. Next the threshold between positive and negative cells are determined using the isoytpe controls, which provide a gross estimate
@@ -114,21 +114,22 @@ plate is provided in this section.  The parameter settings for the other 4 plate
 Ninety-six Flow Cytometry Standard (FCS) files, one for each well, are imported in R using \Rpackage{flowCore} to create a \Robject{flowSet}.
 A \Robject{flowPlate} named platePBMCraw is then constructed by integrating the \textit{plate configuration} with the \Robject{flowSet}. 
 The raw data is then visualized using \Rpackage{flowViz}, and a FSC-SSC \Robject{rectangleGate} is used to select lymphocytes (Figure ~\ref{fig:morphGate}).
-
-
+A new \Robject{flowPlate} containing cells inside the \Robject{rectangleGate} is then made using \Rfunction{Subset}.
 <<eval=FALSE>>=
 platePBMC <- Subset(platePBMCraw,
 		rectangleGate("FSC-H"=c(300,700),"SSC-H"=c(50,400)))	
 @
 
-After the lymphocytes have been filtered, the plate is then checked for fluidic events.
-These fluidic events can cause a temporary shift in the cytometer detector readings, and affected wells need
-to be identified and either corrected or removed from the analysis. The \Rfunction{qaProcess.timeline} from
-the \Rpackage{flowQ} package can be used to search for fluidic events in \Rclass{flowSets} by looking for shifts in specific channels over time that
-are above some predetermined threshold. Fluidic events can also often be identified by plotting the emprical cumulative density plots of FSC
-values for each well, and looking for distributions shifted relative to other wells (Figure ~\ref{fig:fluidic}).
-
-
+Quality control and quality assessment for large flow experiments is potentially more complex than the analysis itself. In this study, 
+it would be desirable to verify that the 189 antibody-dye conjugates and their associated controls were aliquoted correctly into the correct wells, 
+that the cytometer setting were not changed between plates, and that there were no fluidic events or shifts in fluorescent signals. Sophisticated tools for creating
+quality reports for \Robject{flowSets} are available in \Rpackage{flowQ}, and the quality check functions can be customized for specific analyses.
+Quality assessment in this example will focus on checking for fluidic events, which 
+can cause a temporary shift in the cytometer detector readings.  Affected wells need
+to be identified and either corrected or removed from the analysis. 
+Fluidic events can often be identified by plotting the emprical cumulative density (ecdf) plots of FSC
+values for each well, and looking for distributions shifted relative to other wells (Figure ~\ref{fig:fluidic}). Based on the ecdf
+plots, several wells were further investigated by cytometry experts who determined that the shifts were in an acceptable range.
 
 \begin{figure}
 \centering
@@ -174,11 +175,11 @@ the setControlGates function.
 platePBMC <- setControlGates(platePBMC,gateType="Negative.Control",numMads=6)
 @
 The "numMads" parameter sets the value of the control gate at 6 median absolute deviations (MADs) above 
-the media fluorescence intensity (MFI) the control gate. The resulting gate for isotype well A03 and its
+the media fluorescence intensity (MFI) the control gate. An example of the isotype gating results for the isoytpe well A03 and its
 associated test wells is shown in Figure~\ref{fig:isoGate}.
 \Rpackage{flowCore} and \Rpackage{flowClust} potentially offer
 more robust methods of establishing this threshold using kernel density approaches, but setting the
-gate at 3 to 6 MADs on linear scale signals often works well in practice for screening quality experiments.
+gate at 3 to 6 MADs on a linear scale (non-transformed) often works well in practice for screening quality experiments.
 
 Once the Negative.Control gates have been created and applied, we can then use the \Rfunction{summaryStats} to calculate different
 metrics of interest from the \Rclass{flowPlate}. Running \Rfunction{applyControlGates} and \Rfunction{summaryStats} on \Robject{platePBMC}, 
@@ -191,8 +192,8 @@ particular \Robject{flowPlate}.
 These new columns include percentage of cells above the Negative.Control gate (Percent.Positive),
 the number of cells in the raw data (Total.Events), the number of positive cells (Positive Count),
 the median fluorescence intensity (MFI), and the ratio of the test well MFI to the MFI of the negative
-control well (MFI.Ratio). In this PMBC example a number of the samples are heterogeneous, so the MFI and MFI.Ratio
-may not be helpful since they are based on all the cells in a well, and not just the positive cells.
+control well (MFI.Ratio). In this PMBC example a number of the markers are heterogeneous, so the MFI and MFI.Ratio
+may not be helpful since they are based on all the cells in a well.
 
 <<echo=FALSE,results=hide>>=
 pbmcFP2 <- setControlGates(pbmcFP2,gateType="Negative.Control",numMads=5)
