@@ -332,6 +332,14 @@ setMethod("applyControlGates", signature("flowPlate"), function(data,gateType="N
 		if(gateType %in% c("Isogate","Negative.Control")) {
 			## First get the control gate for each of the isotype groups.	
 			wa <- data@wellAnnotation 
+			
+			##If any applyControlGate or summaryStats columns already exist, get rid of them
+			newNames <- c('Percent.Positive','Total.Count','Positive.Count','MFI','MFI.Ratio')
+			if(any(newNames %in% colnames(wa))) {
+				keepCols <- which(!colnames(wa) %in% newNames)
+				wa <- wa[,keepCols]
+			}
+			
 			wa$Percent.Positive <- apply(data@wellAnnotation,1,function(x) {
 					thresh <- as.numeric(x[["Negative.Control.Gate"]])	
 					chan <- x[["Channel"]]
