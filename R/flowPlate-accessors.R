@@ -111,10 +111,10 @@ setMethod("getGroups",signature("flowPlate"),function(data,type="Negative.Contro
 })
 
 
-#########################################################
+##########################################################################
 ## This is used to transform the flowSet and  the isotype gates.  Other types
 ## of gates should be included later. 
-#########################################################
+##############################################################################
 setMethod("%on%",signature(e2="flowPlate"),function(e1,e2) {
 		
 		if("Negative.Control.Gate" %in% colnames(e2@wellAnnotation)) {
@@ -381,7 +381,7 @@ setMethod("applyControlGates", signature("flowPlate"), function(data,gateType="N
 	})
 
 ##############################
-## Some convenience functions
+## Some convenience functions, primarily just wrappers to flowCore 
 ##############################
 
 setMethod("phenoData","flowPlate",function(object) {
@@ -392,10 +392,39 @@ setMethod("plateSet","flowPlate",function(fp,...) {
 		 return(fp@plateSet)
 		})
 
-setMethod("Subset","flowPlate",function(x,subset,...) {
-			x@plateSet <- Subset(x@plateSet,subset)
-			x
-		})
+setMethod("Subset","flowPlate",function(x,subset,i=NULL,...) {
+#	browser()
+	if(is.null(i)) {
+		x@plateSet <- Subset(x@plateSet,subset)
+	} else {
+		i <- unlist(i)
+		copy = i[i %in% sampleNames(x)]
+		if(length(copy) != length(i)) copy <- c(copy,sampleNames(x)[pData(phenoData(x@plateSet))[,"Well.Id"] %in% i[!(i %in% sampleNames(x))]])
+		
+		temp <- x@plateSet@frames
+		
+		frames <- lapply(ls(temp),function(fileName) {
+					well <- pData(phenoData(x@plateSet))[fileName,]		
+					
+					if(fileName %in% copy) {
+						Subset(temp[[fileName]],subset)		
+					} else {
+						temp[[fileName]]
+					}								
+				})
+		
+		names(frames) <- ls(temp)	
+		
+		config <- makePlateLayout(x@wellAnnotation)
+		
+		plateSet <- flowPhenoMerge(as(frames,"flowSet"),config)
+		
+		x@plateSet <- plateSet
+	}	
+	
+	return(x)
+
+})
 
 setMethod("sampleNames","flowPlate",function(object) {
 			sampleNames(phenoData(object@plateSet))
@@ -405,9 +434,9 @@ setMethod("wellAnnotation","flowPlate",function(fp,...) {
 			return(fp@wellAnnotation)
 		})
 
-####################################
+#############################################################
 ## subsetting methods
-####################################
+#############################################################
 setMethod("[",c("flowPlate"),function(x,i,j,...,drop=FALSE) {
 		if(missing(drop)) drop = FALSE
 		if(missing(i)) return(x)

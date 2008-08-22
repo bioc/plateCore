@@ -134,7 +134,6 @@ setMethod("densityplot",
 			channel <- as.expression(channel)
 			if (missing(xlab)) xlab <- channel.name
 
-#			browser()
 			
 			ccall$x <- x
 			ccall$data <- pd

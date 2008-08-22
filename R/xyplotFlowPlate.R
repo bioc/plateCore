@@ -39,8 +39,6 @@ panel.xyplot.flowPlate <-
 	
 	superpose.symbol <- trellis.par.get("superpose.symbol")
 	
-#	browser()
-	
 	x <- as.character(x)
 	if (length(x) > 1) stop("must have only one flow frame per panel")
 	if (length(x) < 1) return()
@@ -62,7 +60,6 @@ panel.xyplot.flowPlate <-
 	if(!is.null(groups)) nx <- length(unique(groups))+1 
 
 	col <- rep(col, length = nx)
-#	browser()
 	
 	if (smooth) {
 		panel.smoothScatter(xx, yy, ...)
