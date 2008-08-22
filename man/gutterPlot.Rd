@@ -8,7 +8,7 @@
   a problem with the sample.
 }
 \usage{
-gutterPlot(fp, chans = c("FSC.H", "SSC.H", "FL1.H", "FL2.H", "FL3.H", "FL4.H"), ...)
+gutterPlot(fp, chans = c("FSC-H", "SSC-H", "FL1-H", "FL2-H", "FL3-H", "FL4-H"), ...)
 }
 
 \arguments{

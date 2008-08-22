@@ -13,7 +13,7 @@ importFrom(Biobase,"sampleNames","phenoData")
 exportClasses("flowPlate")
 
 exportMethods("compensate","flowPlate","setRange","fixAutoFl","plateSet","phenoData","getGroups","wellAnnotation",
-	"Subset","%on%","overlay","applyControlGates","summaryStats","sampleNames","fpbind","setControlGates",
+	"Subset","%on%","applyControlGates","summaryStats","sampleNames","fpbind","setControlGates",
 	"plotPlate","gutterPlot","adjustGateLog10","setGate","densityplot","xyplot")
 		
 export("panel.densityplot.flowPlate",

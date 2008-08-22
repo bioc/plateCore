@@ -1,0 +1,4 @@
+1) Add Subset help page, added "i" to only Subset on some of the samples, since flowCore only allows for a list of filters that has 
+same length as the flowSet.
+2) Add help pages for xyplot and densityplot for flowPlates.
+3) Make overlays work for xyplot (allow for more than one frame per channel, like densityplot)

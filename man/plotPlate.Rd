@@ -12,7 +12,7 @@ plotPlate(fp, x = NA, method = "median", main, col, values, width = 1, na.action
 \arguments{
   \item{fp}{ A \code{flowPlate}. }
   \item{x}{ A \code{character} indicating the variable of interest.  Valid choices are 
-  "events", any single channel name (e.g. FSC.H, SSC.H, FL1.H, etc.), or vector of channel names
+  "events", any single channel name (e.g. FSC-H, SSC-H, FL1-H, etc.), or vector of channel names
    if the method is mahalanobis. }
   \item{method}{ Valid choices are mean, median, sd, mad, mahalanobis, or one of the numeric columns in the 
    wellAnnotation data.frame (e.g. Percent.Positive, Positive.Count, MFI, MFI.Ratio) }
