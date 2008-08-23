@@ -30,22 +30,27 @@
 
 \tableofcontents
 
+\clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Abstract}
-\Rpackage{plateCore} is a Bioconductor packaged created to make processing and analysis of large, complex flow cytometry (FCM) datasets
-in R easier. High throughput flow studies are often run in a 96 or 384-well plate format, with a number of different samples, 
+\subsection{Background}
+High throughput flow studies are often run in a 96 or 384-well plate format, with a number of different samples, 
 controls, and antibodies-dye conjugates present on the plate. Analyzing the output from the cytometer requires keeping track of the contents
 of each well, matching sample wells with control wells, gating each well/channel separately, making the appropriate plots, assessing quality, and
-summarizing the results. \Rpackage{plateCore} extends the \Rpackage{flowCore} and \Rpackage{flowViz} packages to work on
-\Rclass{flowPlate} objects that represent these large flow datasets. For those familiar with\\
-\Rpackage{flowCore} and \Rpackage{flowViz}, the gating (filtering), transformation, and other data manipulations for \Rclass{flowPlates} 
-are very similar to \Rclass{flowSets}. 
+summarizing the results. This can be a monumental task using traditional point-and-click software packages, even when multiple instances are
+deployed. \Rpackage{plateCore} is a R/Bioconductor packaged created to make processing and analysis of large, complex flow cytometry (FCM) datasets
+easier. 
 
-In this document we show how use \Rpackage{plateCore} to analyze a publicly available blood dataset for expression of cell surface markers. 
-This peripheral blood mononucleocyte (PBMC) data was generated using BD FACS\texttrademark CAP screening to look at the expression profiles of 189 
-different human markers (add reference). The raw PBMC data is read into R using \Rpackage{flowCore}, and then the filtering and 
-threshold gating are performed in \Rpackage{plateCore}. The output is the fraction of positive, or expressing, cells for
-each marker, which is then compared to results from expert manual analysis.
+\subsection{Methods}
+\Rpackage{plateCore} was used to analyze the results from a BD FACS\texttrademark CAP screening experiment where 5 PBMC samples 
+were assayed for 189 different human cell surface markers. 
+
+\subsection{Results}
+
+
+\subsection{Conclusions}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
