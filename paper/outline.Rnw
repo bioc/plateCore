@@ -28,12 +28,10 @@
 \begin{document}
 \maketitle
 
-\tableofcontents
-
 \clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Abstract}
-\subsection{Background}
+\section*{Abstract}
+\subsection*{Background}
 High throughput flow studies are often run in a 96 or 384-well plate format, with a number of different samples, 
 controls, and antibodies-dye conjugates present on the plate. Analyzing the output from the cytometer requires keeping track of the contents
 of each well, matching sample wells with control wells, gating each well/channel separately, making the appropriate plots, assessing quality, and
@@ -41,44 +39,64 @@ summarizing the results. This can be a monumental task using traditional point-a
 deployed. \Rpackage{plateCore} is a R/Bioconductor packaged created to make processing and analysis of large, complex flow cytometry (FCM) datasets
 easier. 
 
-\subsection{Methods}
+\subsection*{Methods}
 \Rpackage{plateCore} was used to analyze the results from a BD FACS\texttrademark CAP screening experiment where 5 PBMC samples 
 were assayed for 189 different human cell surface markers. 
+This same dataset was also analyzed by a cytometry expert using FlowJo\texttrademark.
 
-\subsection{Results}
+\subsection*{Results}
+Positive markers identified using \Rpackage{plateCore} are in good agreement with those found using FlowJo\texttrademark analysis.
 
+\subsection*{Conclusions}
+\Rpackage{plateCore} provides a reproducible, objective platform for analyzing high throughput flow experiments. The R/Bioconductor 
+implementation allows bioinformaticians and statisticians access to the data, which should further the development of automated
+analysis methods.
 
-\subsection{Conclusions}
-
-
-
+\clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Introduction}
+\section*{Introduction}
 Analysis of flow cytometry high content screening (FC-HCS) experiments requires a systematic approach to
 preprocessing, gating (i.e., filtering), and summarizing large amounts of data. Ideally these steps would be automated,
 allowing analysis pipelines to be robust, objective, and match the high-throughput capacity of modern cytometers. 
 Unfortunately, current approaches to FC-HCS analysis methods are semi-automated at best,
 often requiring significant manual intervention to identify cells of interest and set the appropriate gates. 
-Since the manual contribution is subjective and prone to error when working with large numbers of samples, it
+Since the manual contribution is subjective and prone to error when working with large numbers of samples (ref Holden?), it
 is desirable to develop programmatic approaches to process the data.
 
-Flow cytometry packages available through the Bioconductor project provide an open analysis platform that
+Flow cytometry packages available through the Bioconductor (ref) project provide an open analysis platform that
 can be used by cytometrists, bioinformaticians, and statisticians to develop new analysis approaches that
-enable automated processing. The \Rpackage{flowCore} package contains the framework for importing, transforming, gating, and
-organizing raw flow cytometry data. \Rpackage{flowViz} supports sophisticated visualizations based on Trellis displays. 
-\Rpackage{flowClust} implements model-based clustering approaches for automated gating. The combination of
-these packages provides a set of freely available, flexible, and computationally efficient FC-HCS tools.
+enable automated processing. The \Rpackage{flowCore} (ref) package contains the framework for importing, transforming, gating, and
+organizing raw flow cytometry data. \Rpackage{flowViz} (ref) supports sophisticated visualizations based on Trellis (ref?) displays. 
+\Rpackage{flowClust} (ref) implements model-based clustering approaches for automated gating. \Rpackage{plateCore}
+extends the \Rpackage{flowCore} and \Rpackage{flowViz} packages to work on \Robject{flowPlate} objects that represent
+large flow datasets. The combination of these packages provides a set of freely available, flexible, and computationally efficient FC-HCS tools. 
 
-\Rpackage{plateCore} provides a convenient way to manage the sample annotation associated with complex FC-HCS experiments, and
-to access the functionality in other Bioconductor flow packages. 
-The progression from raw FCM data files to a completed \Rpackage{plateCore} analysis is shown in Figure~\ref{fig:analysis}.
-Since the layout of FC-HCS plates often changes from experiment
-to experiment, the annotation for each well needs to be customized for each
-\Rclass{flowPlate}. \Rpackage{plateCore} uses an approach that is very similar to the cell-based high throughput screening \Rpackage{cellHTS2} package (insert ref),
-where users must provide a \textit{plate configuration} file for each dataset. Once the cell level data has
-been analyzed in \Rpackage{plateCore}, the summary well information (i.e., percentage of positive cells and median
-signal intensities) can be imported into tools like \Rpackage{cellHTS2}, since FC-HCS experiments are just one 
-type of cell-based high throughput screens.
+An example of the progression from raw FCM data files to a completed \Rpackage{plateCore} analysis is shown in Figure~\ref{fig:analysis}.
+List mode FCS files for a single plate are read into a \Robject{flowSet} using \Rpackage{flowCore}, and then a \Robject{flowPlate} is created by integrating
+the plate annotation file with the \Robject{flowSet}. The \Robject{flowPlate} is then compensated, data quality is assessed, and gates
+are set according to a negative control. These control gates are then applied to test wells to find cells that have specific staining
+in channels of interest. Assuming that the automated gates do not require adjustment, and that there are no missing wells or other major problems,
+the analysis of a single plate can be accomplished in 10-12 lines of code. While this same analysis can be performed relatively quickly in 
+other flow cytometry software packages, it can be difficult to reproduce the gating decisions made by a single expert user.
+
+In addition to subjective gating, the lack of a standard format for describing large flow experiments also
+makes it difficult for anyone other than the original experimenter to replicate an analysis. 
+The adoption of ACS specifications (ref) should make it easier to access metadata in future flow studies, but currently
+this information is typically provided as a pictorial layout of a 96 well plate. 
+Since the creation of \Robject{flowPlate} requires users to make a defined sample annotation file, plate layouts
+can then be easily shared along with the raw FCS2.0/3.0 files. Also, this annotation can then be accessed
+when working with \Robject{flowPlates} using either \Rpackage{flowCore} or \Rpackage{flowViz} functions.
+The standard format for \Rpackage{plateCore} sample annotations provides a convenient way to manage the plate metadata
+associated with complex FC-HCS experiments.
+
+
+%Since the layout of FC-HCS plates often changes from experiment
+%to experiment, the annotation for each well needs to be customized for each
+%\Rclass{flowPlate}. \Rpackage{plateCore} uses an approach that is very similar to the cell-based high throughput screening \Rpackage{cellHTS2} package (ref),
+%where users must provide a \textit{plate configuration} file for each dataset. Once the cell level data has
+%been analyzed in \Rpackage{plateCore}, the summary well information (i.e., percentage of positive cells and median
+%signal intensities) can be imported into tools like \Rpackage{cellHTS2}, since FC-HCS experiments are just one 
+%type of cell-based high throughput screens.
 
 
 \begin{figure}
@@ -95,7 +113,8 @@ control gates were set using only negative control wells.}
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
-\section{Data}
+\section*{Materials and Methods}
+\subsection*{Data}
 The PBMC dataset used in this example is available for download from ficcs.org as the "plateData.tar.gz" file. The data consists
 of 5 different peripheral blood mononucleocyte (PBMC) samples that were analyzed with 189 different antibodies on 96-well plates. Each plate has a set of
 unstained, isotype, and control wells. Antibodies and isotype controls are arrayed 3 per well, and the data was compensated
@@ -105,7 +124,7 @@ Unfortunately, the antibody names have been masked since the layout of the plate
 I'm cautiously optimistic that we will be able to release more information about the experiment).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Analysis}
+\subsection*{Analysis}
 
 The goal of the PBMC FACS\texttrademark CAP study was to find the percentage of positive lymphocytes for each of the 189 different cell
 surface markers. The raw data consists of a PBMC preparation, including lymphocytes, monocytes, red blood cells, and cellular 
@@ -252,7 +271,8 @@ Column & B10 FL2-H &  B10 FL1-H & B10 FL4-H \\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
-\section{Results}
+\section*{Results}
+\subsection*{\Rpackage{plateCore} Output}
 
 FCM files from 5 PBMC plates that had been analyzed using BD FACS$^{\text{TM}}$ CAP were processed using the method
 described in the analysis section. The resulting \Robject{flowPlates} were stored in \emph{RData} files so that individual plots
@@ -316,7 +336,7 @@ test wells are in magenta.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
-\section{Comparison to Manual Analysis}
+\subsection*{Comparison to Manual Analysis}
 
 The 5 pmbc plates were also analyzed using FlowJo$^{\text{TM}}$, which is one of the standard FCM data analysis platforms.
 BD FACS$^{\text{TM}}$ CAP is designed as a screening tool to help identify markers for additional analysis. Since it is 
@@ -347,7 +367,7 @@ data in this plot)}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
-\section{Conclusions}
+\section*{Discussion}
 
 The PBMC example shows that a complex analysis of a 96-well plate, stained with 189 antibodies,
 can be constructed in 15-20 lines of code using \Rpackage{plateCore}. Lymphocytes were selected
