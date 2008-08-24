@@ -89,6 +89,10 @@ when working with \Robject{flowPlates} using either \Rpackage{flowCore} or \Rpac
 The standard format for \Rpackage{plateCore} sample annotations provides a convenient way to manage the plate metadata
 associated with complex FC-HCS experiments.
 
+\Rpackage{plateCore} is not designed to be a GUI driven end-user tool, but rather to help develop a standardized platform for the analysis of FC-HCS data.
+These analyses often represent a collaborative effort between cytometry experts who generate the data and the quantitative individuals who help
+deal with the large volume information. Similarly, the analysis presented in this study is a joint effort to validate \Rpackage{plateCore} as a 
+FC-HCS analysis tool by comparing the results from an expert manual analysis to the output from \Rpackage{plateCore}. 
 
 %Since the layout of FC-HCS plates often changes from experiment
 %to experiment, the annotation for each well needs to be customized for each
