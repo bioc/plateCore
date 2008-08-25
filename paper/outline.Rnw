@@ -121,13 +121,23 @@ control gates were set using only negative control wells.}
 \subsection*{Data}
 
 The peripheral blood mononucleocyte (PBMC) data used in this study consists of 5 samples that were analyzed on 96-well plates
-using BD FACS\texttrademark CAP (ref). On each plate, there are 189 different human cell surface antibody-dye conjugates along
-with the appropriate isotype controls. Test antibodies and isotypes are arrayed 3 per well, and the data was compensated
+using BD FACS\texttrademark CAP (ref). On each plate, there are 189 different human cell surface antibody-dye conjugates that
+are arrayed 3 per well (63 test wells), along with 30 isotype control wells and 3 unstained controls. Isotypes are used to
+estimate 
+
+ along
+with isotype controls. Antibodies are arrayed 3 per well, 
+
+
+Antibodies are arrayed 3 per well, and the data was compensated
 on the cytometer (BD FACSCalibur\texttrademark). The 189 antibodies were selected to provide a broad expression profile
 for a large number of cell surface markers, including 103 proteins with GO annotation for receptor activity, 80
 for immune response, and 55 for signal transduction. The raw data is available for download from http://www.ficcs.org as the
 "plateData.tar.gz" file. The plate configuration is also included in the archive as \textit{maskPlateDesc.csv}, although
 the antibody names have been masked. (Note: I need to update the description so it's compatible with the latest version of plateCore).
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Analysis}
@@ -387,7 +397,7 @@ these changes change be incorporated into the analysis script and reproduced at 
 (Need some additional paragraphs about why plateCore is wonderful).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{References/Recent Related Publications}
+\section*{References/Recent Related Publications}
 \begin{itemize}
 \item flowCore manuscript in Cytometry A\\
 Gives an overview of flowCore data structures, transformation and gating examples, quality control checks (flowQ), and 
