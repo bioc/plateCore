@@ -119,13 +119,15 @@ control gates were set using only negative control wells.}
 \clearpage
 \section*{Materials and Methods}
 \subsection*{Data}
-The PBMC dataset used in this example is available for download from ficcs.org as the "plateData.tar.gz" file. The data consists
-of 5 different peripheral blood mononucleocyte (PBMC) samples that were analyzed with 189 different antibodies on 96-well plates. Each plate has a set of
-unstained, isotype, and control wells. Antibodies and isotype controls are arrayed 3 per well, and the data was compensated
-on the cytometer. The \textit{plate configuration} is also included in the archive as \textit{maskPlateDesc.csv} (Note: I need
-to update the description so it's compatible with the latest version of plateCore).
-Unfortunately, the antibody names have been masked since the layout of the plate is proprietary. (Although
-I'm cautiously optimistic that we will be able to release more information about the experiment).
+
+The peripheral blood mononucleocyte (PBMC) data used in this study consists of 5 samples that were analyzed on 96-well plates
+using BD FACS\texttrademark CAP (ref). On each plate, there are 189 different human cell surface antibody-dye conjugates along
+with the appropriate isotype controls. Test antibodies and isotypes are arrayed 3 per well, and the data was compensated
+on the cytometer (BD FACSCalibur\texttrademark). The 189 antibodies were selected to provide a broad expression profile
+for a large number of cell surface markers, including 103 proteins with GO annotation for receptor activity, 80
+for immune response, and 55 for signal transduction. The raw data is available for download from http://www.ficcs.org as the
+"plateData.tar.gz" file. The plate configuration is also included in the archive as \textit{maskPlateDesc.csv}, although
+the antibody names have been masked. (Note: I need to update the description so it's compatible with the latest version of plateCore).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Analysis}
