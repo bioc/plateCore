@@ -36,7 +36,7 @@ High throughput flow studies are often run in a 96 or 384-well plate format, wit
 controls, and antibodies-dye conjugates present on the plate. Analyzing the output from the cytometer requires keeping track of the contents
 of each well, matching sample wells with control wells, gating each well/channel separately, making the appropriate plots, assessing quality, and
 summarizing the results. This can be a monumental task using traditional point-and-click software packages, even when multiple instances are
-deployed. \Rpackage{plateCore} is a R/Bioconductor packaged created to make processing and analysis of large, complex flow cytometry (FCM) datasets
+deployed. We developed \Rpackage{plateCore} as an R/Bioconductor packaged to make processing and analysis of large, complex flow cytometry (FCM) datasets
 easier. 
 
 \subsection*{Methods}
@@ -91,8 +91,9 @@ associated with complex FC-HCS experiments.
 
 \Rpackage{plateCore} is not designed to be a GUI driven end-user tool, but rather to help develop a standardized platform for the analysis of FC-HCS data.
 These analyses often represent a collaborative effort between cytometry experts who generate the data and the quantitative individuals who help
-deal with the large volume information. Similarly, the analysis presented in this study is a joint effort to validate \Rpackage{plateCore} as a 
-FC-HCS analysis tool by comparing the results from an expert manual analysis to the output from \Rpackage{plateCore}. 
+deal with the large volume information. In order for this collaboration to work, the cytometrists must have confidence in the
+results of the automated analysis. To this point, we demonstrate the equality of our results to those produced by an expert
+cytometrist using FlowJo\texttrademark.
 
 %Since the layout of FC-HCS plates often changes from experiment
 %to experiment, the annotation for each well needs to be customized for each
@@ -101,7 +102,6 @@ FC-HCS analysis tool by comparing the results from an expert manual analysis to 
 %been analyzed in \Rpackage{plateCore}, the summary well information (i.e., percentage of positive cells and median
 %signal intensities) can be imported into tools like \Rpackage{cellHTS2}, since FC-HCS experiments are just one 
 %type of cell-based high throughput screens.
-
 
 \begin{figure}
 \centering
@@ -120,30 +120,27 @@ control gates were set using only negative control wells.}
 \section*{Materials and Methods}
 \subsection*{Data}
 
+Get the flow group to describe how the samples were prepared and stained.
+
 The peripheral blood mononucleocyte (PBMC) data used in this study consists of 5 samples that were analyzed on 96-well plates
 using BD FACS\texttrademark CAP (ref). On each plate, there are 189 different human cell surface antibody-dye conjugates that
-are arrayed 3 per well (63 test wells), along with 30 isotype control wells and 3 unstained controls. Isotypes are used to
-estimate 
-
- along
-with isotype controls. Antibodies are arrayed 3 per well, 
-
-
-Antibodies are arrayed 3 per well, and the data was compensated
+are arrayed 3 per well (63 test wells), along with 30 isotype control wells and 3 unstained controls.
+Test antibodies and isotypes are arrayed 3 per well, and the data was compensated
 on the cytometer (BD FACSCalibur\texttrademark). The 189 antibodies were selected to provide a broad expression profile
 for a large number of cell surface markers, including 103 proteins with GO annotation for receptor activity, 80
 for immune response, and 55 for signal transduction. The raw data is available for download from http://www.ficcs.org as the
 "plateData.tar.gz" file. The plate configuration is also included in the archive as \textit{maskPlateDesc.csv}, although
 the antibody names have been masked. (Note: I need to update the description so it's compatible with the latest version of plateCore).
 
-
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Analysis}
 
 The goal of the PBMC FACS\texttrademark CAP study was to find the percentage of positive lymphocytes for each of the 189 different cell
-surface markers. The raw data consists of a PBMC preparation, including lymphocytes, monocytes, red blood cells, and cellular 
+surface markers. 
+
+
+
+The raw data consists of a PBMC preparation, including lymphocytes, monocytes, red blood cells, and cellular 
 debris. The first step is to filter the lymphocytes using a morphology gate in the forward (FSC) and side-scatter (SSC) channels. 
 The quality of the data is then assessed by looking for fluidic events and making sure there are a sufficient number of cells in each
 sample. Next the threshold between positive and negative cells are determined using the isoytpe controls, which provide a gross estimate
