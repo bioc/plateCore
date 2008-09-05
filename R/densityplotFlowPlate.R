@@ -76,12 +76,13 @@ panel.densityplot.flowPlate <-
 				col = col[i],
 				...)
 
-		if(!missing(filterResult) && class(filterResult)=="character" && filterResult=="Negative.Control") {
+		if(!is.null(filterResult) && class(filterResult)=="character" && filterResult=="Negative.Control") {
+
 			panel.abline(v=subset(wellAnnotation,name==nm & Channel==as.character(channel[[1]]))$Negative.Control.Gate)
 			nc <- subset(wellAnnotation,name==nm & Channel==as.character(channel[[1]]))$Negative.Control
 			ncp <- subset(wellAnnotation,name==nm & Channel==as.character(channel[[1]]))$plateName
 			if(nc %in% wellAnnotation$Well.Id) {
-				nc <- subset(wellAnnotation,Well.Id==nc & Channel==as.character(channel[[1]]) & plateName==ncp)$name
+				nc <- subset(wellAnnotation,Well.Id==nc & Channel==as.character(channel[[1]]) & plateName==ncp)$name[[1]]
 				xx <- evalInFlowFrame(channel, frames[[nc]])
 				
 				panel.densityplot(xx,data=data,plot.points=FALSE,
