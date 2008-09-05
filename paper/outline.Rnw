@@ -135,15 +135,12 @@ the antibody names have been masked. (Note: I need to update the description so 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Analysis}
 
-The goal of the PBMC FACS\texttrademark CAP study was to find the percentage of positive lymphocytes for each of the 189 different cell
-surface markers. 
-
-
-
-The raw data consists of a PBMC preparation, including lymphocytes, monocytes, red blood cells, and cellular 
-debris. The first step is to filter the lymphocytes using a morphology gate in the forward (FSC) and side-scatter (SSC) channels. 
-The quality of the data is then assessed by looking for fluidic events and making sure there are a sufficient number of cells in each
-sample. Next the threshold between positive and negative cells are determined using the isoytpe controls, which provide a gross estimate
+The goal of the PBMC FACS\texttrademark CAP study was to look for positive staining for the 189 different cell
+surface markers in lymphocytes. Since the PBMC preparation contains lymphocytes, monocytes, red blood cells, and cellular 
+debris, the data is first filtered using a morphology gate in the forward (FSC) and side-scatter (SSC) channels to select lymphocytes.
+The quality of the data is then assessed by looking for fluidic events such as bubbles, pressure drops, or large aggregates
+that can shift the baseline fluorescence readings.
+Next the threshold between positive and negative cells are determined using the isoytpe controls, which provide a gross estimate
 of non-specific binding in the primary antibodies. One-dimensional gates are created using using the isotype thresholds, and these
 gates are applied to identify cells that are positively stained for each marker. An example of the code used to analyze an individual
 plate is provided in this section.  The parameter settings for the other 4 plates are identical to the values shown here.
