@@ -1,4 +1,5 @@
 \name{plotPlate}
+\alias{plotPlate}
 
 \title{ plotPlate }
 \description{
