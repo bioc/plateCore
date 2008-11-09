@@ -33,7 +33,7 @@
 \section*{Abstract}
 \subsection*{Background}
 High throughput flow studies are often run in a 96 or 384-well plate format, with a number of different samples, 
-controls, and antibodies-dye conjugates present on the plate. Analyzing the output from the cytometer requires keeping track of the contents
+controls, and antibodies-dye conjugates present on the plate. Analyzing the output from the cytometer requires keeping track ofthe contents
 of each well, matching sample wells with control wells, gating each well/channel separately, making the appropriate plots, assessing quality, and
 summarizing the results. This can be a monumental task using traditional point-and-click software packages, even when multiple instances are
 deployed. We developed \Rpackage{plateCore} as an R/Bioconductor packaged to make processing and analysis of large, complex flow cytometry (FCM) datasets
@@ -120,15 +120,13 @@ control gates were set using only negative control wells.}
 \section*{Materials and Methods}
 \subsection*{Data}
 
-Get the flow group to describe how the samples were prepared and stained.
-
 The peripheral blood mononucleocyte (PBMC) data used in this study consists of 5 samples that were analyzed on 96-well plates
 using BD FACS\texttrademark CAP (ref). On each plate, there are 189 different human cell surface antibody-dye conjugates that
 are arrayed 3 per well (63 test wells), along with 30 isotype control wells and 3 unstained controls.
 Test antibodies and isotypes are arrayed 3 per well, and the data was compensated
 on the cytometer (BD FACSCalibur\texttrademark). The 189 antibodies were selected to provide a broad expression profile
 for a large number of cell surface markers, including 103 proteins with GO annotation for receptor activity, 80
-for immune response, and 55 for signal transduction. The raw data is available for download from http://www.ficcs.org as the
+for immune response, and 55 for signal transduction. The raw data is available for download from http://www.ficcs.org as
 "plateData.tar.gz" file. The plate configuration is also included in the archive as \textit{maskPlateDesc.csv}, although
 the antibody names have been masked. (Note: I need to update the description so it's compatible with the latest version of plateCore).
 
@@ -136,157 +134,25 @@ the antibody names have been masked. (Note: I need to update the description so 
 \subsection*{Analysis}
 
 The goal of the PBMC FACS\texttrademark CAP study was to look for positive staining for the 189 different cell
-surface markers in lymphocytes. Since the PBMC preparation contains lymphocytes, monocytes, red blood cells, and cellular 
-debris, the data is first filtered using a morphology gate in the forward (FSC) and side-scatter (SSC) channels to select lymphocytes.
-The quality of the data is then assessed by looking for fluidic events such as bubbles, pressure drops, or large aggregates
-that can shift the baseline fluorescence readings.
+surface markers in lymphocytes. The \Rpackage{plateCore} scripts used to perform the analysis are provided 
+in supplementary materials. Briefly, the FCM files are first processed using a combination of static (\Robject{rectangleGate})
+and data driven (\Robject{norm2filter}) gates to pick out the lymphocytes in the forward (FSC) and side scatter (SSC)
+channels.  The quality of the data was then assessed by looking for fluidic events such as bubbles,
+pressure drops, or large aggregates that can shift the baseline fluorescence readings. 
+Fluidic events can often be identified by plotting the emprical cumulative density (ecdf) plots of FSC
+values for each well, and looking for distributions shifted relative to other wells (ref Nolwenn's paper). Based on the ecdf
+plots, several wells were further investigated by cytometry experts who determined that the shifts were in an acceptable range.
 Next the threshold between positive and negative cells are determined using the isoytpe controls, which provide a gross estimate
 of non-specific binding in the primary antibodies. One-dimensional gates are created using using the isotype thresholds, and these
-gates are applied to identify cells that are positively stained for each marker. An example of the code used to analyze an individual
-plate is provided in this section.  The parameter settings for the other 4 plates are identical to the values shown here.
-
-Ninety-six Flow Cytometry Standard (FCS) files, one for each well, are imported in R using \Rpackage{flowCore} to create a \Robject{flowSet}.
-A \Robject{flowPlate} named platePBMCraw is then constructed by integrating the \textit{plate configuration} with the \Robject{flowSet}. 
-The raw data is then visualized using \Rpackage{flowViz}, and a FSC-SSC \Robject{rectangleGate} is used to select lymphocytes (Figure ~\ref{fig:morphGate}).
-A new \Robject{flowPlate} containing cells inside the \Robject{rectangleGate} is then made using \Rfunction{Subset}.
-<<eval=FALSE>>=
-platePBMC <- Subset(platePBMCraw,
-		rectangleGate("FSC-H"=c(300,700),"SSC-H"=c(50,400)))	
-@
-
-Quality control and quality assessment for large flow experiments is potentially more complex than the analysis itself. In this study, 
-it would be desirable to verify that the 189 antibody-dye conjugates and their associated controls were aliquoted correctly into the correct wells, 
-that the cytometer setting were not changed between plates, and that there were no fluidic events or shifts in fluorescent signals. Sophisticated tools for creating
-quality reports for \Robject{flowSets} are available in \Rpackage{flowQ}, and the quality check functions can be customized for specific analyses.
-Quality assessment in this example will focus on checking for fluidic events, which 
-can cause a temporary shift in the cytometer detector readings.  Affected wells need
-to be identified and either corrected or removed from the analysis. 
-Fluidic events can often be identified by plotting the emprical cumulative density (ecdf) plots of FSC
-values for each well, and looking for distributions shifted relative to other wells (Figure ~\ref{fig:fluidic}). Based on the ecdf
-plots, several wells were further investigated by cytometry experts who determined that the shifts were in an acceptable range.
-
-\begin{figure}
-\centering
-<<label=morphGate, fig=TRUE, echo=FALSE, results=hide>>=
-library(flowCore)
-library(flowViz)
-library(plateCore)
-data(plateCore)
-pbmcFP <- flowPlate(pbmcPlate,wellAnnotation,plateName="PBMC.001")
-print(xyplot(`SSC-H` ~ `FSC-H` | as.factor(name), plateSet(pbmcFP)[1], smooth=TRUE,
-		filter=rectangleGate("FSC-H"=c(300,600),"SSC-H"=c(50,400)) ))
-@
-\caption{A \Rpackage{flowCore} rectangleGate used to select lymphocytes from PBMC data. The gate is displayed using the xyplot function from \Rpackage{flowViz}}
-\label{fig:morphGate}
-\end{figure}
-
-\begin{figure}
-\centering
-<<label=fluidic, fig=TRUE, echo=FALSE, results=hide>>=
-pbmcFP2 <- Subset(pbmcFP, rectangleGate("FSC-H"=c(300,700),"SSC-H"=c(50,400)))	
-
-col2 = c("darkseagreen","red","royalblue","brown","orange","turquoise", "orchid","yellow","black","green","darkred","lightblue")
-groups2 = c(1:12)
-print(ecdfplot(~`FSC-H`|as.factor(Row.Id),plateSet(pbmcFP),col=col2,lty=c(rep(1,6),rep(2,6)),
-				key = list(lines=list(col=col2), lty=c(rep(1,6),rep(2,6)), cex=1, text =list(as.character(groups2)), columns = 4, title="")))	
-
-@
-\caption{Empirical cumulative distribution function (ecdf) plots of FSC-H values for Rows A thru H. There are 12 columns in each row.
-Fluidic events will often show up as a shift in the distribution of FSC-H values. 
-Based on this plot wells E03 and F03 were manually checked, but the differences were not large enough to change fluorescence values.}
-\label{fig:fluidic}
-\end{figure}
-
-\clearpage
-Once the plate has passed quality control
-checks, the next step is setting the control gate to establish the cutoff between positive and negative cells.
-Ideally this expression threshold would be established using known positive and negative samples, but such information is
-usually not available. Instead, the expression cutoff is generally set according to negative controls. 
-For example, \Rpackage{plateCore} supports creating thresholds according to either unstained, unstimulated, isotype, 
-or fluorescence minus one (FMO) controls. One-dimensional expression thresholds are initially set using
-the setControlGates function. 
-<<eval=FALSE>>=
-platePBMC <- setControlGates(platePBMC,gateType="Negative.Control",numMads=6)
-@
-The "numMads" parameter sets the value of the control gate at 6 median absolute deviations (MADs) above 
-the media fluorescence intensity (MFI) the control gate. An example of the isotype gating results for the isoytpe well A03 and its
-associated test wells is shown in Figure~\ref{fig:isoGate}.
-\Rpackage{flowCore} and \Rpackage{flowClust} potentially offer
-more robust methods of establishing this threshold using kernel density approaches, but setting the
-gate at 3 to 6 MADs on a linear scale (non-transformed) often works well in practice for screening quality experiments.
-
-Once the Negative.Control gates have been created and applied, we can then use the \Rfunction{summaryStats} to calculate different
-metrics of interest from the \Rclass{flowPlate}. Running \Rfunction{applyControlGates} and \Rfunction{summaryStats} on \Robject{platePBMC}, 
-<<eval=FALSE>>=
-platePBMC <- applyControlGates(platePBMC)
-platePBMC <- summaryStats(platePBMC)
-@
-will result in additional columns created in the \Robject{wellAnnotation} object associated with this
-particular \Robject{flowPlate}.  
-These new columns include percentage of cells above the Negative.Control gate (Percent.Positive),
-the number of cells in the raw data (Total.Events), the number of positive cells (Positive Count),
-the median fluorescence intensity (MFI), and the ratio of the test well MFI to the MFI of the negative
-control well (MFI.Ratio). In this PMBC example a number of the markers are heterogeneous, so the MFI and MFI.Ratio
-may not be helpful since they are based on all the cells in a well.
-
-<<echo=FALSE,results=hide>>=
-pbmcFP2 <- setControlGates(pbmcFP2,gateType="Negative.Control",numMads=5)
-pbmcFP2 <- applyControlGates(pbmcFP2)
-platePBMC <- summaryStats(pbmcFP2)
-@
-
-\begin{figure}
-\centering
-<<label=isoGate, fig=TRUE, echo=FALSE, results=hide>>=
-wells <- unique(subset(pbmcFP2@wellAnnotation,Negative.Control=="A03")$Well.Id)
-print(densityplot(~ `FL1-H` | as.factor(Well.Id),transform("FL1-H"=log10) %on% pbmcFP2[wells],filterResult="Negative.Control"))
-@
-\caption{Density plots for the A03 isotype well and the associated test wells. Isotype results are shown in magenta while the test samples
-are in blue. The vertical bar indicates the negative control gate, estimated using the setControlGates function with numMads=6. This
-plot was created using the densityplot function specific to \Robject{flowPlates} from \Rpackage{plateCore}.}
-\label{fig:isoGate}
-\end{figure}
-
-\clearpage
-The wellAnnotation \Robject{data.frame} associated with each analyzed \Robject{flowPlate} can then be exported from R for
-use in other programs. Sample output for well B10 in this analysis is given in Table~\ref{tab:wellAnno}. Threshold
-gates created using the isotype control wells are included in the \emph{Negative.Control.Gate} column, allowing the gating to be replicated on other
-software platforms.
-
-\begin{table}[ht]
-\begin{center}
-\begin{tabular}{r|ccc}
-  \hline
-Column & B10 FL2-H &  B10 FL1-H & B10 FL4-H \\
-    \hline
-  Well.Id & B10 & B10 & B10 \\
-  Sample.Type & Test & Test & Test \\
-  Ab.Name & Cdbd28 & Cdbd29 & Cdbd30 \\
-  Channel & FL2-H & FL1-H & FL4-H \\
-  Negative.Control & A03 & A03 & A03 \\
-  plateName & PBMC.001 & PBMC.001 & PBMC.001 \\
-  name & 0877408774.B10 & 0877408774.B10 & 0877408774.B10 \\
-  Negative.Control.Gate & 24 & 23 & 68 \\
-  Percent.Positive &  1 & 15 &  0 \\
-  Total.Count & 7598 & 7598 & 7598 \\
-  Positive.Count &   58 & 1187 &    6 \\
-  MFI &  4.0 &  8.2 & 11.8 \\
-  MFI.Ratio & 0.64 & 1.14 & 0.78 \\
-   \hline
-\end{tabular}
-\caption{Output for well B10 from the wellAnnotation \Robject{data.frame} associated with the PBMC \Robject{flowPlate}.}
-\label{tab:wellAnno}
-\end{center}
-\end{table}
+gates are applied to identify cells that are positively stained for each marker. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
 \section*{Results}
 \subsection*{\Rpackage{plateCore} Output}
 
-FCM files from 5 PBMC plates that had been analyzed using BD FACS$^{\text{TM}}$ CAP were processed using the method
-described in the analysis section. The resulting \Robject{flowPlates} were stored in \emph{RData} files so that individual plots
-can be made without rerunning the analysis. The \Robject{wellAnnotation} for each \Robject{flowPlate} was then merged
+The output for the analysis of each plate was stored in a \Robject{flowPlate}, a data structure which contains the raw
+FCM input along with isotype gating results. The \Robject{wellAnnotation} for each \Robject{flowPlate} was then merged
 into a single \Robject{data.frame}, containing the percent positive results from each plate. These values can then visualized
 using microarray tools in R (Figure~\ref{fig:pbmcHeat}). 
 
@@ -309,6 +175,7 @@ densityplot(~ `FL2-H` | as.factor(plateName),
 <<label=pbmcHeat,fig=TRUE,echo=FALSE>>=
 library(gplots)
 temp <- read.delim("ppExp.csv",stringsAsFactors=FALSE,header=TRUE)
+#temp <- read.delim("paper/ppExp.csv",stringsAsFactors=FALSE,header=TRUE)
 rownames(temp) <- temp[,1]
 temp <- temp[,-1]
 
@@ -325,7 +192,7 @@ that had $\ge$ 10\% positive cells are shown here.}
 \begin{figure}
 \centering
 <<label=pbmcCDbd69,fig=TRUE,echo=FALSE>>=
-
+library(plateCore)
 fileNames <- list.files("../../publicationPlateCore/pbmcRData",full.names=TRUE)
 
 plates <- lapply(fileNames,function(x){
@@ -358,6 +225,7 @@ gates based on positive and negative test samples. Figure~\ref{fig:pcVSman} show
 \centering
 <<label=pcVSman,fig=TRUE,echo=FALSE>>=
 
+load(fileNames[[1]])
 
 wellDf <- subset(wellAnnotation(platePBMC),Sample.Type=="Test")
 
@@ -365,9 +233,7 @@ tempY <- jitter(as.numeric(wellDf$Percent.Positive),factor=10000)
 tempY[tempY>100]=100
 tempY[tempY<0]=0
 
-
-plot(wellDf$Percent.Positive,tempY,type="n",xlab="plateCore Results",ylab="Manual Analysis")
-text(wellDf$Percent.Positive,tempY,wellDf$Ab.Name)
+plot(wellDf$Percent.Positive,tempY,xlab="plateCore Results",ylab="Manual Analysis")
 abline(0,1,col='red')
 @
 \caption{Percent positive results for 189 markers analyzed using either \Rpackage{plateCore} or manually using FlowJo$^{\text{TM}}$. (Note: Need to get real
