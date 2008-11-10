@@ -149,12 +149,27 @@ gates are applied to identify cells that are positively stained for each marker.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
 \section*{Results}
+
+
+
 \subsection*{\Rpackage{plateCore} Output}
 
-The output for the analysis of each plate was stored in a \Robject{flowPlate}, a data structure which contains the raw
-FCM input along with isotype gating results. The \Robject{wellAnnotation} for each \Robject{flowPlate} was then merged
-into a single \Robject{data.frame}, containing the percent positive results from each plate. These values can then visualized
-using microarray tools in R (Figure~\ref{fig:pbmcHeat}). 
+Output from the \Rpackage{plateCore} analysis is stored in \Robject{flowPlate} objects, which
+contain the gated FCS events along with the isotype gating results. The event level can
+be visualized 
+
+The event level data can be 
+visualized using plotting functions from \Rpackage{plateCore} and \Rpackage{flowViz}. Additionally,
+the \Robject{wellAnnotation} table associated with each plate can be exported, merged, and 
+analyzed using microarray tools in R (Figure~\ref{fig:pbmcHeat}).
+
+
+Analysis output for each 96-well plate was stored in a \Robject{flowPlate}, which are the \Rpackage{plateCore}
+data structures containing the raw FCM input and isotype gating results.
+The \Robject{wellAnnotation} for each \Robject{flowPlate} was then merged
+into a single \Robject{data.frame}, containing the percent positive results from each plate.
+These values can then visualized
+using microarray tools in R (). 
 
 Once a marker of interest has been identified, the next step is usually to make density or dotplots of the signals from each
 plate. Although these plots can be created individually, it is more convenient to have a combined data object so that results 
