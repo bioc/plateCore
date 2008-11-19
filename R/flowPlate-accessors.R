@@ -239,7 +239,7 @@ setMethod("compensate", signature(x="flowPlate"), function(x,spillover, inv=TRUE
 			dyeCols <- colnames(spillover)[!is.na(well[,gsub("-",".",colnames(spillover))])]
 			
 			if(length(dyeCols)>=2) {
-				compensate(temp[[fileName]],spillover[dyeCols,dyeCols])			
+				compensate(temp[[fileName]],spillover[dyeCols,dyeCols],inv)			
 			} else {
 				temp[[fileName]]
 			}								
