@@ -230,7 +230,7 @@ setMethod("fixAutoFl",signature("flowPlate"),
 ## Compensate, but only for dyes that were added.  I shouldn't need to make a copy of the flowSet, but I did in case it 
 ## would save me trouble with environments hanging around.
 ######################################################################
-setMethod("compensate", signature(x="flowPlate"), function(x,spillover, inv=TRUE, ...) {
+setMethod("compensate", signature(x="flowPlate"), function(x,spillover, inv=FALSE, ...) {
 
 	temp <- x@plateSet@frames
 	
