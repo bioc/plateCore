@@ -33,9 +33,11 @@
 \section*{Abstract}
 \subsection*{Background}
 High throughput flow studies are often run in a 96 or 384-well plate format, with a number of different samples, 
-controls, and antibodies-dye conjugates present on the plate. Analyzing the output from the cytometer requires keeping track ofthe contents
-of each well, matching sample wells with control wells, gating each well/channel separately, making the appropriate plots, assessing quality, and
-summarizing the results. This can be a monumental task using traditional point-and-click software packages, even when multiple instances are
+controls, and antibodies-dye conjugates present on each plate. 
+Analyzing a plate requires tracking the contents
+of each well, matching sample wells with control wells, gating each well/channel separately, making the appropriate plots,
+assessing quality, and finally aggregating the results from multiple plates into an experiment level data object. 
+This analysis can be a monumental task using traditional point-and-click software packages, even when multiple instances are
 deployed. We developed \Rpackage{plateCore} as an R/Bioconductor packaged to make processing and analysis of large, complex flow cytometry (FCM) datasets
 easier. 
 
@@ -56,14 +58,14 @@ analysis methods.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Introduction}
 Analysis of flow cytometry high content screening (FC-HCS) experiments requires a systematic approach to
-preprocessing, gating (i.e., filtering), and summarizing large amounts of data. Ideally these steps would be automated,
+preprocessing, gating (i.e. filtering), and summarizing large amounts of data. Ideally these steps would be automated,
 allowing analysis pipelines to be robust, objective, and match the high-throughput capacity of modern cytometers. 
 Unfortunately, current approaches to FC-HCS analysis methods are semi-automated at best,
 often requiring significant manual intervention to identify cells of interest and set the appropriate gates. 
-Since the manual contribution is subjective and prone to error when working with large numbers of samples (ref Holden?), it
-is desirable to develop programmatic approaches to process the data.
+Since the manual contribution is subjective and prone to error when working with large numbers of samples \cite{Maecker2005},
+it is desirable to develop programmatic approaches to process the data.
 
-Flow cytometry packages available through the Bioconductor (ref) project provide an open analysis platform that
+Flow cytometry packages available through the Bioconductor \cite{biocweb} project provide an open analysis platform that
 can be used by cytometrists, bioinformaticians, and statisticians to develop new analysis approaches that
 enable automated processing. The \Rpackage{flowCore} (ref) package contains the framework for importing, transforming, gating, and
 organizing raw flow cytometry data. \Rpackage{flowViz} (ref) supports sophisticated visualizations based on Trellis (ref?) displays. 
@@ -287,5 +289,7 @@ Using flowViz/Core graphical output for quality assessment\\
 Automated analysis in Matlab.\\
 \end{itemize}
 
+
+ \bibliography{plateCoreRef} 
 
 \end{document}
