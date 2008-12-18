@@ -62,14 +62,14 @@ preprocessing, gating (i.e. filtering), and summarizing large amounts of data. I
 allowing analysis pipelines to be robust, objective, and match the high-throughput capacity of modern cytometers. 
 Unfortunately, current approaches to FC-HCS analysis methods are semi-automated at best,
 often requiring significant manual intervention to identify cells of interest and set the appropriate gates. 
-Since the manual contribution is subjective and prone to error when working with large numbers of samples \cite{Maecker2005},
+Since the manual contribution is subjective and prone to error when working with large numbers of samples \citep{Maecker2005},
 it is desirable to develop programmatic approaches to process the data.
 
-Flow cytometry packages available through the Bioconductor \cite{biocweb} project provide an open analysis platform that
+Flow cytometry packages available through the Bioconductor \citep{BIOC} project provide an open analysis platform that
 can be used by cytometrists, bioinformaticians, and statisticians to develop new analysis approaches that
-enable automated processing. The \Rpackage{flowCore} (ref) package contains the framework for importing, transforming, gating, and
-organizing raw flow cytometry data. \Rpackage{flowViz} (ref) supports sophisticated visualizations based on Trellis (ref?) displays. 
-\Rpackage{flowClust} (ref) implements model-based clustering approaches for automated gating. \Rpackage{plateCore}
+enable automated processing. The \Rpackage{flowCore} \citep{hahne2009} package contains the framework for importing, transforming, gating, and
+organizing raw flow cytometry data. \Rpackage{flowViz} \citep{sarkar2008ufv} supports sophisticated visualizations based on Trellis displays. 
+\Rpackage{flowClust} \citep{lo2008} implements model-based clustering approaches for automated gating. \Rpackage{plateCore}
 extends the \Rpackage{flowCore} and \Rpackage{flowViz} packages to work on \Robject{flowPlate} objects that represent
 large flow datasets. The combination of these packages provides a set of freely available, flexible, and computationally efficient FC-HCS tools. 
 
@@ -289,7 +289,8 @@ Using flowViz/Core graphical output for quality assessment\\
 Automated analysis in Matlab.\\
 \end{itemize}
 
-
- \bibliography{plateCoreRef} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibliographystyle{plain}
+\bibliography{outline} 
 
 \end{document}
