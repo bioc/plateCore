@@ -123,14 +123,13 @@ control gates were set using only negative control wells.}
 \subsection*{Data}
 
 The peripheral blood mononucleocyte (PBMC) data used in this study consists of 5 samples that were analyzed on 96-well plates
-using BD FACS\texttrademark CAP (ref). On each plate, there are 189 different human cell surface antibody-dye conjugates that
+using BD FACS\texttrademark CAP (ref ?). On each plate, there are 189 different human cell surface antibody-dye conjugates that
 are arrayed 3 per well (63 test wells), along with 30 isotype control wells and 3 unstained controls.
 Test antibodies and isotypes are arrayed 3 per well, and the data was compensated
 on the cytometer (BD FACSCalibur\texttrademark). The 189 antibodies were selected to provide a broad expression profile
 for a large number of cell surface markers, including 103 proteins with GO annotation for receptor activity, 80
-for immune response, and 55 for signal transduction. The raw data is available for download from http://www.ficcs.org as
-"plateData.tar.gz" file. The plate configuration is also included in the archive as \textit{maskPlateDesc.csv}, although
-the antibody names have been masked. (Note: I need to update the description so it's compatible with the latest version of plateCore).
+for immune response, and 55 for signal transduction. The raw data is available for download from http://www.ficcs.org in the
+plateData.tar.gz file. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Analysis}
@@ -138,11 +137,11 @@ the antibody names have been masked. (Note: I need to update the description so 
 The goal of the PBMC FACS\texttrademark CAP study was to look for positive staining for the 189 different cell
 surface markers in lymphocytes. The \Rpackage{plateCore} scripts used to perform the analysis are provided 
 in supplementary materials. Briefly, the FCM files are first processed using a combination of static (\Robject{rectangleGate})
-and data driven (\Robject{norm2filter}) gates to pick out the lymphocytes in the forward (FSC) and side scatter (SSC)
+and data driven (\Robject{norm2filter}) \Rpackage{flowCore} gates to pick out the lymphocytes in the forward (FSC) and side scatter (SSC)
 channels.  The quality of the data was then assessed by looking for fluidic events such as bubbles,
 pressure drops, or large aggregates that can shift the baseline fluorescence readings. 
 Fluidic events can often be identified by plotting the emprical cumulative density (ecdf) plots of FSC
-values for each well, and looking for distributions shifted relative to other wells (ref Nolwenn's paper). Based on the ecdf
+values for each well, and looking for distributions shifted relative to other wells \citep{lemeur2007}. Based on the ecdf
 plots, several wells were further investigated by cytometry experts who determined that the shifts were in an acceptable range.
 Next the threshold between positive and negative cells are determined using the isoytpe controls, which provide a gross estimate
 of non-specific binding in the primary antibodies. One-dimensional gates are created using using the isotype thresholds, and these
@@ -290,6 +289,7 @@ these changes change be incorporated into the analysis script and reproduced at 
 %\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
 \bibliographystyle{plain}
 \bibliography{outline} 
 
