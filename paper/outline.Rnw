@@ -150,9 +150,17 @@ gates are applied to identify cells that are positively stained for each marker.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
 \section*{Results}
-
 \subsection*{\Rpackage{plateCore}}
+Output from the \Rpackage{plateCore} analysis are stored in \Robject{flowPlates}, which contain
+the morphology gated (FSC-SSC) events and parameters values for the negative control gates 
+(i.e. isotype gates). 
 
+
+Analysis of each 96-well PBMC plate using the approach shown in Figure~\ref{fig:analysis} 
+
+
+Results for each of the 5 96-well plates from the \Rpackage{plateCore} analysis are 
+stored in a \Robject{flowPlate}, which  
 
 
 
