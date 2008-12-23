@@ -58,8 +58,9 @@ analysis methods.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Introduction}
 
-
-Analysis of plate-based, Flow Cytometry High Content Screening (FC-HCS) experiments requires a systematic approach to
+While there are a number of different software packages available for analysis of flow cytometry data, these programs are often
+ill-suited to the development of new methods needed for analyzing high-throughput flow studies.
+Flow Cytometry High Content Screening (FC-HCS) experiments require a systematic approach to
 preprocessing, gating (i.e. filtering), and summarizing large amounts of data. Ideally these steps would be automated,
 allowing analysis pipelines to be robust, objective, and match the high-throughput capacity of modern cytometers. 
 Unfortunately, current approaches to FC-HCS analysis are semi-automated at best,
@@ -67,33 +68,19 @@ often requiring significant manual intervention to identify cells of interest an
 Since the manual contribution is subjective and prone to error when working with large numbers of samples \citep{Maecker2005},
 it is desirable to develop programmatic approaches to process the data.
 
-The 
-The lack of an open analysis platform represents a significant barrier to developing the new methods required for FC-HCS data processing.  
-Statisticans 
+Flow cytometry packages available through the Bioconductor \citep{BIOC} project provide an open platform that
+can be used by cytometrists, bioinformaticians, and statisticians to collaboratively develop new methods for
+automated FC-HCS analysis.  The basic data processing tools for importing, transforming, gating, and
+organizing raw flow cytometry data are in the \Rpackage{flowCore} package \citep{hahne2009}, and the visualization functions are
+in \Rpackage{flowViz} \citep{sarkar2008ufv}. The Bioconductor model for flow data analysis facilitates
+the development of new analysis methods, since the overhead associated with
+accessing and visualizing flow data is handled by \Rpackage{flowCore} and \Rpackage{flowViz}.
+The availability of \Rpacakge{flowCore} and \Rpackage{flowViz} has already enabled the creation of new tools for
+quality assessment of large flow experiments (\Rpackage{flowQ}) and model-based clustering (\Rpackage{flowClust}).
+\Rpackage{plateCore} also takes advantage of the functionality in \Rpackage{flowCore} and \Rpackage{flowViz}
+to work on \Robject{flowPlate} objects that represent large, plate-based flow datasets.  
 
-Flow cytometry packages available through the Bioconductor \citep{BIOC} project provide an open analysis platform that
-can be used by cytometrists, bioinformaticians, and statisticians to develop new analysis approaches that
-enable automated processing. 
-
-The basic data processing tools for importing, transforming, gating, and
-organizing raw flow cytometry data are in \Rpackage{flowCore} \citep{hahne2009}.
-Once the data has been imported into R/Bioconductor platform, \Rpackage{flowViz} 
-can be used to create sophisticated visualizations for gating and reporting FC-HCS results.
-
-
-
-The ability for statisticians to easily access flow data on a statistical software platform using \Rpackage{flowCore}  
-facilitates the development of tools such as , which 
-perform automated gating using model-based clustering.  
-
-
-
-  The combination
-of these packages provides a set of freely available, flexible, and computationally efficient FC-HCS tools.
-
-
-The \Rpackage{plateCore} package extends the \Rpackage{flowCore} and \Rpackage{flowViz} packages
-to work on \Robject{flowPlate} objects that represent large flow datasets.  An example of the progression from raw FCM data files to a completed \Rpackage{plateCore} analysis is shown in Figure~\ref{fig:analysis}.
+An example of the progression from raw FCM data files to a completed \Rpackage{plateCore} analysis is shown in Figure~\ref{fig:analysis}.
 List mode FCS files for a single plate are read into a \Robject{flowSet} using \Rpackage{flowCore}, and then a \Robject{flowPlate} is created by integrating
 the plate annotation file with the \Robject{flowSet}. The \Robject{flowPlate} is then compensated, data quality is assessed, and gates
 are set according to a negative control. These control gates are then applied to test wells to find cells that have specific staining
@@ -116,13 +103,7 @@ deal with the large volume information. In order for this collaboration to work,
 results of the automated analysis. To this point, we demonstrate the equality of our results to those produced by an expert
 cytometrist using FlowJo\texttrademark.
 
-%Since the layout of FC-HCS plates often changes from experiment
-%to experiment, the annotation for each well needs to be customized for each
-%\Rclass{flowPlate}. \Rpackage{plateCore} uses an approach that is very similar to the cell-based high throughput screening \Rpackage{cellHTS2} package (ref),
-%where users must provide a \textit{plate configuration} file for each dataset. Once the cell level data has
-%been analyzed in \Rpackage{plateCore}, the summary well information (i.e., percentage of positive cells and median
-%signal intensities) can be imported into tools like \Rpackage{cellHTS2}, since FC-HCS experiments are just one 
-%type of cell-based high throughput screens.
+
 
 \begin{figure}
 \centering
