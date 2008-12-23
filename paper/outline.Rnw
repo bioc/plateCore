@@ -272,22 +272,6 @@ these changes change be incorporated into the analysis script and reproduced at 
 
 (Need some additional paragraphs about why plateCore is wonderful).
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\section*{References/Recent Related Publications}
-%\begin{itemize}
-%\item flowCore manuscript in Cytometry A\\
-%Gives an overview of flowCore data structures, transformation and gating examples, quality control checks (flowQ), and 
-%flowCore analysis philosophy.\\
-%\item Using flowViz to Visualize Flow Cytometry Data, Bioinformatics\\
-%Uses flowViz to make xyplots, ecdfplots, and time plots of GvHD data. Makes the case that visualizations can be used to aid automation.
-%\item Quality Assessment of Ungated Flow Cytometry data in High Throughput experiments, Cytometry A, GvHD data\\
-%Visualizing data: xyplots, histograms, ecdfplots, boxplots, and contour plots.\\
-%Outlier detection (Grubbs and KS)\\
-%Using flowViz/Core graphical output for quality assessment\\
-%\item Analysis of flow cytometry data using an automatic processing tool, Cytometry Part A\\
-%Automated analysis in Matlab.\\
-%\end{itemize}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
 \bibliographystyle{plain}
