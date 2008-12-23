@@ -22,7 +22,7 @@
 \newcommand{\code}[1]{{\texttt{#1}}}
 \bibliographystyle{plainnat}
 
-\title{Outline: Analysis of High Throughput Flow Cytometry Data using \Rpackage{plateCore}}
+\title{Analysis of High Throughput Flow Cytometry Data using \Rpackage{plateCore}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
@@ -151,12 +151,23 @@ gates are applied to identify cells that are positively stained for each marker.
 \clearpage
 \section*{Results}
 
+\subsection*{\Rpackage{plateCore}}
 
 
-\subsection*{\Rpackage{plateCore} Output}
+
+
+
+
+
+
+
+
+
+
+
 
 Output from the \Rpackage{plateCore} analysis is stored in \Robject{flowPlate} objects, which
-contain the gated FCS events along with the isotype gating results. The event level can
+contain the gated FSC-SSC events along with the isotype gating results. The event level can
 be visualized 
 
 The event level data can be 
