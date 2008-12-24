@@ -151,15 +151,12 @@ gates are applied to identify cells that are positively stained for each marker.
 \clearpage
 \section*{Results}
 \subsection*{\Rpackage{plateCore}}
-The 5 PBMC plates were analyzed using the approach shown in Figure~\ref{fig:analysis} and 
+The 5 PBMC plates were analyzed using the approach shown in Figure~\ref{fig:analysis}, and 
 results were stored in \Robject{flowPlates}.  These \Robject{flowPlates} contain the layout and
 annotation for the plate, morphology gated (FSC-SSC) events, and parameters values for the 
 the negative control gates (i.e. isotype gates). Event level data can be 
 visualized using plotting functions from \Rpackage{plateCore} and \Rpackage{flowViz}. 
-
-Additionally,
-the \Robject{wellAnnotation} table associated with each plate can be exported, merged, and 
-analyzed using microarray tools in R (Figure~\ref{fig:pbmcHeat}).
+Additionally, results from different plates can be aggregated 
 
 
 
