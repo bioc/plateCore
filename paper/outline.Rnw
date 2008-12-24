@@ -151,45 +151,18 @@ gates are applied to identify cells that are positively stained for each marker.
 \clearpage
 \section*{Results}
 \subsection*{\Rpackage{plateCore}}
-Output from the \Rpackage{plateCore} analysis are stored in \Robject{flowPlates}, which contain
-the morphology gated (FSC-SSC) events and parameters values for the negative control gates 
-(i.e. isotype gates). 
+The 5 PBMC plates were analyzed using the approach shown in Figure~\ref{fig:analysis} and 
+results were stored in \Robject{flowPlates}.  These \Robject{flowPlates} contain the layout and
+annotation for the plate, morphology gated (FSC-SSC) events, and parameters values for the 
+the negative control gates (i.e. isotype gates). Event level data can be 
+visualized using plotting functions from \Rpackage{plateCore} and \Rpackage{flowViz}. 
 
-
-Analysis of each 96-well PBMC plate using the approach shown in Figure~\ref{fig:analysis} 
-
-
-Results for each of the 5 96-well plates from the \Rpackage{plateCore} analysis are 
-stored in a \Robject{flowPlate}, which  
-
-
-
-
-
-
-
-
-
-
-
-
-
-Output from the \Rpackage{plateCore} analysis is stored in \Robject{flowPlate} objects, which
-contain the gated FSC-SSC events along with the isotype gating results. The event level can
-be visualized 
-
-The event level data can be 
-visualized using plotting functions from \Rpackage{plateCore} and \Rpackage{flowViz}. Additionally,
+Additionally,
 the \Robject{wellAnnotation} table associated with each plate can be exported, merged, and 
 analyzed using microarray tools in R (Figure~\ref{fig:pbmcHeat}).
 
 
-Analysis output for each 96-well plate was stored in a \Robject{flowPlate}, which are the \Rpackage{plateCore}
-data structures containing the raw FCM input and isotype gating results.
-The \Robject{wellAnnotation} for each \Robject{flowPlate} was then merged
-into a single \Robject{data.frame}, containing the percent positive results from each plate.
-These values can then visualized
-using microarray tools in R (). 
+
 
 Once a marker of interest has been identified, the next step is usually to make density or dotplots of the signals from each
 plate. Although these plots can be created individually, it is more convenient to have a combined data object so that results 
