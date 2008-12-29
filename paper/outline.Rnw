@@ -180,7 +180,8 @@ between different donors. The power to detect differences in this study is limit
 only 2 donors and the level of replication is low (2-3 plates per donor). Figure~\ref{fig:donorVar} shows 
 the expected and observed variation in the percentage of positively stained cells for the
 83 positive ($\ge$ 10\%) markers. Histograms produced using \Rpackage{plateCore} are shown in Figure~\ref{fig:pbmcCDbd69}
-are shown for a selected marker with a high relatively level of variation.
+for a selected marker, CDbd69, that exhbited a high level of variation in the percentage of positive stained cells
+between the 5 PBMC plates.
 
 \begin{figure}
 \centering
@@ -221,10 +222,6 @@ text(markMs[markSDs>20],markSDs[markSDs>20]+1,temp[markSDs>20,1],cex=0.8)
 versus the observed (circles) and expected (line) sample standard deviation.}
 \label{fig:donorVar}
 \end{figure}
-
-
-
-
 
 \begin{figure}
 \centering
