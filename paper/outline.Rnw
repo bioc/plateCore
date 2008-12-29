@@ -6,6 +6,10 @@
 
 \SweaveOpts{keep.source=TRUE}
 
+<<echo=FALSE,results=hide>>=
+library(plateCore)
+@
+
 \textwidth=6.2in
 \textheight=8.5in
 \oddsidemargin=.1in
@@ -210,11 +214,11 @@ markSDs <- apply(temp[,2:6],1,sd)
 markMs <- rowMeans(temp[,2:6])
 plot(markMs,markSDs,xlim=c(0,100),ylim=c(0,25),xlab="Mean % Positive",ylab="Standard Deviation")
 lines(100*perPos,100*predVar)
-text(markMs[markSDs>20],markSDs[markSDs>20]+1,temp[markSDs>20,1])
+text(markMs[markSDs>20],markSDs[markSDs>20]+1,temp[markSDs>20,1],cex=0.8)
 
 @
 \caption{Scatterplot showing the mean percentage of positive cells for the 5 PMBC plates
-versus the observed (circles) and expected (line) standard deviation.}
+versus the observed (circles) and expected (line) sample standard deviation.}
 \label{fig:donorVar}
 \end{figure}
 
@@ -225,7 +229,7 @@ versus the observed (circles) and expected (line) standard deviation.}
 \begin{figure}
 \centering
 <<label=pbmcCDbd69,fig=TRUE,echo=FALSE>>=
-library(plateCore)
+
 fileNames <- list.files("../../publicationPlateCore/pbmcRData",full.names=TRUE)
 
 plates <- lapply(fileNames,function(x){
