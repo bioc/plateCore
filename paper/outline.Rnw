@@ -151,12 +151,28 @@ gates are applied to identify cells that are positively stained for each marker.
 \clearpage
 \section*{Results}
 \subsection*{\Rpackage{plateCore}}
-The 5 PBMC plates were analyzed using the approach shown in Figure~\ref{fig:analysis}, and 
-results were stored in \Robject{flowPlates}.  These \Robject{flowPlates} contain the layout and
-annotation for the plate, morphology gated (FSC-SSC) events, and parameters values for the 
+The 5 PBMC plates were analyzed using the approach shown in Figure~\ref{fig:analysis}.  Results
+are stored in \Robject{flowPlates}, which are data structures that contain a description of the
+plate layout, morphology gated (FSC-SSC) events, and parameters values for the 
 the negative control gates (i.e. isotype gates). Event level data can be 
 visualized using plotting functions from \Rpackage{plateCore} and \Rpackage{flowViz}. 
-Additionally, results from different plates can be aggregated 
+Additionally, results from different plates can be aggregated, making it easier to compare
+results from different plates and to create the complex reports required to summarize results from 
+189 different markers.
+
+Eighty-three of the 189 markers were positive on at least one plate, and these markers are 
+shown in Figure~\ref{fig:pbmcHeat}. Positive for BD FACS CAP was defined as having more than 10\% of
+events above the isotype gate. Since antibody concentrations used in BD FACS CAP were designed
+to screen a number of different cell types, the concentrations are not necesarily optimal for these PBMC samples. 
+The 10\% cutoff is an empirically determined threshold (data not shown) used to select markers for further analysis,
+including single color titration and competition experiments to confirm that the marker is present
+and staining is specific. Markers that are highly positive ($\ge$ 90\%) are usually confirmed in
+follow-up studies, while markers that are low positives ($\le$ 15\%) are often the result of non-specific
+staining. Also, these percentages refer to the fraction of events above the isotype threshold, but
+this does not necesarily imply staining is heterogeneous.
+
+One common goal for a BD FACS CAP screen is to identify markers 
+
 
 
 
@@ -174,6 +190,11 @@ expression between the different donors (Figure~\ref{fig:pbmcCDbd69}).
 densityplot(~ `FL2-H` | as.factor(plateName),
 	virtPlate,filterResult="Negative.Control")
 @
+
+
+
+
+
 
 \begin{figure}
 \centering
@@ -193,6 +214,14 @@ heatmap.2(as.matrix(temp),col=redgreen(10),breaks=b,scale='none',trace='none',ce
 that had $\ge$ 10\% positive cells are shown here.}
 \label{fig:pbmcHeat}
 \end{figure}
+
+
+
+
+
+
+
+
 
 \begin{figure}
 \centering
