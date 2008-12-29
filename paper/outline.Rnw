@@ -163,38 +163,20 @@ results from different plates and to create the complex reports required to summ
 Eighty-three of the 189 markers were positive on at least one plate, and these markers are 
 shown in Figure~\ref{fig:pbmcHeat}. Positive for BD FACS CAP was defined as having more than 10\% of
 events above the isotype gate. Since antibody concentrations used in BD FACS CAP were designed
-to screen a number of different cell types, the concentrations are not necesarily optimal for these PBMC samples. 
+to screen a number of different cell types, the concentrations are not necessarily optimal for these PBMC samples. 
 The 10\% cutoff is an empirically determined threshold (data not shown) used to select markers for further analysis,
 including single color titration and competition experiments to confirm that the marker is present
 and staining is specific. Markers that are highly positive ($\ge$ 90\%) are usually confirmed in
 follow-up studies, while markers that are low positives ($\le$ 15\%) are often the result of non-specific
 staining. Also, these percentages refer to the fraction of events above the isotype threshold, but
-this does not necesarily imply staining is heterogeneous.
+this does not necessarily imply staining is heterogeneous.
 
-One common goal for a BD FACS CAP screen is to identify markers 
-
-
-
-
-
-Once a marker of interest has been identified, the next step is usually to make density or dotplots of the signals from each
-plate. Although these plots can be created individually, it is more convenient to have a combined data object so that results 
-from multiple \Robject{flowPlates} can be quickly summarized. \Rpackage{plateCore} supports combining \Robject{flowPlates} using
-the \Rfunction{fpbind} function. 
-<<eval=FALSE>>=
-virtPlate <- fpbind(plate1,plate2,plate3,plate4,plate5)
-@
-This virtual plate can then be used to make histograms for particular markers, such as CDbd69 which showed variable levels of
-expression between the different donors (Figure~\ref{fig:pbmcCDbd69}). 
-<<eval=FALSE>>=
-densityplot(~ `FL2-H` | as.factor(plateName),
-	virtPlate,filterResult="Negative.Control")
-@
-
-
-
-
-
+One common goal for a BD FACS CAP screen is to identify markers that show variation in expression
+between different donors. The power to detect differences in this study is limited since there are
+only 2 donors and the level of replication is low (2-3 plates per donor). Figure~\ref{fig:donorVar} shows 
+the expected and observed variation in the percentage of positively stained cells for the
+83 positive ($\ge$ 10\%) markers. Histograms produced using \Rpackage{plateCore} are shown in Figure~\ref{fig:pbmcCDbd69}
+are shown for a selected marker with a high relatively level of variation.
 
 \begin{figure}
 \centering
@@ -215,9 +197,26 @@ that had $\ge$ 10\% positive cells are shown here.}
 \label{fig:pbmcHeat}
 \end{figure}
 
+\begin{figure}
+\centering
+<<label=donorVar,fig=TRUE,echo=FALSE>>=
 
+temp <- read.delim("ppExp.csv",stringsAsFactors=FALSE,header=TRUE)
 
+perPos <- seq(0.01,0.99,0.01)
+predVar <- sqrt((perPos*(1-perPos))/5)
 
+markSDs <- apply(temp[,2:6],1,sd)
+markMs <- rowMeans(temp[,2:6])
+plot(markMs,markSDs,xlim=c(0,100),ylim=c(0,25),xlab="Mean % Positive",ylab="Standard Deviation")
+lines(100*perPos,100*predVar)
+text(markMs[markSDs>20],markSDs[markSDs>20]+1,temp[markSDs>20,1])
+
+@
+\caption{Scatterplot showing the mean percentage of positive cells for the 5 PMBC plates
+versus the observed (circles) and expected (line) standard deviation.}
+\label{fig:donorVar}
+\end{figure}
 
 
 
