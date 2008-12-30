@@ -268,10 +268,10 @@ specific antibody types and dyes, or after identifying positive test samples. Th
 employed in \Rpackage{plateCore} determines the threshold using only the isotype well.  The gate for each
 stained channel is set according to:
 \begin{equation}
-\text{Isotype Gate} = \max (\text{99th \%tile, MFI + 5 MAD}).
+\text{Isotype Gate} = \max (\text{99th \%tile Fluorescence Signal, MFI + 5 MAD}),
 \label{isoGate}
 \end{equation}
-Where MFI is the Median Fluorescence Intensity and MAD is Median Absolute Deviation of the fluorescence signal
+where MFI is the Median Fluorescence Intensity and MAD is Median Absolute Deviation
 on a linear scale. 
 
 
