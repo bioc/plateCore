@@ -258,9 +258,23 @@ lymphocytes are selected using a morphology (FSC-SSC) gate. Event data for the i
 visualized on a log scale, and the expression threshold for each stained channel is set by picking a
 value that lies above the bulk of the events. For BD FACS CAP, the isotype gate is set so that less than
 1\% of the events in the isotype well are above the threshold. These gates are then applied to the test
-wells, and the threshold may be moved up or down based on positive and negative test wells. The percentage
+wells, and the threshold may be moved up or down based on positive test wells. The percentage
 of cells above the threshold for each of the 189 antibodies is then exported to a separate spreadsheet for 
 each plate.
+
+Automating the creation and modification of isotype gates made by cytometrists in a BD FACS CAP analysis
+is extremely difficult. Gates may be adjusted based on expert knowledge about the performance of 
+specific antibody types and dyes, or after identifying positive test samples. The automated approach
+employed in \Rpackage{plateCore} determines the threshold using only the isotype well.  The gate for each
+stained channel is set according to:
+\begin{equation}
+\text{Isotype Gate} = \max (\text{99th \%tile, MFI + 5 MAD}).
+\label{isoGate}
+\end{equation}
+Where MFI is the Median Fluorescence Intensity and MAD is Median Absolute Deviation of the fluorescence signal
+on a linear scale. 
+
+
 
 
 
