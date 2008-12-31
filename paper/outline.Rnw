@@ -151,6 +151,20 @@ Next the threshold between positive and negative cells are determined using the 
 of non-specific binding in the primary antibodies. One-dimensional gates are created using using the isotype thresholds, and these
 gates are applied to identify cells that are positively stained for each marker. 
 
+In addition to \Rpackage{plateCore}, the 5 PBMC plates were also analyzed using FlowJo$^{\text{TM}}$,
+which is one of the standard FCM data analysis platforms. First, an analysis template is created that
+assigns test wells and their corresponding isotype control well to a one of 30 groups. Wells in each
+group have similar sets of 3 antibody-dye conjugates, and the expression threshold (i.e. isotype gate)
+is initially set using the isotype control well. Data for each plate is imported into FlowJo$^{\text{TM}}$
+using the template and
+lymphocytes were selected using a morphology (FSC-SSC) gate. Event data for the isotype well was then
+visualized on a log scale, and the expression threshold for each stained channel was set by picking a
+value that lies above the bulk of the events. For BD FACS\texttrademark CAP, the isotype gate is set so that less than
+1\% of the events in the isotype well are above the threshold. These gates are then applied to the test
+wells, and the threshold may be moved up or down based on positive test wells. The percentage
+of cells above the threshold for each of the 189 antibodies is then exported to a separate spreadsheet for 
+each plate.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
 \section*{Results}
@@ -165,8 +179,8 @@ results from different plates and to create the complex reports required to summ
 189 different markers.
 
 Eighty-three of the 189 markers were positive on at least one plate, and these markers are 
-shown in Figure~\ref{fig:pbmcHeat}. Positive for BD FACS CAP was defined as having more than 10\% of
-events above the isotype gate. Since antibody concentrations used in BD FACS CAP were designed
+shown in Figure~\ref{fig:pbmcHeat}. Positive for BD FACS\texttrademark CAP was defined as having more than 10\% of
+events above the isotype gate. Since antibody concentrations used in BD FACS\texttrademark CAP were designed
 to screen a number of different cell types, the concentrations are not necessarily optimal for these PBMC samples. 
 The 10\% cutoff is an empirically determined threshold (data not shown) used to select markers for further analysis,
 including single color titration and competition experiments to confirm that the marker is present
@@ -175,7 +189,7 @@ follow-up studies, while markers that are low positives ($\le$ 15\%) are often t
 staining. Also, these percentages refer to the fraction of events above the isotype threshold, but
 this does not necessarily imply staining is heterogeneous.
 
-A common goal for BD FACS CAP screens is to identify markers that show variation in expression levels
+A common goal for BD FACS\texttrademark CAP screens is to identify markers that show variation in expression levels
 between different donors. Unfortunately, the power to detect differences in this study is limited since there are
 only 2 donors and the level of replication is low (2-3 plates per donor). Figure~\ref{fig:donorVar} shows 
 the expected and observed variation in the percentage of positively stained cells for the
@@ -245,42 +259,29 @@ test wells are in magenta.}
 \label{fig:pbmcCDbd69}
 \end{figure}
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
-\subsection*{Comparison to Manual Analysis}
+\subsection*{Comparison to FlowJo\texttrademark Results}
 
-In addition to \Rpackage{plateCore}, the 5 PBMC plates were also analyzed using FlowJo$^{\text{TM}}$,
-which is one of the standard FCM data analysis platforms. First, an analysis template is created that
-assigns test wells and their corresponding isotype control well to a one of 30 groups. Wells in each
-group have similar sets of 3 antibody-dye conjugates, and the expression threshold (i.e. isotype gate)
-is initially set using the isotype control well. Data for each plate is imported into FJ using the template and
-lymphocytes are selected using a morphology (FSC-SSC) gate. Event data for the isotype well is then
-visualized on a log scale, and the expression threshold for each stained channel is set by picking a
-value that lies above the bulk of the events. For BD FACS CAP, the isotype gate is set so that less than
-1\% of the events in the isotype well are above the threshold. These gates are then applied to the test
-wells, and the threshold may be moved up or down based on positive test wells. The percentage
-of cells above the threshold for each of the 189 antibodies is then exported to a separate spreadsheet for 
-each plate.
-
-Automating the creation and modification of isotype gates made by cytometrists in a BD FACS CAP analysis
-is extremely difficult. Gates may be adjusted based on expert knowledge about the performance of 
+Automating the creation and modification of isotype gates made by cytometrists analyzing BD FACS\texttrademark CAP data
+using FlowJo\texttrademark is extremely difficult. Cytometrists adjust gates based on expert knowledge about the performance of 
 specific antibody types and dyes, or after identifying positive test samples. The automated approach
-employed in \Rpackage{plateCore} determines the threshold using only the isotype well.  The gate for each
-stained channel is set according to:
+employed in \Rpackage{plateCore} determines the threshold using isotype controls.  The gate (G$_{ij}$) for isotype $i$, channel $j$
+is set according to:
 \begin{equation}
-\text{Isotype Gate} = \max (\text{99th \%tile Fluorescence Signal, MFI + 5 MAD}),
+\text{G}_{ij} = \max (\text{99th}_{ij} \text{, MFI}_{ij}+ 5 \text{MAD}_{ij}),
 \label{isoGate}
 \end{equation}
-where MFI is the Median Fluorescence Intensity and MAD is Median Absolute Deviation
-on a linear scale. 
+where 99th$_{ij}$ is the 99th percentile for the fluorescence signal,
+MFI is the Median Fluorescence Intensity, and MAD is Median Absolute Deviation
+on a linear scale. While this simple, non-parametric method works surprisingly well for BD FACS\texttrademark CAP,
+advances in model-based clustering methods, such as those in \Rpackage{flowClust}, should lead
+to performance improvements in automated gating. Comparisons of the \Rpackage{plateCore} and FlowJo\texttrademark 
+analysis are shown in Figure~\ref{fig:pcVSman}.
 
-
-
-
-
-
-Figure~\ref{fig:pcVSman} shows how the results from FlowJo$^{\text{TM}}$ compare to \Rpackage{plateCore}.
-
+\clearpage
 \begin{figure}
 \centering
 <<label=pcVSman,fig=TRUE,echo=FALSE>>=
@@ -305,10 +306,34 @@ data in this plot)}
 \clearpage
 \section*{Discussion}
 
-The PBMC example shows that a complex analysis of a 96-well plate, stained with 189 antibodies,
-can be constructed in 15-20 lines of code using \Rpackage{plateCore}. Lymphocytes were selected
-using \Rpackage{flowCore} gates and visualized using \Rpackage{flowViz} plots. One-dimensional 
-gates were constructed using isotype wells and applied to the test wells to identify positive cells.
+
+1) Discuss results of this study
+2) plateCore is not intended to replace GUI tools, often used in parallel for BD FACS CAP.
+	It's difficult to use GUI tools to analyze large datasets, difficult to handle annotation
+3) Open platform
+	Other 
+
+
+
+
+Results from this BD FACS\texttrademark CAP study of PBMC lymphocytes show that a complex analysis of a 96-well plate,
+stained with 189 antibodies, can be constructed in 15-20 lines of code with \Rpackage{plateCore}. Using FlowJo\texttrademark
+as a benchmark for evaluating \Rpackage{plateCore} gating, the non-parametric method for calculating the
+isotype gate (i.e. non-specific binding) closely replicates gates set by expert cytometrists (see Figure~\ref{fig:pcVSman}).
+
+
+
+
+
+
+
+
+The percentage
+of positive cells estimated using \Rpackage{plateCore} gating are strongly correlated with the FlowJo\texttrademark
+results. 
+
+
+
 
 Given a \textit{plate configuration} file, this same approach can be used to analyze any
 negative control based FC-HCS study. Although adjustments to the automatically generated negative control gates may be needed,
