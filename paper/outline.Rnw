@@ -306,6 +306,25 @@ data in this plot)}
 \clearpage
 \section*{Discussion}
 
+The design and execution of large flow experiments, like BD FACS\texttrademark CAP, highlight the 
+difficulty of applying existing flow analysis platforms to high-throughput studies. Generating and
+interpreting results from this PBMC study required extensive collaboration between flow cytometrists,
+bioinformaticians, and statisticians. At various points in the analysis, each group needed to access
+the raw data, annotation, and details about the experimental design. Providing this access using
+stand-alone flow platforms is expensive in terms of the price of multiple software licenses
+and in time spent training statisticians and bioinformaticians to use the programs. 
+Fortunately the Bioconductor flow packages are modeled on standard data structures used for 
+microarrays, which should already be familiar to most quantitative individuals working on 
+high-throughput biological problems. We found that \Rpacakge{flowCore}, \Rpackage{flowViz},
+and \Rpackage{plateCore} provided an open analysis platform that facilitated communication between
+the flow cytometrists generating the data, and the computational experts analyzing the data.
+
+
+
+
+
+
+
 
 1) Discuss results of this study
 2) plateCore is not intended to replace GUI tools, often used in parallel for BD FACS CAP.
