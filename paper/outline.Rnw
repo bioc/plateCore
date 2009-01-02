@@ -114,10 +114,7 @@ cytometrist using FlowJo\texttrademark.
 \includegraphics[width=7in,height=6in]{analysisSteps.pdf}
 \caption{Typical plateCore workflow on the left, and examples of each step from a sample analysis are shown on the right.
 Generating reports and plots is a multi-step that typically involves merging output from several plates, and the required
-code is not shown here.
-If necessary, the threshold control gates created automatically from \Rfunction{setControlGates} are adjusted based on input from flow experts. 
-These new gates are established based on the gap between negative and positive test samples, whereas the automated
-control gates were set using only negative control wells.}
+code is not shown here.}
 \label{fig:analysis}
 \end{figure}
  
@@ -211,8 +208,10 @@ b <- seq(0,100,by=10)
 #heatmap.2(as.matrix(temp),col=mapcol,breaks=b,scale='none',trace='none',cexRow=0.3)
 heatmap.2(as.matrix(temp),col=redgreen(10),breaks=b,scale='none',trace='none',cexRow=0.3)
 @
-\caption{Heatmap showing the percentage of positive cells from the 5 different PBMC lymphocyte plates. Only the 83 markers
-that had $\ge$ 10\% positive cells are shown here.}
+\caption{Heatmap showing the percentage of positive cells from the 5 different PBMC lymphocyte plates. The 83 markers
+with $\ge$ 10\% positive cells are shown here. Staining for the  remaining 106 markers was not significantly higher
+than background, according to the expression threshold set using matched isotype controls. PBMCs on plates 8774-8775 and
+9206-9208 are from a different individuals.}
 \label{fig:pbmcHeat}
 \end{figure}
 
@@ -232,8 +231,14 @@ lines(100*perPos,100*predVar)
 text(markMs[markSDs>20],markSDs[markSDs>20]+1,temp[markSDs>20,1],cex=0.8)
 
 @
-\caption{Scatterplot showing the mean percentage of positive cells for the 5 PMBC plates
-versus the observed (circles) and expected (line) sample standard deviation.}
+\caption{Scatterplot showing the mean percentage of positive cells for each positive marker
+versus the observed (circles) and expected (line) sample standard deviation. Expected
+values follow a binomial distribution with n=5. The 3 markers that lie above the expected line will be 
+further evaluated using titration and competition experiments to see if these results represent
+real variation between the two donors. The curve in the expected line reflects the difficulty
+in gating samples whose median signal (MFI) is near the isotype cutoff, since the percentage of positive 
+cells calculated can shift dramatically with small changes in the gate.
+}
 \label{fig:donorVar}
 \end{figure}
 
