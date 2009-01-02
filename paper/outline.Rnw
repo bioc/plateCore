@@ -306,7 +306,18 @@ data in this plot)}
 \clearpage
 \section*{Discussion}
 
-The design and execution of large flow experiments, like BD FACS\texttrademark CAP, highlight the 
+
+Our approach to this PBMC BD FACS\texttrademark CAP study relied on processing the raw data
+in parallel using both FlowJo\texttrademark and \Rpackage{plateCore}. FlowJo\texttrademark
+allowed the ctyometrists to thoroughly investigate individual wells, and gave them confidence
+that the \Rpackage{plateCore} results were correct (see Figure~\ref{fig:pcVSman}). Using
+\Rpackage{plateCore}, we were able to reduce the level subjectivity in setting isotype gates,
+eliminate mistakes associated with manual export and merging of plate output,
+and automate the creation of plots and data quality reports that summarized the experiment. 
+Additionally, the \Rpackage{plateCore} scripts and experimental annotation can
+be shared with other cytometry groups, allowing them to reproduce our analysis. 
+
+The complexity of large flow experiments, like BD FACS\texttrademark CAP, highlight the 
 difficulty of applying existing flow analysis platforms to high-throughput studies. Generating and
 interpreting results from this PBMC study required extensive collaboration between flow cytometrists,
 bioinformaticians, and statisticians. At various points in the analysis, each group needed to access
@@ -319,46 +330,6 @@ high-throughput biological problems. We found that \Rpacakge{flowCore}, \Rpackag
 and \Rpackage{plateCore} provided an open analysis platform that facilitated communication between
 the flow cytometrists generating the data, and the computational experts analyzing the data.
 
-
-
-
-
-
-
-
-1) Discuss results of this study
-2) plateCore is not intended to replace GUI tools, often used in parallel for BD FACS CAP.
-	It's difficult to use GUI tools to analyze large datasets, difficult to handle annotation
-3) Open platform
-	Other 
-
-
-
-
-Results from this BD FACS\texttrademark CAP study of PBMC lymphocytes show that a complex analysis of a 96-well plate,
-stained with 189 antibodies, can be constructed in 15-20 lines of code with \Rpackage{plateCore}. Using FlowJo\texttrademark
-as a benchmark for evaluating \Rpackage{plateCore} gating, the non-parametric method for calculating the
-isotype gate (i.e. non-specific binding) closely replicates gates set by expert cytometrists (see Figure~\ref{fig:pcVSman}).
-
-
-
-
-
-
-
-
-The percentage
-of positive cells estimated using \Rpackage{plateCore} gating are strongly correlated with the FlowJo\texttrademark
-results. 
-
-
-
-
-Given a \textit{plate configuration} file, this same approach can be used to analyze any
-negative control based FC-HCS study. Although adjustments to the automatically generated negative control gates may be needed,
-these changes change be incorporated into the analysis script and reproduced at a later time.
-
-(Need some additional paragraphs about why plateCore is wonderful).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
