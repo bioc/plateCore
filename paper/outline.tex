@@ -34,17 +34,18 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Abstract}
 \subsection*{Background}
-High throughput flow studies are often run in a 96 or 384-well plate format, with a number of different samples, 
+High throughput flow cytometry (FCM) studies are often run in a 96 or 384-well plate format, with a number of different samples, 
 controls, and antibodies-dye conjugates present on each plate. 
 Analyzing a plate requires tracking the contents
 of each well, matching sample wells with control wells, gating each well/channel separately, making the appropriate plots,
 assessing quality, and finally aggregating the results from multiple plates into an experiment level data object. 
 This analysis can be a monumental task using traditional point-and-click software packages, even when multiple instances are
-deployed. We developed \Rpackage{plateCore} as an R/Bioconductor packaged to make processing and analysis of large, complex flow cytometry (FCM) datasets
-easier. 
+deployed. We developed \Rpackage{plateCore} as an R/Bioconductor packaged to make processing and analysis of
+large, complex datasets easier. 
 
 \subsection*{Methods}
-\Rpackage{plateCore} was used to analyze the results from a BD FACS\texttrademark CAP screening experiment where 5 PBMC samples 
+\Rpackage{plateCore} was used to analyze the results from a BD FACS\texttrademark CAP screening experiment where 5
+Peripheral Blood Mononucleocyte (PBMC) samples 
 were assayed for 189 different human cell surface markers. 
 This same dataset was also analyzed by a cytometry expert using FlowJo\texttrademark.
 
@@ -67,7 +68,7 @@ preprocessing, gating (i.e. filtering), and summarizing results is needed for ro
 Ideally these steps would be automated,
 allowing analysis pipelines to be robust, objective, and match the high-throughput capacity of modern cytometers. 
 Unfortunately, current approaches to FC-HCS analysis are semi-automated at best,
-often requiring significant manual intervention to identify cells of interest and set the appropriate gates. 
+and they often significant manual intervention to identify cells of interest and set the appropriate gates. 
 Since the manual contribution is subjective and prone to error when working with large numbers of samples \citep{Maecker2005},
 it is desirable to develop programmatic approaches to process the data.
 
@@ -122,7 +123,8 @@ code is not shown here.}
 \subsection*{Data}
 
 The peripheral blood mononucleocyte (PBMC) data used in this study consists of 5 samples that were analyzed on 96-well plates
-using BD FACS\texttrademark CAP (ref ?). On each plate, there are 189 different human cell surface antibody-dye conjugates that
+using BD FACS\texttrademark CAP (http://www.bd.com/technologies/discovery\_platform/BD\_FACS\_CAP.asp).
+On each plate, there are 189 different human cell surface antibody-dye conjugates that
 are arrayed 3 per well (63 test wells), along with 30 isotype control wells and 3 unstained controls.
 Test antibodies and isotypes are arrayed 3 per well, and the data was compensated
 on the cytometer (BD FACSCalibur\texttrademark). The 189 antibodies were selected to provide a broad expression profile
@@ -148,9 +150,9 @@ gates are applied to identify cells that are positively stained for each marker.
 
 In addition to \Rpackage{plateCore}, the 5 PBMC plates were also analyzed using FlowJo$^{\text{TM}}$,
 which is one of the standard FCM data analysis platforms. First, an analysis template is created that
-assigns test wells and their corresponding isotype control well to a one of 30 groups. Wells in each
+assigns test wells and their corresponding isotype control well to one of 30 groups. Wells in each
 group have similar sets of 3 antibody-dye conjugates, and the expression threshold (i.e. isotype gate)
-is initially set using the isotype control well. Data for each plate is imported into FlowJo$^{\text{TM}}$
+is initially set using the isotype control well. Data for each plate was imported into FlowJo$^{\text{TM}}$
 using the template and
 lymphocytes were selected using a morphology (FSC-SSC) gate. Event data for the isotype well was then
 visualized on a log scale, and the expression threshold for each stained channel was set by picking a
@@ -185,7 +187,7 @@ staining. Also, these percentages refer to the fraction of events above the isot
 this does not necessarily imply staining is heterogeneous.
 
 A common goal for BD FACS\texttrademark CAP screens is to identify markers that show variation in expression levels
-between different donors. Unfortunately, the power to detect differences in this study is limited since there are
+among different donors. Unfortunately, the power to detect differences in this study is limited since there are
 only 2 donors and the level of replication is low (2-3 plates per donor). Figure~\ref{fig:donorVar} shows 
 the expected and observed variation in the percentage of positively stained cells for the
 83 positive ($\ge$ 10\%) markers. Histograms produced using \Rpackage{plateCore} are shown in Figure~\ref{fig:pbmcCDbd69}
