@@ -80,8 +80,8 @@ in \Rpackage{flowViz} \citep{sarkar2008ufv}. The Bioconductor model for flow dat
 the development of new analysis methods, since the overhead associated with
 accessing and visualizing flow data is handled by \Rpackage{flowCore} and \Rpackage{flowViz}.
 The availability of \Rpackage{flowCore} and \Rpackage{flowViz} has enabled the creation of new tools for
-quality assessment of large flow experiments (\Rpackage{flowQ} \citep{}) and model-based clustering and automated gating
-(\Rpackage{flowClust} \cite{lo2008agf}).
+quality assessment of large flow experiments, such as \Rpackage{flowQ} \citep{}, and model-based clustering and automated gating
+,such as \Rpackage{flowClust} \cite{lo2008agf}.
 \Rpackage{plateCore} also takes advantage of the functionality in \Rpackage{flowCore} and \Rpackage{flowViz}
 to create methods and data structures for processing large, plate-based flow datasets.  
 
@@ -94,7 +94,7 @@ other flow cytometry software packages, it can be difficult to reproduce the gat
 
 In addition to subjective gating, the lack of a standard format for describing large flow experiments also
 makes it difficult for anyone other than the original experimenter to replicate an analysis. 
-The adoption of ACS specifications (ref?) should make it easier to access metadata in future flow studies, but currently
+The adoption of ACS specifications (http://www.ficcs.org/data-standards.html) should make it easier to access metadata in future flow studies, but currently
 this information is typically provided either as spreadsheet or a pictorial layout of a 96 well plate. 
 Since the creation of \Robject{flowPlate} requires users to make a standard sample annotation file, plate layouts from \Rpackage{plateCore}
 can then be easily shared along with the raw FCS2.0/3.0 files. 
@@ -123,11 +123,10 @@ code is not shown here.}
 \subsection*{Data}
 
 The peripheral blood mononucleocyte (PBMC) data used in this study consists of 5 samples that were analyzed on 96-well plates
-using BD FACS\texttrademark CAP (http://www.bd.com/technologies/discovery\_platform/BD\_FACS\_CAP.asp).
-On each plate, there are 189 different human cell surface antibody-dye conjugates that
-are arrayed 3 per well (63 test wells), along with 30 isotype control wells and 3 unstained controls.
-Test antibodies and isotypes are arrayed 3 per well, and the data was compensated
-on the cytometer (BD FACSCalibur\texttrademark). The 189 antibodies were selected to provide a broad expression profile
+using BD FACS\texttrademark CAP (http://www.bd.com/\\technologies/discovery\_platform/BD\_FACS\_CAP.asp).
+On each plate, there are 189 different human cell surface antibody-dye conjugates (63 test wells), 
+along with 30 isotype control wells and 3 unstained controls.
+The 189 antibodies were selected to provide a broad expression profile
 for a large number of cell surface markers, including 103 proteins with GO annotation for receptor activity, 80
 for immune response, and 55 for signal transduction. The raw data is available for download from http://www.ficcs.org in the
 plateData.tar.gz file. 
@@ -149,9 +148,9 @@ of non-specific binding in the primary antibodies. One-dimensional gates are cre
 gates are applied to identify cells that are positively stained for each marker. 
 
 In addition to \Rpackage{plateCore}, the 5 PBMC plates were also analyzed using FlowJo$^{\text{TM}}$,
-which is one of the standard FCM data analysis platforms. First, an analysis template is created that
-assigns test wells and their corresponding isotype control well to one of 30 groups. Wells in each
-group have similar sets of 3 antibody-dye conjugates, and the expression threshold (i.e. isotype gate)
+which is one of the standard FCM data analysis platforms. First, an analysis template is created
+where test wells and their corresponding isotype control well are assigned to one of 30 groups. Wells in each
+group have similar sets of antibody-dye conjugates, and the expression threshold (i.e. isotype gate)
 is initially set using the isotype control well. Data for each plate was imported into FlowJo$^{\text{TM}}$
 using the template and
 lymphocytes were selected using a morphology (FSC-SSC) gate. Event data for the isotype well was then
