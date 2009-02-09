@@ -145,9 +145,9 @@ setMethod("filterBoundary",
 #              stop("'result' represents more than one filter.\nThis should not have happened, please send a bug report")
 
           ## FIXME: the next section assumes details which may change (but don't know how else to access them)
-#          result.details <- result.details[[1]]
-          rect.min <- result.details$filter@min[parameters]
-          rect.max <- result.details$filter@max[parameters]
+
+          rect.min <- result.details$rectangleGate$filter@min[parameters]
+          rect.max <- result.details$rectangleGate$filter@max[parameters]
           ans <-
               list(x = c(rect.min[1], rect.max[1], rect.max[1], rect.min[1]),
                    y = c(rect.min[2], rect.min[2], rect.max[2], rect.max[2]))

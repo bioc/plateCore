@@ -87,7 +87,6 @@ panel.xyplot.flowPlate <-
 
 	if ((!is.null(filter) && !is.null(filter[[nm]])) && (is.list(displayFilter) || displayFilter))
 	{
-
 		display.pars <- list(border = TRUE)
 		filter.boundary <-
 				filterBoundary(filter = filter[[nm]],
