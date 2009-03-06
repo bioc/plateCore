@@ -34,7 +34,7 @@ setMethod("fpbind",signature("flowPlate","flowPlate"),function(p1,p2,...,plateNa
 			for(i in 2:length(argl)) {
 				if(!all.equal(colnames(annl[[1]]),colnames(annl[[i]]))) stop("flowPlate Well Annotations must have identical column names.")
 			}
-	
+			
 			## The sample names have to be unique in order for the phenoData on the flowSet to work correctly.
 			## Can't have rows with identical names
 			sampNames <- unlist(lapply(argl,sampleNames))
@@ -45,7 +45,7 @@ setMethod("fpbind",signature("flowPlate","flowPlate"),function(p1,p2,...,plateNa
 			
 			uniqList <- vector("list",length=length(sampLength))
 #			index <- 1
-
+			
 			uniqList <- lapply(1:length(sampLength), function(i) {
 						index2 <- sum(sapply(sampLength[1:i],function(x) x[[1]]))
 						index1 <- index2 - sampLength[[i]] + 1
@@ -53,7 +53,7 @@ setMethod("fpbind",signature("flowPlate","flowPlate"),function(p1,p2,...,plateNa
 						names(temp) <- sampleNames(argl[[i]])
 						temp
 					})
-
+			
 			## Remake the annotation list with the unique names
 			annl <- lapply(1:length(argl),function(i) {			
 						anndf <- argl[[i]]@wellAnnotation
@@ -67,21 +67,21 @@ setMethod("fpbind",signature("flowPlate","flowPlate"),function(p1,p2,...,plateNa
 			for(i in 2:length(annl)) {
 				wellAnnotation <- rbind(wellAnnotation,annl[[i]])
 			}
-
+			
 			## Get the frames		
 			frames <- unlist(lapply(1:length(argl),function(i) {			
-					x <- argl[[i]]
-					temp <- x@plateSet@frames
-					fsList <- lapply(names(uniqList[[i]]),function(fileName) {
-									temp[[fileName]]							
-							})
-					names(fsList) <- uniqList[[i]]
-					fsList
-				}))
-	
+								x <- argl[[i]]
+								temp <- x@plateSet@frames
+								fsList <- lapply(names(uniqList[[i]]),function(fileName) {
+											temp[[fileName]]							
+										})
+								names(fsList) <- uniqList[[i]]
+								fsList
+							}))
+			
 			## Now make a flowPlate
 			np <- flowPlate(as(frames,"flowSet"),wellAnnotation,plateName=plateName)
-
+			
 			return(np)
 		})
 
@@ -91,24 +91,24 @@ setMethod("fpbind",signature("flowPlate","flowPlate"),function(p1,p2,...,plateNa
 #########################################################
 setMethod("getGroups",signature("flowPlate"),function(data,type="Negative.Control",chan,...) {
 			
-	wellIds <- unique(data@wellAnnotation$Negative.Control)
-	wellIds <- wellIds[wellIds %in% pData(phenoData(data@plateSet))$Well.Id]
-	
-	wells <- list()
-	
-	if(type=="Negative.Control") {
-		wells <- lapply(wellIds,function(x) {
-			wells <- unlist(subset(data@wellAnnotation,Channel==chan & Negative.Control==x,select=name))
-			wells <- c(unlist(subset(data@wellAnnotation,Channel==chan & Well.Id==x,select=name)),wells)
-			wells <- unique(wells)	
-			if(!length(wells)) NA
-			else wells
+			wellIds <- unique(data@wellAnnotation$Negative.Control)
+			wellIds <- wellIds[wellIds %in% pData(phenoData(data@plateSet))$Well.Id]
+			
+			wells <- list()
+			
+			if(type=="Negative.Control") {
+				wells <- lapply(wellIds,function(x) {
+							wells <- unlist(subset(data@wellAnnotation,Channel==chan & Negative.Control==x,select=name))
+							wells <- c(unlist(subset(data@wellAnnotation,Channel==chan & Well.Id==x,select=name)),wells)
+							wells <- unique(wells)	
+							if(!length(wells)) NA
+							else wells
+						})
+			}
+			
+			wells <- wells[!is.na(wells)]
+			return(wells)
 		})
-	}
-	
-	wells <- wells[!is.na(wells)]
-	return(wells)
-})
 
 
 ##########################################################################
@@ -116,18 +116,18 @@ setMethod("getGroups",signature("flowPlate"),function(data,type="Negative.Contro
 ## of gates should be included later. 
 ##############################################################################
 setMethod("%on%",signature(e2="flowPlate"),function(e1,e2) {
-		
-		if("Negative.Control.Gate" %in% colnames(e2@wellAnnotation)) {
-			for(y in e1@transforms) {
-				wellList <- which(e2@wellAnnotation$Channel %in% y@input)	
-				e2@wellAnnotation[wellList,"Negative.Control.Gate"] <- y@f(e2@wellAnnotation[wellList,"Negative.Control.Gate"])			  	
-			}
-		}
 			
-		e2@plateSet <- fsApply(e2@plateSet,"%on%",e1=e1)	
-		e2
-
-	})
+			if("Negative.Control.Gate" %in% colnames(e2@wellAnnotation)) {
+				for(y in e1@transforms) {
+					wellList <- which(e2@wellAnnotation$Channel %in% y@input)	
+					e2@wellAnnotation[wellList,"Negative.Control.Gate"] <- y@f(e2@wellAnnotation[wellList,"Negative.Control.Gate"])			  	
+				}
+			}
+			
+			e2@plateSet <- fsApply(e2@plateSet,"%on%",e1=e1)	
+			e2
+			
+		})
 
 ######################################################
 ## Constructor for flowPlates
@@ -140,18 +140,18 @@ setMethod("flowPlate",signature("flowSet"),function(data,wellAnnotation,plateNam
 			wellAnnot <- data.frame(wellAnnotation,plateName=plateName,stringsAsFactors=FALSE)		
 			## Create a data.frame that corresponds to phenoData.  All info about a well is on a single row
 			config <- makePlateLayout(wellAnnot)
-	
+			
 			##Add the phenoData to the flowSet
 			data <- flowPhenoMerge(data,config)
-		
+			
 			## When a flowPlate is created from a plateLayout template, the names initially missing and need to be added.  Names correspond
 			## to filenames
 			if(colnames(wellAnnot)[1]=="Well.Id") {
 				wellAnnot$name <- sapply(wellAnnot$Well.Id,function(x) {
-						rownames(pData(phenoData(data))[pData(phenoData(data))$Well.Id==x,])
-					}) 
+							rownames(pData(phenoData(data))[pData(phenoData(data))$Well.Id==x,])
+						}) 
 			}
-
+			
 			## Only keep annotation for samples that are in  the dataset
 			wellAnnot <- subset(wellAnnot,name %in% sampleNames(data) )
 			
@@ -215,11 +215,16 @@ setMethod("fixAutoFl",signature("flowPlate"),
 			## Apply the correction to the channels of interest in chanCols
 			## Truncate values less than 0 at 0
 			plateSet <- fsApply(plateSet,function(x) {
-						initMFIs <- log(apply(exprs(x)[,chanCols],2,median))	
+						initMFIs <- log(apply(exprs(x)[,chanCols],2,median))
+						## these are values that are 1 (minimum value before the correction, we want them to be the same after the
+						## corrrection
+						selectOnes <- (exprs(x) == 1)
 						exprs(x)[,chanCols] <- exp(log(exprs(x)[,chanCols])-(log(exprs(x)[,fsc]) %*% coeff.mat)) 
 						diffMFI <- matrix(rep(initMFIs - log(apply(exprs(x)[,chanCols],2,median)),nrow(exprs(x))),ncol=length(chanCols),byrow=TRUE)
 						exprs(x)[,chanCols] <- exp(log(exprs(x)[,chanCols]) + diffMFI)
 						x@exprs[x@exprs<0] <- 0	
+						## no reset any values that were 1 before to be 1 again
+						x@exprs[selectOnes] <- 1
 						x
 					})
 			fp@plateSet <- plateSet
@@ -231,154 +236,165 @@ setMethod("fixAutoFl",signature("flowPlate"),
 ## would save me trouble with environments hanging around.
 ######################################################################
 setMethod("compensate", signature(x="flowPlate"), function(x,spillover) {
-
-	temp <- x@plateSet@frames
-	
-	frames <- lapply(ls(temp),function(fileName) {
-			well <- pData(phenoData(x@plateSet))[fileName,]		
-			dyeCols <- colnames(spillover)[!is.na(well[,gsub("-",".",colnames(spillover))])]
 			
-			if(length(dyeCols)>=2) {
-				compensate(temp[[fileName]],spillover[dyeCols,dyeCols])			
-			} else {
-				temp[[fileName]]
-			}								
-	})
+			temp <- x@plateSet@frames
 			
-	names(frames) <- ls(temp)	
-	
-	config <- makePlateLayout(x@wellAnnotation)
-	
-	plateSet <- flowPhenoMerge(as(frames,"flowSet"),config)
-	
-	x@plateSet <- plateSet
-	
-	return(x)
-})
+			frames <- lapply(ls(temp),function(fileName) {
+						well <- pData(phenoData(x@plateSet))[fileName,]		
+						dyeCols <- colnames(spillover)[!is.na(well[,gsub("-",".",colnames(spillover))])]
+						
+						if(length(dyeCols)>=2) {
+							compensate(temp[[fileName]],spillover[dyeCols,dyeCols])			
+						} else {
+							temp[[fileName]]
+						}								
+					})
+			
+			names(frames) <- ls(temp)	
+			
+			config <- makePlateLayout(x@wellAnnotation)
+			
+			plateSet <- flowPhenoMerge(as(frames,"flowSet"),config)
+			
+			x@plateSet <- plateSet
+			
+			return(x)
+		})
 
 
 ######################################################################
 ######################################################################
 setMethod("summaryStats", signature("flowPlate"), function(data,...) {
-
-	wellAnnotation <- data@wellAnnotation
-
-	wellAnnotation$MFI <- apply(wellAnnotation,1,function(x) {
-		chan <- x[["Channel"]]
-		frame <- data@plateSet[[x[["name"]]]]
-
-		if(chan %in% colnames(exprs(frame)) && nrow(exprs(frame))>0) {
-			return(median(exprs(frame)[,chan]))
-		} else { NA }	
-	})
-
-	wellAnnotation$MFI.Ratio <- apply(wellAnnotation,1,function(x) {
-			negWell <- x[["Negative.Control"]]
-			chan <- x[["Channel"]]
-			negMFI <- subset(wellAnnotation,Well.Id==negWell & Channel==chan,select=MFI)
-			frame <- data@plateSet[[x[["name"]]]]
 			
-			if(chan %in% colnames(exprs(frame)) && negWell!="" && nrow(exprs(frame))>0) {
-				negMFI <- subset(wellAnnotation,Well.Id==negWell & Channel==chan,select=MFI)
-				if(!is.na(negMFI) && !is.na(x[["MFI"]])) return(as.numeric(x[["MFI"]])/as.numeric(negMFI))
-			} else { NA }	
-	})	
-
-	data@wellAnnotation <- wellAnnotation
-	
-	return(data)
-
-})
-
-setMethod("setControlGates", signature("flowPlate"), function(data,gateType="Negative.Control",numMads=5,...) {
+			wellAnnotation <- data@wellAnnotation
 			
-	if(gateType=="Negative.Control") {
-		## First get the control gate for each of the isotype groups.	
+			wellAnnotation$MFI <- apply(wellAnnotation,1,function(x) {
+						chan <- x[["Channel"]]
+						frame <- data@plateSet[[x[["name"]]]]
+						
+						if(chan %in% colnames(exprs(frame)) && nrow(exprs(frame))>0) {
+							return(median(exprs(frame)[,chan]))
+						} else { NA }	
+					})
+			
+			wellAnnotation$MFI.Ratio <- apply(wellAnnotation,1,function(x) {
+						negWell <- x[["Negative.Control"]]
+						chan <- x[["Channel"]]
+						negMFI <- subset(wellAnnotation,Well.Id==negWell & Channel==chan,select=MFI)
+						frame <- data@plateSet[[x[["name"]]]]
+						
+						if(chan %in% colnames(exprs(frame)) && negWell!="" && nrow(exprs(frame))>0) {
+							negMFI <- subset(wellAnnotation,Well.Id==negWell & Channel==chan,select=MFI)
+							if(!is.na(negMFI) && !is.na(x[["MFI"]])) return(as.numeric(x[["MFI"]])/as.numeric(negMFI))
+						} else { NA }	
+					})	
+			
+			data@wellAnnotation <- wellAnnotation
+			
+			return(data)
+			
+		})
 
-		isoWells <- subset(data@wellAnnotation,(Sample.Type %in% c("Isotype","Negative.Control")) & !is.na(Channel))
-		
-		isoGates <- lapply(unique(isoWells$name), function(x) {
-			sapply(isoWells[isoWells$name==x,"Channel"], function(i) {	
-				mfi <- median(exprs(data[[x]])[,i])
-				mfi.mad <- mad(exprs(data[[x]])[,i])
-				isoMad <- numMads
-				while(quantile(exprs(data[[x]])[,i],probs=0.99)>(mfi+isoMad*mfi.mad)) {
-					isoMad <- isoMad + 0.05
+setMethod("setControlGates", signature("flowPlate"), function(data,gateType="Negative.Control",threshType="MAD",numMads=5,isoquantile=.995,...) {
+			
+			if(gateType=="Negative.Control") {
+				## First get the control gate for each of the isotype groups.	
+				
+				isoWells <- subset(data@wellAnnotation,(Sample.Type %in% c("Isotype","Negative.Control")) & !is.na(Channel))
+				
+				if(threshType=="MAD"){
+					isoGates <- lapply(unique(isoWells$name), function(x) {
+								sapply(isoWells[isoWells$name==x,"Channel"], function(i) {	
+											mfi <- median(exprs(data[[x]])[,i])
+											mfi.mad <- mad(exprs(data[[x]])[,i])
+											isoMad <- numMads
+											while(quantile(exprs(data[[x]])[,i],probs=0.99)>(mfi+isoMad*mfi.mad)) {
+												isoMad <- isoMad + 0.05
+											}
+											thresh <- mfi+isoMad*mfi.mad	
+											thresh
+										})		
+							})
+				} else if(threshType=="isoQuant"){
+					isoGates <- lapply(unique(isoWells$name), function(x) {
+								sapply(isoWells[isoWells$name==x,"Channel"], function(i) {		
+											thresh <- quantile(exprs(data[[x]])[,i],isoquantile)
+											thresh
+										})		
+							})
+				} else {
+					stop("invalid option for threshType")
 				}
-				thresh <- mfi+isoMad*mfi.mad	
-				thresh
-			})		
-		 })
-		names(isoGates) <- unique(isoWells$name)
+				names(isoGates) <- unique(isoWells$name)
+				
+				data@wellAnnotation$Negative.Control.Gate <- apply(data@wellAnnotation,1,function(x) {
+							
+							well <- subset(data@wellAnnotation, Well.Id== x[["Negative.Control"]] & plateName == x[["plateName"]],select=name)[1,][[1]]
+							
+							if(length(well) && well %in% names(isoGates)) {
+								isoGates[[well]][x[["Channel"]]]
+							} else if (x[["name"]] %in% unique(isoWells$name)) {
+								isoGates[[x[["name"]]]][x[["Channel"]]]
+							} else NA
+						}) 
+			}
+			
+			return(data)
+		})
 
-		data@wellAnnotation$Negative.Control.Gate <- apply(data@wellAnnotation,1,function(x) {
-
-			well <- subset(data@wellAnnotation, Well.Id== x[["Negative.Control"]] & plateName == x[["plateName"]],select=name)[1,][[1]]
-
-			if(length(well) && well %in% names(isoGates)) {
-				isoGates[[well]][x[["Channel"]]]
-			} else if (x[["name"]] %in% unique(isoWells$name)) {
-				isoGates[[x[["name"]]]][x[["Channel"]]]
-			} else NA
-		}) 
-	}
-
-	return(data)
-})
-		
 
 setMethod("applyControlGates", signature("flowPlate"), function(data,gateType="Negative.Control",...) {
 			
-		if(gateType %in% c("Isogate","Negative.Control")) {
-			## First get the control gate for each of the isotype groups.	
-			wa <- data@wellAnnotation 
-			
-			##If any applyControlGate or summaryStats columns already exist, get rid of them
-			newNames <- c('Percent.Positive','Total.Count','Positive.Count','MFI','MFI.Ratio')
-			if(any(newNames %in% colnames(wa))) {
-				keepCols <- which(!colnames(wa) %in% newNames)
-				wa <- wa[,keepCols]
+			if(gateType %in% c("Isogate","Negative.Control")) {
+				## First get the control gate for each of the isotype groups.	
+				wa <- data@wellAnnotation 
+				
+				##If any applyControlGate or summaryStats columns already exist, get rid of them
+				newNames <- c('Percent.Positive','Total.Count','Positive.Count','MFI','MFI.Ratio')
+				if(any(newNames %in% colnames(wa))) {
+					keepCols <- which(!colnames(wa) %in% newNames)
+					wa <- wa[,keepCols]
+				}
+				
+				wa$Percent.Positive <- apply(data@wellAnnotation,1,function(x) {
+							thresh <- as.numeric(x[["Negative.Control.Gate"]])	
+							chan <- x[["Channel"]]
+							frame <- data@plateSet[[x[["name"]]]]
+							
+							if(!is.na(thresh) && chan %in% colnames(exprs(frame)) && nrow(exprs(frame))>0 ) {
+								iso <- new("rectangleGate",filterId="rectangleGate",parameters=chan,min=thresh,max=Inf)
+								isoResult <- filter(frame,iso)
+								return(100*(sum(isoResult@subSet)/nrow(exprs(frame))))
+							} else { NA }	
+						})	
+				
+				wa$Total.Count <- apply(data@wellAnnotation,1,function(x) {
+							thresh <- as.numeric(x[["Negative.Control.Gate"]])	
+							chan <- x[["Channel"]]
+							frame <- data@plateSet[[x[["name"]]]]
+							
+							if(!is.na(thresh) && chan %in% colnames(exprs(frame)) && nrow(exprs(frame))>0 ) {
+								return(nrow(exprs(frame)))
+							} else { NA }	
+						})	
+				
+				wa$Positive.Count <- apply(data@wellAnnotation,1,function(x) {
+							thresh <- as.numeric(x[["Negative.Control.Gate"]])	
+							chan <- x[["Channel"]]
+							frame <- data@plateSet[[x[["name"]]]]
+							
+							if(!is.na(thresh) && chan %in% colnames(exprs(frame)) && nrow(exprs(frame))>0 ) {
+								iso <- new("rectangleGate",filterId="rectangleGate",parameters=chan,min=thresh,max=Inf)
+								isoResult <- filter(frame,iso)
+								return(sum(isoResult@subSet))
+							} else { NA }	
+						})	
+				
+				
+				data@wellAnnotation <- wa
 			}
-			
-			wa$Percent.Positive <- apply(data@wellAnnotation,1,function(x) {
-					thresh <- as.numeric(x[["Negative.Control.Gate"]])	
-					chan <- x[["Channel"]]
-					frame <- data@plateSet[[x[["name"]]]]
-
-					if(!is.na(thresh) && chan %in% colnames(exprs(frame)) && nrow(exprs(frame))>0 ) {
-						iso <- new("rectangleGate",filterId="rectangleGate",parameters=chan,min=thresh,max=Inf)
-						isoResult <- filter(frame,iso)
-						return(100*(sum(isoResult@subSet)/nrow(exprs(frame))))
-					} else { NA }	
-				})	
-		
-			wa$Total.Count <- apply(data@wellAnnotation,1,function(x) {
-					thresh <- as.numeric(x[["Negative.Control.Gate"]])	
-					chan <- x[["Channel"]]
-					frame <- data@plateSet[[x[["name"]]]]
-					
-					if(!is.na(thresh) && chan %in% colnames(exprs(frame)) && nrow(exprs(frame))>0 ) {
-						return(nrow(exprs(frame)))
-					} else { NA }	
-				})	
-		
-			wa$Positive.Count <- apply(data@wellAnnotation,1,function(x) {
-					thresh <- as.numeric(x[["Negative.Control.Gate"]])	
-					chan <- x[["Channel"]]
-					frame <- data@plateSet[[x[["name"]]]]
-					
-					if(!is.na(thresh) && chan %in% colnames(exprs(frame)) && nrow(exprs(frame))>0 ) {
-						iso <- new("rectangleGate",filterId="rectangleGate",parameters=chan,min=thresh,max=Inf)
-						isoResult <- filter(frame,iso)
-						return(sum(isoResult@subSet))
-					} else { NA }	
-				})	
-		
-		
-			data@wellAnnotation <- wa
-		}
-		return(data)
-	})
+			return(data)
+		})
 
 ##############################
 ## Some convenience functions, primarily just wrappers to flowCore 
@@ -389,42 +405,42 @@ setMethod("phenoData","flowPlate",function(object) {
 		})
 
 setMethod("plateSet","flowPlate",function(fp,...) {
-		 return(fp@plateSet)
+			return(fp@plateSet)
 		})
 
 setMethod("Subset","flowPlate",function(x,subset,i=NULL,...) {
 #	browser()
-	if(is.null(i)) {
-		x@plateSet <- Subset(x@plateSet,subset)
-	} else {
-		i <- unlist(i)
-		copy = i[i %in% sampleNames(x)]
-		if(length(copy) != length(i)) copy <- c(copy,sampleNames(x)[pData(phenoData(x@plateSet))[,"Well.Id"] %in% i[!(i %in% sampleNames(x))]])
-		
-		temp <- x@plateSet@frames
-		
-		frames <- lapply(ls(temp),function(fileName) {
-					well <- pData(phenoData(x@plateSet))[fileName,]		
-					
-					if(fileName %in% copy) {
-						Subset(temp[[fileName]],subset)		
-					} else {
-						temp[[fileName]]
-					}								
-				})
-		
-		names(frames) <- ls(temp)	
-		
-		config <- makePlateLayout(x@wellAnnotation)
-		
-		plateSet <- flowPhenoMerge(as(frames,"flowSet"),config)
-		
-		x@plateSet <- plateSet
-	}	
-	
-	return(x)
-
-})
+			if(is.null(i)) {
+				x@plateSet <- Subset(x@plateSet,subset)
+			} else {
+				i <- unlist(i)
+				copy = i[i %in% sampleNames(x)]
+				if(length(copy) != length(i)) copy <- c(copy,sampleNames(x)[pData(phenoData(x@plateSet))[,"Well.Id"] %in% i[!(i %in% sampleNames(x))]])
+				
+				temp <- x@plateSet@frames
+				
+				frames <- lapply(ls(temp),function(fileName) {
+							well <- pData(phenoData(x@plateSet))[fileName,]		
+							
+							if(fileName %in% copy) {
+								Subset(temp[[fileName]],subset)		
+							} else {
+								temp[[fileName]]
+							}								
+						})
+				
+				names(frames) <- ls(temp)	
+				
+				config <- makePlateLayout(x@wellAnnotation)
+				
+				plateSet <- flowPhenoMerge(as(frames,"flowSet"),config)
+				
+				x@plateSet <- plateSet
+			}	
+			
+			return(x)
+			
+		})
 
 setMethod("sampleNames","flowPlate",function(object) {
 			sampleNames(phenoData(object@plateSet))
@@ -438,21 +454,21 @@ setMethod("wellAnnotation","flowPlate",function(fp,...) {
 ## subsetting methods
 #############################################################
 setMethod("[",c("flowPlate"),function(x,i,j,...,drop=FALSE) {
-		if(missing(drop)) drop = FALSE
-		if(missing(i)) return(x)
-
-		if(is.numeric(i) || is.logical(i)) {
+			if(missing(drop)) drop = FALSE
+			if(missing(i)) return(x)
+			
+			if(is.numeric(i) || is.logical(i)) {
 				copy = sampleNames(x)[i]
-		} else {
-			i <- unlist(i)
-			copy = i[i %in% sampleNames(x)]
-			if(length(copy) != length(i)) copy <- c(copy,sampleNames(x)[pData(phenoData(x@plateSet))[,"Well.Id"] %in% i[!(i %in% sampleNames(x))]])
-		}
-
-		x@plateSet <- x@plateSet[copy]
-		x@wellAnnotation <- subset(x@wellAnnotation,name %in% copy)
-		x
-})
+			} else {
+				i <- unlist(i)
+				copy = i[i %in% sampleNames(x)]
+				if(length(copy) != length(i)) copy <- c(copy,sampleNames(x)[pData(phenoData(x@plateSet))[,"Well.Id"] %in% i[!(i %in% sampleNames(x))]])
+			}
+			
+			x@plateSet <- x@plateSet[copy]
+			x@wellAnnotation <- subset(x@wellAnnotation,name %in% copy)
+			x
+		})
 
 
 setMethod("[[","flowPlate",function(x,i,j,...) {
