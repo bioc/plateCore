@@ -319,14 +319,13 @@ setMethod("setControlGates", signature("flowPlate"), function(data,gateType="Neg
 					isoGates <- lapply(unique(isoWells$name), function(x) {
 								sapply(isoWells[isoWells$name==x,"Channel"], function(i) {		
 											thresh <- quantile(exprs(data[[x]])[,i],isoquantile)
-											thresh
+											thresh <- as.numeric(thresh)
 										})		
 							})
 				} else {
 					stop("invalid option for threshType")
 				}
 				names(isoGates) <- unique(isoWells$name)
-				
 				data@wellAnnotation$Negative.Control.Gate <- apply(data@wellAnnotation,1,function(x) {
 							
 							well <- subset(data@wellAnnotation, Well.Id== x[["Negative.Control"]] & plateName == x[["plateName"]],select=name)[1,][[1]]
