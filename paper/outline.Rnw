@@ -47,7 +47,7 @@ large, complex datasets easier.
 
 \subsection*{Methods}
 \Rpackage{plateCore} was used to analyze the results from a BD FACS\texttrademark CAP screening experiment where 5
-Peripheral Blood Mononucleocyte (PBMC) samples 
+Peripheral Blood Mononucleocyte Cell (PBMC) samples 
 were assayed for 189 different human cell surface markers. 
 This same dataset was also analyzed by a cytometry expert using FlowJo\texttrademark.
 
@@ -113,25 +113,24 @@ cytometrist using FlowJo\texttrademark.
 \begin{figure}
 \centering
 \includegraphics[width=7in,height=6in]{analysisSteps.pdf}
-\caption{Typical plateCore workflow on the left, and examples of each step from a sample analysis are shown on the right.
-Generating reports and plots is a multi-step that typically involves merging output from several plates, and the required
-code is not shown here.}
+\caption{Typical FC-HCS plate workflow on the left and corresponding steps from a PBMC lymphocyte plateCore analysis on the right.
+Compared to analyses performed using existing GUI FCM tools, plateCore can reduce the level of subjectivity associated with creating
+the negative control gates and also makes it easier to aggregate multiple plates into an experiment level object for visualization and reporting.
+Providing plateCore scripts along with the raw FCM data for FC-HCS experiments helps to ensure that the analysis is transparent and reproducible.
+}
 \label{fig:analysis}
 \end{figure}
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
 \section*{Materials and Methods}
-\subsection*{Data}
 
-The peripheral blood mononucleocyte (PBMC) data used in this study consists of 5 samples that were analyzed on 96-well plates
-using BD FACS\texttrademark CAP (http://www.bd.com/\\technologies/discovery\_platform/BD\_FACS\_CAP.asp).
-On each plate, there are 189 different human cell surface antibody-dye conjugates (63 test wells), 
-along with 30 isotype control wells and 3 unstained controls.
-The 189 antibodies were selected to provide a broad expression profile
-for a large number of cell surface markers, including 103 proteins with GO annotation for receptor activity, 80
-for immune response, and 55 for signal transduction. The raw data is available for download from http://www.ficcs.org in the
-plateData.tar.gz file. 
+BD FACS\texttrademark CAP was designed as a cell characterization tool to screen for the presence a large number of different human 
+cell surface markers. In this study, PBMC samples (previously frozen) from two donors were analyzed on a BD FACScalibur
+using BD FACS\texttrademark CAP staining. The analysis was performed on 96-well plates with
+189 different antibodies arrayed 3 per well in 63 test wells, along with 30 isotype control wells and 3 unstained controls.
+The complete list of BD FACS\texttrademark CAP antibodies can be found at http://www.bd.com/technologies/discovery\_platform/BD\_FACS\_CAP.asp. 
+FCM files for the 5 plates, 2 for donor 1 and 3 for donor 2, are available for download from http://www.ficcs.org.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Analysis}
