@@ -186,91 +186,7 @@ follow-up studies, while markers that are low positives ($\le$ 15\%) are often t
 staining. Also, these percentages refer to the fraction of events above the isotype threshold, but
 this does not necessarily imply staining is heterogeneous.
 
-A common goal for BD FACS\texttrademark CAP screens is to identify markers that show variation in expression levels
-among different donors. Unfortunately, the power to detect differences in this study is limited since there are
-only 2 donors and the level of replication is low (2-3 plates per donor). Figure~\ref{fig:donorVar} shows 
-the expected and observed variation in the percentage of positively stained cells for the
-83 positive ($\ge$ 10\%) markers. Histograms produced using \Rpackage{plateCore} are shown in Figure~\ref{fig:pbmcCDbd69}
-for a selected marker, CDbd69, that exhibited a relatively high level of variation in the percentage of positive stained cells
-between the 5 PBMC plates.
 
-\begin{figure}
-\centering
-<<label=pbmcHeat,fig=TRUE,echo=FALSE>>=
-library(gplots)
-temp <- read.delim("ppExp.csv",stringsAsFactors=FALSE,header=TRUE)
-#temp <- read.delim("paper/ppExp.csv",stringsAsFactors=FALSE,header=TRUE)
-rownames(temp) <- temp[,1]
-temp <- temp[,-1]
-
-mapcol <- rev(heat.colors(10))
-b <- seq(0,100,by=10)
-#heatmap.2(as.matrix(temp),col=mapcol,breaks=b,scale='none',trace='none',cexRow=0.3)
-heatmap.2(as.matrix(temp),col=redgreen(10),breaks=b,scale='none',trace='none',cexRow=0.3)
-@
-\caption{Heatmap showing the percentage of positive cells from the 5 different PBMC lymphocyte plates. The 83 markers
-with $\ge$ 10\% positive cells are shown here. Staining for the  remaining 106 markers was not significantly higher
-than background, according to the expression threshold set using matched isotype controls. PBMCs on plates 8774-8775 and
-9206-9208 are from a different individuals.}
-\label{fig:pbmcHeat}
-\end{figure}
-
-\begin{figure}
-\centering
-<<label=donorVar,fig=TRUE,echo=FALSE>>=
-
-temp <- read.delim("ppExp.csv",stringsAsFactors=FALSE,header=TRUE)
-
-perPos <- seq(0.01,0.99,0.01)
-predVar <- sqrt((perPos*(1-perPos))/5)
-
-markSDs <- apply(temp[,2:6],1,sd)
-markMs <- rowMeans(temp[,2:6])
-plot(markMs,markSDs,xlim=c(0,100),ylim=c(0,25),xlab="Mean % Positive",ylab="Standard Deviation")
-lines(100*perPos,100*predVar)
-text(markMs[markSDs>20],markSDs[markSDs>20]+1,temp[markSDs>20,1],cex=0.8)
-
-@
-\caption{Scatterplot showing the mean percentage of positive cells for each positive marker
-versus the observed (circles) and expected (line) sample standard deviation. Expected
-values follow a binomial distribution with n=5. The 3 markers that lie above the expected line will be 
-further evaluated using titration and competition experiments to see if these results represent
-real variation between the two donors. The curve in the expected line reflects the difficulty
-in gating samples whose median signal (MFI) is near the isotype cutoff, since the percentage of positive 
-cells calculated can shift dramatically with small changes in the gate.
-}
-\label{fig:donorVar}
-\end{figure}
-
-\begin{figure}
-\centering
-<<label=pbmcCDbd69,fig=TRUE,echo=FALSE>>=
-
-fileNames <- list.files("../../publicationPlateCore/pbmcRData",full.names=TRUE)
-
-plates <- lapply(fileNames,function(x){
-			load(x)
-			platePBMC[c("A03","B06")]
-		})
-
-virtPlate <- fpbind(plates[[1]],plates[[2]],plates[[3]],plates[[4]],plates[[5]])
-
-
-print(densityplot(~ `FL2-H` | as.factor(plateName), transform("FL2-H"=log10) %on% virtPlate,
-				filterResult="Negative.Control",col=c('red','blue')))
-
-@
-\caption{Histograms for CDbd69, which is one of the 3 candidates for differential expression from Figure~\ref{fig:donorVar}.
-Isotypes are shown in red and test wells are in blue. Similar plots were automatically created using \Rpackage{plateCore}
-for each of 189 markers assayed in this experiment, allowing cytometry experts to quickly survey the results from the 5
-different plates.}
-\label{fig:pbmcCDbd69}
-\end{figure}
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\clearpage
 \subsection*{Comparison to FlowJo\texttrademark Results}
 
 Automating the creation and modification of isotype gates made by cytometrists analyzing BD FACS\texttrademark CAP data
@@ -293,22 +209,8 @@ analysis are shown in Figure~\ref{fig:pcVSman}.
 \begin{figure}
 \centering
 <<label=pcVSman,fig=TRUE,echo=FALSE>>=
-
-load(fileNames[[1]])
-
-wellDf <- subset(wellAnnotation(platePBMC),Sample.Type=="Test")
-
-tempY <- as.numeric(wellDf$Percent.Positive)
-tempY <- unlist(sapply(tempY,function(x) {
-		jit <- abs(x-100)/100+200/(abs(x-50)+8)			
-		jitter(x,factor=jit)			
-}))
-
-tempY[tempY>100]=100
-tempY[tempY<0]=0
-
-plot(wellDf$Percent.Positive,tempY,xlab="plateCore Results",ylab="Manual Analysis")
-abline(0,1,col='red')
+fjVSrDf <- read.csv('fjVSrDf.csv',stringsAsFactors=FALSE)
+print(xyplot(FJ ~ R | as.factor(plate), fjVSrDf,xlab="plateCore",ylab="FlowJo", aspect="iso"))
 @
 \caption{Percent positive results for 189 BD FACS\textrademark CAP markers analyzed using either \Rpackage{plateCore}
 or manually using FlowJo\texttrademark. Markers that varied the most between the the two methods tended to have
@@ -317,6 +219,81 @@ near the isotype threshold. (NOTE: Fake data, still need to get FlowJo data in t
 }
 \label{fig:pcVSman}
 \end{figure}
+
+
+\clearpage
+\begin{figure}
+\centering
+<<label=mfiRatio,fig=TRUE,echo=FALSE>>=
+mfiDf <- read.csv('mfiDf.csv',stringsAsFactors=FALSE)
+plot(mfiDf$MFI.Ratio,mfiDf$PP, log="x",xlab="MFI.Ratio",ylab="Percent Positive")
+@
+\caption{}
+\label{fig:mfiRatio}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Donor Variation}
+
+A common goal for BD FACS\texttrademark CAP screens is to identify markers that show variation in expression levels
+among different donors. Unfortunately, the power to detect differences in this study is limited since there are
+only 2 donors and the level of replication is low (2-3 plates per donor). Figure~\ref{fig:donorVar} shows 
+the expected and observed variation in the percentage of positively stained cells for the
+83 positive ($\ge$ 10\%) markers. Histograms produced using \Rpackage{plateCore} are shown in Figure~\ref{fig:pbmcCDbd69}
+for a selected marker, CDbd69, that exhibited a relatively high level of variation in the percentage of positive stained cells
+between the 5 PBMC plates.
+
+\begin{figure}
+\centering
+<<label=donorVar,fig=TRUE,echo=FALSE>>=
+
+temp <- read.csv("ppExp.csv",stringsAsFactors=FALSE,header=TRUE)
+
+perPos <- seq(0.01,0.99,0.01)
+predVar <- sqrt((perPos*(1-perPos))/5)
+
+markSDs <- apply(temp[,2:6],1,sd)
+markMs <- rowMeans(temp[,2:6])
+plot(markMs,markSDs,xlim=c(0,100),ylim=c(0,25),xlab="Mean % Positive",ylab="Standard Deviation")
+lines(100*perPos,100*predVar)
+#text(markMs[markSDs>20],markSDs[markSDs>20]+1,temp[markSDs>20,1],cex=0.8)
+@
+\caption{Scatterplot showing the mean percentage of positive cells for each positive marker
+versus the observed (circles) and expected (line) sample standard deviation. Expected
+values follow a binomial distribution with n=5. The 3 markers that lie above the expected line will be 
+further evaluated using titration and competition experiments to see if these results represent
+real variation between the two donors. The curve in the expected line reflects the difficulty
+in gating samples whose median signal (MFI) is near the isotype cutoff, since the percentage of positive 
+cells calculated can shift dramatically with small changes in the gate.
+}
+\label{fig:donorVar}
+\end{figure}
+
+\begin{figure}
+\centering
+<<label=pbmcCDbd69,fig=TRUE,echo=FALSE>>=
+
+fileNames <- list.files("../../publicationPlateCore/pbmcRData",full.names=TRUE)
+
+plates <- lapply(fileNames,function(x){
+			load(x)
+			plate[c("A03","B06")]
+		})
+
+virtPlate <- fpbind(plates[[1]],plates[[2]],plates[[3]],plates[[4]],plates[[5]])
+
+
+print(densityplot(~ `FL2-H` | as.factor(plateName), transform("FL2-H"=log10) %on% virtPlate,
+				filterResult="Negative.Control",col=c('red','blue')))
+
+@
+\caption{Histograms for CDbd69, which is one of the 3 candidates for differential expression from Figure~\ref{fig:donorVar}.
+Isotypes are shown in red and test wells are in blue. Similar plots were automatically created using \Rpackage{plateCore}
+for each of 189 markers assayed in this experiment, allowing cytometry experts to quickly survey the results from the 5
+different plates.}
+\label{fig:pbmcCDbd69}
+\end{figure}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
