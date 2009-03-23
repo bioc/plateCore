@@ -83,8 +83,8 @@ in \Rpackage{flowViz} \citep{sarkar2008ufv}. The Bioconductor model for flow dat
 the development of new analysis methods, since the overhead associated with
 accessing and visualizing flow data is handled by \Rpackage{flowCore} and \Rpackage{flowViz}.
 The availability of \Rpackage{flowCore} and \Rpackage{flowViz} has enabled the creation of new tools for
-quality assessment of large flow experiments, such as \Rpackage{flowQ} \citep{}, and model-based clustering and automated
-gating, such as \Rpackage{flowClust} \cite{lo2008}.
+quality assessment of large flow experiments, such as \Rpackage{flowQ} \citep{lemeurFQ}, and model-based clustering and automated
+gating, such as \Rpackage{flowClust} \citep{lo2008}.
 \Rpackage{plateCore} also takes advantage of the functionality in \Rpackage{flowCore} and \Rpackage{flowViz}
 to create methods and data structures for processing large, plate-based flow datasets.  
 
