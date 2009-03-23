@@ -317,8 +317,7 @@ values follow a binomial distribution with n=5. Markers that lie above the expec
 further evaluated using titration and competition experiments to see if these results represent
 real variation between the two donors. The curve in the expected line reflects the difficulty
 in gating samples whose median signal (MFI) is near the isotype cutoff, since the percentage of positive 
-cells calculated can shift dramatically with small changes in the gate.
-}
+cells calculated can shift dramatically with small changes in the gate.}
 \label{fig:donorVar}
 \end{figure}
 
@@ -371,7 +370,7 @@ stand-alone flow platforms is expensive in terms of the price of multiple softwa
 and in time spent training statisticians and bioinformaticians to use the programs. 
 Fortunately the Bioconductor flow packages are modeled on standard data structures used for 
 microarrays, which should already be familiar to most quantitative individuals working on 
-high-throughput biological problems. We found that \Rpacakge{flowCore}, \Rpackage{flowViz},
+high-throughput biological problems. We found that \Rpackage{flowCore}, \Rpackage{flowViz},
 and \Rpackage{plateCore} provided an open analysis platform that facilitated communication between
 the flow cytometrists generating the data, and the computational experts analyzing the data.
 
