@@ -1,0 +1,73 @@
+\begin{thebibliography}{7}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Gentleman et~al.()Gentleman, Hahne, Kettman, and Le~Meur]{lemeurFQ}
+R.~Gentleman, F.~Hahne, J.~Kettman, and N.~Le~Meur.
+\newblock Bioconductor package flowQ.
+\newblock URL \url{http://www.bioconductor.org}.
+
+\bibitem[Gentleman et~al.(2004)Gentleman, Carey, Bates, Bolstad, Dettling,
+  Dudoit, Ellis, Gautier, Ge, Gentry, Hornik, Hothorn, Huber, Iacus, Irizarry,
+  Leisch, Li, Maechler, Rossini, Sawitzki, Smith, Smyth, Tierney, Yang, and
+  Zhang]{BIOC}
+Robert~C Gentleman, Vincent~J. Carey, Douglas~M. Bates, Ben Bolstad, Marcel
+  Dettling, Sandrine Dudoit, Byron Ellis, Laurent Gautier, Yongchao Ge, Jeff
+  Gentry, Kurt Hornik, Torsten Hothorn, Wolfgang Huber, Stefano Iacus, Rafael
+  Irizarry, Friedrich Leisch, Cheng Li, Martin Maechler, Anthony~J. Rossini,
+  Gunther Sawitzki, Colin Smith, Gordon Smyth, Luke Tierney, Jean Y.~H. Yang,
+  and Jianhua Zhang.
+\newblock Bioconductor: Open software development for computational biology and
+  bioinformatics.
+\newblock \emph{Genome Biology}, 5:\penalty0 R80, 2004.
+\newblock URL \url{http://genomebiology.com/2004/5/10/R80}.
+
+\bibitem[Hahne et~al.(2009)Hahne, LeMeur, Brinkman, Ellis, Haaland, Sarkar,
+  Spidlen, Strain, and Gentleman]{hahne2009}
+F.~Hahne, N.~LeMeur, R.R. Brinkman, B.~Ellis, P.~Haaland, D.~Sarkar,
+  J.~Spidlen, E.~Strain, and R.~Gentleman.
+\newblock flowcore a bioconductor package for high throughput flow cytometry.
+\newblock \emph{BMC Bioinformatics}, 2009.
+
+\bibitem[Le~Meur et~al.(2007)Le~Meur, Rossini, Gasparetto, Smith, Brinkman, and
+  Gentleman]{lemeur2007}
+N.~Le~Meur, A.~Rossini, M~Gasparetto, C~Smith, R.R. Brinkman, and R.~Gentleman.
+\newblock Quality assessment of ungated flow cytometry data in high throughput
+  experiments.
+\newblock \emph{Cytometry A}, 71:\penalty0 393--403, 2007.
+
+\bibitem[Lo et~al.(2008)Lo, Brinkman, and Gottardo]{lo2008}
+K.~Lo, R.~R. Brinkman, and R.~Gottardo.
+\newblock Automated gating of flow cytometry data via robust model-based
+  clustering.
+\newblock \emph{Cytometry A}, 73A:\penalty0 321--332, 2008.
+
+\bibitem[Maecker et~al.(2005)Maecker, Rinfret, D'Souza, Darden, Roig, Landry,
+  Hayes, Birungi, Anzala, Garcia, Harari, Frank, Baydo, Baker, Holbrook,
+  Ottinger, Lamoreaux, Epling, Sinclair, Suni, Punt, Calarota, El-Bahi, Alter,
+  Maila, Kuta, Cox, Gray, Altfeld, Nougarede, Boyer, Tussey, Tobery, Bredt,
+  Roederer, Koup, Maino, Weinhold, Pantaleo, Gilmour, Horton, and
+  Sekaly]{Maecker2005}
+Holden~T Maecker, Aline Rinfret, Patricia D'Souza, Janice Darden, Eva Roig,
+  Claire Landry, Peter Hayes, Josephine Birungi, Omu Anzala, Miguel Garcia,
+  Alexandre Harari, Ian Frank, Ruth Baydo, Megan Baker, Jennifer Holbrook,
+  Janet Ottinger, Laurie Lamoreaux, C.~Lorrie Epling, Elizabeth Sinclair,
+  Maria~A Suni, Kara Punt, Sandra Calarota, Sophia El-Bahi, Gailet Alter, Hazel
+  Maila, Ellen Kuta, Josephine Cox, Clive Gray, Marcus Altfeld, Nolwenn
+  Nougarede, Jean Boyer, Lynda Tussey, Timothy Tobery, Barry Bredt, Mario
+  Roederer, Richard Koup, Vernon~C Maino, Kent Weinhold, Giuseppe Pantaleo,
+  Jill Gilmour, Helen Horton, and Rafick~P Sekaly.
+\newblock Standardization of cytokine flow cytometry assays.
+\newblock \emph{BMC Immunol}, 6:\penalty0 13, 2005.
+\newblock \doi{10.1186/1471-2172-6-13}.
+\newblock URL \url{http://dx.doi.org/10.1186/1471-2172-6-13}.
+
+\bibitem[Sarkar et~al.(2008)Sarkar, Le~Meur, and Gentleman]{sarkar2008ufv}
+D.~Sarkar, N.~Le~Meur, and R.~Gentleman.
+\newblock {Using flowViz to visualize flow cytometry data}.
+\newblock \emph{Bioinformatics}, 24\penalty0 (6):\penalty0 878, 2008.
+
+\end{thebibliography}
