@@ -235,10 +235,11 @@ different isotypes (either IgG1, IgG2, IgG2a, IgG2b, IgG3, or IgM). Points that
 are off the curve should be evaluated on a case-by-case basis to ensure that
 there are no problems with the test and control wells, and that the isotype
 gate settings are reasonable. Detailed results for each marker are not
-presented in this study, but since the majority of antibodies on the BD FACS CAP staining plate are known to bind
-different leukocytes, it is not surprising that a large fraction would be
-identified as positive on PBMCs. Markers such as CD44, CD45, CD47, and CD59 are
-broadly expressed on lymphocytes and were highly positive (>99\%) in this study. 
+presented in this study, but since the majority of antibodies on the BD FACS
+CAP staining plate are known to bind different leukocytes, it is not surprising
+that a large fraction would be identified as positive on PBMCs. Markers such as
+CD44, CD45, CD47, and CD59 are broadly expressed on lymphocytes and were highly
+positive (>99\%) in this study.
 
 Additionally, visualizations such as Figure~\ref{fig:mfiRatio} suggest that it
 may be worthile to report a predicted percent positive value for each marker,
@@ -286,35 +287,27 @@ clustering methods, such as those in \Rpackage{flowClust}, should lead to
 future performance improvements in automated gating. Comparisons of the
 \Rpackage{plateCore} and FlowJo analysis are shown in Figure~\ref{fig:pcVSman}.
 
-Markers 
-
-
-%The difficulty in determining whether a dim marker is expressed can be seen in
-%Figure~\ref{fig:mfiRatio}, where samples with Median Fluorescence Intensity
-%(MFI) (\%reference to what MFI is? - Ryan) ratios between 1 and 10 ranged from
-%0 to 100\% percent positive. If the isotype gate is near the MFI of the test
-%well signal, then estimates of the percentage of positive cells will be
-%unstable. (\%explain why - Ryan)
-
+FlowJo and \Rpackage{plateCore} produced very similar percent positive
+estimates for markers that were clearly positive ($\ge$99) or negative (0\%).
+Differences between the methods are more apparent when the isotype gate split
+the population of stained cells adn the percent positive estimates were between
+30\% and 70\%. If the isotype gate is near the median signal for the marker,
+then small changes to the gate can dramatically change estimates of the
+percentage of positive cells. This same effect can be seen in
+Figure~\ref{fig:mfiRatio}, where estimates of the percentage of positive cells
+rapidly increases as the MFI ratio goes from 1 to 10.
 
 Examining in detail at one case where the \Rpackage{plateCore} and FlowJo
 methods disagree, such as CD98 on plate 9208 (Figure~\ref{fig:disagree}),
 highlights situations where our automated gating approach will fail. In this
-case the marker is positive (86\% by FlowJo) (\%86\% what? This is confusing as
-you said something over 10\% is labelled positive (I think) so 86\% positive is
-confusing - Ryan) but is  called negative (0\%) (\%0\% what (same problem) -
-Ryan) by \Rpackage{plateCore}. The isotype control (well H08 in
-Figure~\ref{fig:disagree}) has >1\% of its events in the FL1-H channel (\%I
-know caliburs can't be changed, but can you give this a meaningful label for
-those that aren't used to the platform - Ryan) that are above the main
-population, resulting in the automated gate being set at the 99th percentile
-instead of the MFI+4MADS. Fortunately, this type of mistake can also be
-detected by looking the MFI ratio plot in Figure~\ref{fig:mfiRatio}. CD98 for
-plate 9208 has an MFI ratio of 5 and a percent positive value of 0\%, while
-other markers with a similar MFI ratio have values near 70\%. Percent positive
-values that lie far from the sigmoid curve in Figure~\ref{fig:mfiRatio} should
-be evaluated manually.
-
+case the marker is 86\% by FlowJo and 0\% by \Rpackage{plateCore}. The isotype
+control for CD98 (well H08 in Figure~\ref{fig:disagree}) has >1\% of its events
+in the FL1-H (FITC and Alexa 488) channel that are above the main population,
+resulting in the automated gate being set at the 99th percentile instead of the
+MFI+4MADS. Fortunately, this type of mistake can also be detected by looking
+the MFI ratio plot in Figure~\ref{fig:mfiRatio}. CD98 for plate 9208 has an MFI
+ratio of 5 and a percent positive value of 0\%, while other markers with a
+similar MFI ratio have values near 70\%. 
 
 \begin{figure}
 \centering
