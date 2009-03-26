@@ -227,30 +227,27 @@ staining in multiple populations.
 
 Estimates of the percentage of positive cells versus the MFI ratio made using
 \Rpackage{plateCore} for each of the 189 markers from the 5 plates are shown
-in Figure~\ref{fig:mfiRatio}. 
+in Figure~\ref{fig:mfiRatio}. There is a clear sigmodial relationship
+between the percentage of positive cells and the log of the MFI ratio, even
+though the different antibodies had been conjugated to different fluorophores
+(either Alexa 488, FITC, PE, PerCP, APC, or Alexa 647) and matched against
+different isotypes (either IgG1, IgG2, IgG2a, IgG2b, IgG3, or IgM). Points that
+are off the curve should be evaluated on a case-by-case basis to ensure that
+there are no problems with the test and control wells, and that the isotype
+gate settings are reasonable. Detailed results for each marker are not
+presented in this study, but since the majority of antibodies on the BD FACS CAP staining plate are known to bind
+different leukocytes, it is not surprising that a large fraction would be
+identified as positive on PBMCs. Markers such as CD44, CD45, CD47, and CD59 are
+broadly expressed on lymphocytes and were highly positive (>99\%) in this study. 
 
-In this study 109/189 markers were positive on at least one plate.
+Additionally, visualizations such as Figure~\ref{fig:mfiRatio} suggest that it
+may be worthile to report a predicted percent positive value for each marker,
+which would be based on a regression of the observed percent positive to the
+log of the MFI ratio. Calculating the ratio of test well MFI versus the isotype
+control for a marker is obviously easier than developing an automated approach
+to isotype gating, and Figure~\ref{fig:mfiRatio} implies that the two
+approaches would produce similar estimates.
 
-Since the majority of antibodies on the BD FACS CAP staining plate are known to
-bind different leukocytes, it is not surprising that a large fraction would be
-identified as positive on PBMCs.  Markers such as CD44, CD45, CD47, and CD59
-are broadly expressed on lymphocytes and were highly positive (>99\%) in this
-study. 
-
-
-
-
-The difficulty in determining whether a dim marker is expressed can be seen in
-Figure~\ref{fig:mfiRatio}, where samples with Median Fluorescence Intensity
-(MFI) (\%reference to what MFI is? - Ryan) ratios between 1 and 10 ranged from
-0 to 100\% percent positive. If the isotype gate is near the MFI of the test
-well signal, then estimates of the percentage of positive cells will be
-unstable. (\%explain why - Ryan)
-
-
-
-
-\clearpage
 \begin{figure}
 \centering
 \includegraphics{outline-mfiRatio}
@@ -264,26 +261,41 @@ ratios between 1 and 10. (\%label axis better - \% positive whats - Ryan)}
 \label{fig:mfiRatio}
 \end{figure}
 
-\clearpage
-\subsection*{Comparison to FlowJo Results}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Comparison to FlowJo}
+
 Automating the creation and modification of isotype gates made by cytometrists
 analyzing BD FACS CAP data using FlowJo is challenging. Cytometrists adjust
 gates based on expert knowledge about the performance of specific antibody
-types and dyes, or after identifying positive test samples. The automated
-approach employed in \Rpackage{plateCore} determines the threshold using
-isotype controls.  The gate (G$_{ij}$) for isotype $i$, channel $j$ is set
-according to:
+types and dyes, or after identifying positive or negative test samples. If the
+isotype gate cut off the bottom portion of a positive cell population, then
+the gate was moved down.  Similarly, if the the isotype gate included too many
+cells from negative test wells, it was moved up.
+
+The automated approach employed in \Rpackage{plateCore} determines the
+threshold using isotype controls. The gate (G$_{ij}$) for isotype $i$, channel
+$j$ is set according to:
 \begin{equation}
 \text{G}_{ij} = \max (\text{99th}_{ij} \text{, MFI}_{ij}+ 4 \text{MAD}_{ij}),
 \label{isoGate}
 \end{equation}
-where 99th$_{ij}$ is the 99th percentile for the fluorescence signal and
-MAD is Median Absolute Deviation on a linear scale. 
-While this simple, non-parametric method works surprisingly well for BD FACS
-CAP, advances in model-based clustering methods, such as those in
-\Rpackage{flowClust}, should lead to future performance improvements in
-automated gating. Comparisons of the \Rpackage{plateCore} and FlowJo analysis
-are shown in Figure~\ref{fig:pcVSman}.
+where 99th$_{ij}$ is the 99th percentile for the fluorescence signal and MAD is
+Median Absolute Deviation on a linear scale. While this simple, non-parametric
+method works surprisingly well for BD FACS CAP, advances in model-based
+clustering methods, such as those in \Rpackage{flowClust}, should lead to
+future performance improvements in automated gating. Comparisons of the
+\Rpackage{plateCore} and FlowJo analysis are shown in Figure~\ref{fig:pcVSman}.
+
+Markers 
+
+
+%The difficulty in determining whether a dim marker is expressed can be seen in
+%Figure~\ref{fig:mfiRatio}, where samples with Median Fluorescence Intensity
+%(MFI) (\%reference to what MFI is? - Ryan) ratios between 1 and 10 ranged from
+%0 to 100\% percent positive. If the isotype gate is near the MFI of the test
+%well signal, then estimates of the percentage of positive cells will be
+%unstable. (\%explain why - Ryan)
+
 
 Examining in detail at one case where the \Rpackage{plateCore} and FlowJo
 methods disagree, such as CD98 on plate 9208 (Figure~\ref{fig:disagree}),
@@ -303,16 +315,7 @@ other markers with a similar MFI ratio have values near 70\%. Percent positive
 values that lie far from the sigmoid curve in Figure~\ref{fig:mfiRatio} should
 be evaluated manually.
 
-%Setting the isotype gate using the our approach still requires subjective
-%decisions regarding the fluorescence percentile and number of MADS, but these
-%values have shown little variation within the different cell types
-%that have been assayed using BD FACS CAP (results not shown). Within a
-%particular cell type we are able to replicate the gating decisions made by
-%cytometrists. If we encounter a new cell type or if the analysis
-%is performed using a different cytometer, then the gate settings must be
-%reevaluated.
 
-\clearpage
 \begin{figure}
 \centering
 \includegraphics{outline-pcVSman}
@@ -328,7 +331,6 @@ positive. -- Ryan) }
 \label{fig:pcVSman}
 \end{figure}
 
-\clearpage
 \begin{figure}
 \centering
 \includegraphics{fjVSr2.pdf}
@@ -343,7 +345,6 @@ MFI+4MADs. (indicate that G01 is a well ID PLate0909 is a plate ID - Ryan)}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\clearpage
 \subsection*{Donor Variation}
 
 A common goal for BD FACS CAP screens is to identify markers that show
@@ -362,10 +363,6 @@ tempting to speculate that this difference represents biological variation
 between the two donors as opposed to technical differences in the processing
 and gating of the cells.
 
-
-
-
-%
 \begin{figure}
 \centering
 \includegraphics{outline-donorVar}
