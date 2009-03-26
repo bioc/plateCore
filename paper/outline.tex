@@ -340,21 +340,36 @@ MFI+4MADs. (indicate that G01 is a well ID PLate0909 is a plate ID - Ryan)}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Donor Variation}
 
-A common goal for BD FACS CAP screens is to identify markers that show
-variation in expression levels among cells isolated from different donors.
-Variation in estimates of the percentage of positive cells can be modeled using
-a binomial, where markers that are clearly positive or negative (0 or 100\%)
-have little variation and those near the isotype gate (50\%) are highly
-variable. Unfortunately, the power to detect differences in this study is
-limited since there are only 2 donors and the level of replication is low (2-3
-plates per donor). Figure~\ref{fig:donorVar} shows  the expected and observed
-variation in the percentage of positively stained cells for the 189 markers.
-Discounting CD98, which had an unusual isotype control, the markers with the
-most variation (S.D. near 30\%) were CD85, CD97, CD154, CD184, and CD252. Since
-CD85, CD97, CD154, and CD252 are associated with activated T-cells, it is
-tempting to speculate that this difference represents biological variation
-between the two donors as opposed to technical differences in the processing
-and gating of the cells.
+In addition to identifying positively staining markers, another goal for this
+PBMC BD FACS CAP screen was to find markers that showed variation in their
+expression levels between the two donors. Simply performing a t-test
+on the percent positive estimates for the two donors resulted in a large number
+of markers with significant differences, even after correcting for multiple
+tests. Most of these differences are not biologically relevant, since they
+reflect the uncertainty in the placement of the isotype gate rather than
+differences in marker expression between the two donors. As shown in
+Figure~\ref{fig:pcVSman}, small changes to the isotype gate can have large
+effects on the estimates of the percentage of positive cells for values between
+30\% and 70\%. These markers will be called differentially expressed, even
+though the signal levels for the two populations may be very close. Similarly,
+tests for differences in fluorescence signal intensities are also often
+significant due to the large number of events in cell population.
+
+Instead of testing for differences in means, we instead used a graphical
+approach classify markers are candidates for donor variation and for further
+analysis. Variation in estimates of the percentage of positive cells was
+modeled using a binomial (n=5), where markers that are clearly positive or
+negative (0 or 100\%) have little variation and those near the isotype gate
+(50\%) are highly variable (Figure~\ref{fig:donorVar}). Variation in percent
+positve estimates that exceeds what is expected from a binomial may represent
+biological differences in the donors. The expected and observed variations in
+the percentage of positively stained cells for the 189 markers in this study
+are shown in Figure~\ref{fig:donorVar}. Discounting CD98, which had an unusual
+isotype control, the markers with the most variation (S.D. near 30\%) were
+CD85, CD97, CD154, CD184, and CD252. Since CD85, CD97, CD154, and CD252 are
+associated with activated T-cells, it is tempting to speculate that this
+difference represents biological variation between the two donors as opposed to
+technical differences in the processing and gating of the cells.
 
 \begin{figure}
 \centering
