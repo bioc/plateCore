@@ -210,34 +210,35 @@ Descriptions of marker expression profiles for particular cell populations in
 flow cytometry often use terms like positive-negative, or bright-dim, to
 qualify the amount of target present. We elected to take a more quantitative
 approach to reporting BD FACS CAP results by providing the percentage of cells
-that lie above the isotype gate and the Median Fluorescence Intensity (MFI)
-ratio for each of the 189 markers. The MFI ratio refers to the ratio of the
-median signal intensity for a specific antibody to the median signal for its
-corresponding isotype control. A cell population with 0\% positive cells and an
-MFI ratio near 1 would traditionally be classified as negative, while a
-population with $\ge$99\% positive cells and an MFI ratio >10 would be
-classified as positive or bright. 
+that lie above the isotype gate and also the Median Fluorescence Intensity (MFI)
+ratio for each of the 189 markers. We define MFI ratio as the ratio of
+the median signal intensity for a specific antibody relative to the median
+signal of its corresponding isotype control. A cell population with 0\%
+positive cells and an MFI ratio near 1 would traditionally be classified as
+negative, while a population with $\ge$99\% positive cells and an MFI ratio
+$\ge$10 would be classified as positive or bright. Follow-up studies, including
+single color titrations and competition experiments of markers characterized
+using BD FACS CAP, show that high percent positive markers ($\ge$ 90\%) are
+usually confirmed as positive, while staining in markers with a low percentage
+of positive cells ($\le$ 10\%) is often the result of non-specific binding (data
+not shown). Note that these percentages refer to the fraction of cells above
+the isotype threshold, but this does not necessarily imply heterogeneous
+staining in multiple populations.
 
-Since antibody concentrations used in BD FACS CAP are designed to screen a
-number of different cell types, the concentrations are not necessarily optimal
-for these PBMC samples. 
+Estimates of the percentage of positive cells versus the MFI ratio made using
+\Rpackage{plateCore} for each of the 189 markers from the 5 plates are shown
+in Figure~\ref{fig:mfiRatio}. 
 
-
-The 10\% cutoff is an empirically determined threshold (data not shown) used to select
-markers for further analysis, including single color titration and competition
-experiments to confirm that the marker is present and staining is specific.
-Markers that are highly positive ($\ge$ 90\%) are usually confirmed in
-follow-up studies, while markers that are low positives ($\le$ 15\%) are often
-the result of non-specific staining. Also, these percentages refer to the
-fraction of events above the isotype threshold, but this does not necessarily
-imply heterogeneous staining in multiple populations. In this study 109/189
-markers were positive on at least one plate.
+In this study 109/189 markers were positive on at least one plate.
 
 Since the majority of antibodies on the BD FACS CAP staining plate are known to
 bind different leukocytes, it is not surprising that a large fraction would be
 identified as positive on PBMCs.  Markers such as CD44, CD45, CD47, and CD59
 are broadly expressed on lymphocytes and were highly positive (>99\%) in this
 study. 
+
+
+
 
 The difficulty in determining whether a dim marker is expressed can be seen in
 Figure~\ref{fig:mfiRatio}, where samples with Median Fluorescence Intensity
