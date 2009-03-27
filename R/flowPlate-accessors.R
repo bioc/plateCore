@@ -190,7 +190,7 @@ setMethod("setRange",signature("flowPlate","numeric","numeric","character"), fun
 ## value.  The fitting is performed on log  transformed data.
 ######################################################################
 setMethod("fixAutoFl",signature("flowPlate"), 
-		function(fp,fsc,chanCols,unstain=NULL) {
+		function(fp,fsc,chanCols,unstain=NULL,minCut=10) {
 			
 			plateSet <- fp@plateSet
 			## Identify the wells containing unstained samples
@@ -203,7 +203,8 @@ setMethod("fixAutoFl",signature("flowPlate"),
 			## Fit a linear model to the unstained data, get the slope
 			unstainFits <- fsApply(plateSet[unstainWells], function(x) {
 						unlist(lapply(chanCols,function(y) {
-											exprData <- exprs(x)[(exprs(x)[,y]> 1),]	
+											## pdh: the data less than 10 seem to throw off the fit
+											exprData <- exprs(x)[(exprs(x)[,y]> minCut),]	
 											ltsReg(as.formula(paste(gsub("-",".",y)," ~ ",gsub("-",".",fsc),sep="")), log(data.frame(exprData)))$coefficients[gsub("-",".",fsc)]
 										}))
 					})	
