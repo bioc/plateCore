@@ -205,8 +205,11 @@ signal, then estimates of the percentage of positive cells will be unstable.
 \begin{figure}
 \centering
 <<label=mfiRatio,fig=TRUE,echo=FALSE>>=
+#pdf('mfiRatio.pdf')
 mfiDf <- read.csv('mfiDf.csv',stringsAsFactors=FALSE)
-plot(mfiDf$MFI.Ratio,mfiDf$PP, log="x",xlab="MFI Ratio",ylab="Percent Positive")
+plot(mfiDf$MFI.Ratio,mfiDf$PP, log="x",xlab="MFI Ratio (Test MFI / Isotype MFI)",
+		ylab="Percentage of cells above the isotype gate")
+#dev.off()
 @
 \caption{Plot of the Median Fluorescence Intensity (MFI) ratio for each of the 189 antibody-dye conjugates
 versus the percentage of positive cells identified using plateCore from the 5 PBMC plates.
