@@ -205,11 +205,26 @@ signal, then estimates of the percentage of positive cells will be unstable.
 \begin{figure}
 \centering
 <<label=mfiRatio,fig=TRUE,echo=FALSE>>=
-#pdf('mfiRatio.pdf')
-mfiDf <- read.csv('mfiDf.csv',stringsAsFactors=FALSE)
-plot(mfiDf$MFI.Ratio,mfiDf$PP, log="x",xlab="MFI Ratio (Test MFI / Isotype MFI)",
+library(robustbase)
+
+
+mfiDf <- read.csv('fjVSrDf.csv',stringsAsFactors=FALSE)
+mfiDf2 <- subset(mfiDf,abs(Gate.Score)<2)
+mfiDf3 <- subset(mfiDf,abs(Gate.Score)>=2)
+mfiDf$LogMFI.Ratio = log10(mfiDf$MFI.Ratio)
+mfiDf$PosCount <- round(mfiDf$R,0)
+mfiDf$NegCount <- 100-mfiDf$PosCount 
+robMFI <- glmrob(cbind(PosCount,NegCount) ~ LogMFI.Ratio, data=mfiDf,family=binomial(link="logit"))
+x=seq(-10,75,0.1)
+x2 <- -robMFI$coefficients[[1]]-robMFI$coefficients[[2]]*x
+
+pdf('mfiRatio.pdf')
+plot(mfiDf2$MFI.Ratio,mfiDf2$R, log="x",xlab="MFI Ratio (Test MFI / Isotype MFI)",
 		ylab="Percentage of cells above the isotype gate")
-#dev.off()
+points(mfiDf3$MFI.Ratio,mfiDf3$R,col="red")
+lines(10^x,100/(1 + exp(x2)),lwd=2,col='red')
+
+dev.off()
 @
 \caption{Plot of the Median Fluorescence Intensity (MFI) ratio for each of the 189 antibody-dye conjugates
 versus the percentage of positive cells identified using plateCore from the 5 PBMC plates.
@@ -258,8 +273,10 @@ should be evaluated manually.
 \begin{figure}
 \centering
 <<label=pcVSman,fig=TRUE,echo=FALSE>>=
+pdf('fjVSr.pdf')
 fjVSrDf <- read.csv('fjVSrDf.csv',stringsAsFactors=FALSE)
-print(xyplot(FJ ~ R | as.factor(plate), fjVSrDf,xlab="plateCore",ylab="FlowJo", aspect="iso"))
+print(xyplot(FJ ~ R | as.factor(plate), fjVSrDf,xlab="plateCore Analysis",ylab="FlowJo Analysis", aspect="iso"))
+dev.off()
 @
 \caption{Percent positive results for 189 BD FACS\tm CAP markers analyzed using either \Rpackage{plateCore}
 or FlowJo\tm for the 5 PBMC plates. Markers that varied the most between the the two methods tended to have
@@ -270,6 +287,53 @@ settings were chosen to err on the side of calling samples positive.
 }
 \label{fig:pcVSman}
 \end{figure}
+
+
+
+<<label=pbmcCD112,fig=TRUE,echo=FALSE>>=
+
+fjVSrDf <- read.csv('fjVSrDf.csv',stringsAsFactors=FALSE)
+diffR <- abs(fjVSrDf$R-fjVSrDf$FJ)
+fjVSrDf[fjVSrDf$Lab.Name=="CD112 PE-IgG1",]
+#X  plate      Lab.Name FJ        R Rpredict Gate.Score MFI.Ratio
+#16   16 P08774 CD112 PE-IgG1 27 87.60634 86.84027  0.1600624  7.247948
+#205 205 P08775 CD112 PE-IgG1 75 92.02237 92.16177  0.1150427  9.159607
+#394 394 P09206 CD112 PE-IgG1  8 64.40781 60.23478  0.1637208  4.185052
+#583 583 P09207 CD112 PE-IgG1  5 64.77341 58.70732  0.1952647  4.147542
+#772 772 P09208 CD112 PE-IgG1  8 64.84957 59.59625  0.1689158  4.185052
+
+print(xyplot(FJ ~ R | as.factor(plate), fjVSrDf,xlab="plateCore Analysis",ylab="FlowJo Analysis", aspect="iso"))
+
+
+fileNames <- list.files("../../publicationPlateCore/pbmcRData",full.names=TRUE)
+
+plates <- lapply(fileNames,function(x){
+			load(x)
+			plate[c("C02","C03","C04","A05")]
+		})
+
+quants <- lapply(fileNames,function(x){
+			load(x)
+			quantile(plate[["C03"]]@exprs[,"FL2-H"],probs=c(0.25,0.73,0.95))
+		})
+
+#16   16 P08774 CD112 PE-IgG1 27 87.60634 86.84027  0.1600624  7.247948
+#205 205 P08775 CD112 PE-IgG1 75 92.02237 92.16177  0.1150427  9.159607
+#394 394 P09206 CD112 PE-IgG1  8 64.40781 60.23478  0.1637208  4.185052
+#583 583 P09207 CD112 PE-IgG1  5 64.77341 58.70732  0.1952647  4.147542
+#772 772 P09208 CD112 PE-IgG1  8 64.84957 59.59625  0.1689158  4.185052
+
+
+virtPlate <- fpbind(plates[[1]],plates[[2]],plates[[3]],plates[[4]],plates[[5]])
+
+temp
+
+pdf('fjVSr2.pdf')
+print(densityplot(~ `FL2-H` | as.factor(plateName), transform("FL2-H"=log10) %on% virtPlate,layout=c(3,2),
+				filterResult="Negative.Control",col=c('blue','black','red','black')))
+dev.off()
+@
+
 
 \clearpage
 \begin{figure}
@@ -283,47 +347,102 @@ resulted in the automated gate being set at the 99th\% instead of the MFI+4MADs.
 \end{figure}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\clearpage
-\subsection*{Donor Variation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\clearpage
+%\subsection*{Donor Variation}
+%
+%A common goal for BD FACS\tm CAP screens is to identify markers that show variation in expression levels
+%among cells isolated from different donors. Variation in estimates of the percentage of positive cells can
+%be modeled using a binomial, where markers that are clearly positive or negative (0 or 100\%) have little
+%variation and those near the isotype gate (50\%) are highly variable.
+%Unfortunately, the power to detect differences in this study is limited
+%since there are only 2 donors and the level of replication is low (2-3 plates per donor).
+%Figure~\ref{fig:donorVar} shows  the expected and observed variation in the percentage of
+%positively stained cells for the 189 markers. Discounting CD98, which had an unusual isotype control, the
+%markers with the most variation (S.D. near 30\%) were CD85, CD97, CD154, CD184, and CD252. Since CD85, CD97, CD154, and 
+%CD252 are associated with activated T-cells, it is tempting to speculate that this difference represents
+%biological variation between the two donors as opposed to technical differences in the processing and gating
+%of the cells.
+%
+%\begin{figure}
+%\centering
+%<<label=donorVar,fig=TRUE,echo=FALSE>>=
+%
+%temp <- read.csv("ppExp.csv",stringsAsFactors=FALSE,header=TRUE)
+%
+%perPos <- seq(0.01,0.99,0.01)
+%predVar <- sqrt((perPos*(1-perPos))/5)
+%
+%markSDs <- apply(temp[,2:6],1,sd)
+%markMs <- rowMeans(temp[,2:6])
+%plot(markMs,markSDs,xlim=c(0,100),ylim=c(0,40),xlab="Mean % Positive",ylab="Standard Deviation")
+%lines(100*perPos,100*predVar)
+%#text(markMs[markSDs>20],markSDs[markSDs>20]+1,temp[markSDs>20,1],cex=0.8)
+%@
+%\caption{Scatterplot showing the mean percentage of positive cells for each positive marker
+%versus the observed (circles) and expected (line) sample standard deviation. Expected
+%values follow a binomial distribution with n=5. Markers that lie above the expected line will be 
+%further evaluated using titration and competition experiments to see if these results represent
+%real variation between the two donors. The curve in the expected line reflects the difficulty
+%in gating samples whose median signal (MFI) is near the isotype cutoff, since the percentage of positive 
+%cells calculated can shift dramatically with small changes in the gate.}
+%\label{fig:donorVar}
+%\end{figure}
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\subsection*{Donor Variation}
+%
+%In addition to identifying positively staining markers, another goal for this
+%PBMC BD FACS CAP screen was to find markers that showed variation in their
+%expression levels between the two donors. Simply performing a t-test
+%on the percent positive estimates for the two donors resulted in a large number
+%of markers with significant differences, even after correcting for multiple
+%tests. Most of these differences are not biologically relevant, since they
+%reflect the uncertainty in the placement of the isotype gate rather than
+%differences in marker expression between the two donors. As shown in
+%Figure~\ref{fig:pcVSman}, small changes to the isotype gate can have large
+%effects on the estimates of the percentage of positive cells for values between
+%30\% and 70\%. These markers will be called differentially expressed, even
+%though the signal levels for the two populations may be very close. Similarly,
+%tests for differences in fluorescence signal intensities are also often
+%significant due to the large number of events in cell population.
+%
+%Instead of testing for differences in means, we instead used a graphical
+%approach classify markers are candidates for donor variation and for further
+%analysis. Variation in estimates of the percentage of positive cells was
+%modeled using a binomial (n=5), where markers that are clearly positive or
+%negative (0 or 100\%) have little variation and those near the isotype gate
+%(50\%) are highly variable (Figure~\ref{fig:donorVar}). Variation in percent
+%positve estimates that exceeds what is expected from a binomial may represent
+%biological differences in the donors. The expected and observed variations in
+%the percentage of positively stained cells for the 189 markers in this study
+%are shown in Figure~\ref{fig:donorVar}. Discounting CD98, which had an unusual
+%isotype control, the markers with the most variation (S.D. near 30\%) were
+%CD85, CD97, CD154, CD184, and CD252. Since CD85, CD97, CD154, and CD252 are
+%associated with activated T-cells, it is tempting to speculate that this
+%difference represents biological variation between the two donors as opposed to
+%technical differences in the processing and gating of the cells.
+%
+%\begin{figure}
+%\centering
+%\includegraphics{outline-donorVar}
+%\caption{Scatterplot showing the mean percentage of positive cells for each
+%positive marker versus the observed (circles) and expected (line) sample
+%standard deviation. Expected values follow a binomial distribution with n=5.
+%Markers that lie above the expected line will (\%were? - Ryan) be further
+%evaluated using titration and competition experiments to see if these results
+%represent real variation between the two donors. The curve in the expected line
+%reflects the difficulty in gating samples whose median signal (MFI) is near the
+%isotype cutoff, since the percentage of positive cells calculated can shift
+%dramatically with small changes in the gate. (standard deveiation of what? mean
+%\% positive of what? - Ryan)) }
+%\label{fig:donorVar}
+%\end{figure}
+%
 
-A common goal for BD FACS\tm CAP screens is to identify markers that show variation in expression levels
-among cells isolated from different donors. Variation in estimates of the percentage of positive cells can
-be modeled using a binomial, where markers that are clearly positive or negative (0 or 100\%) have little
-variation and those near the isotype gate (50\%) are highly variable.
-Unfortunately, the power to detect differences in this study is limited
-since there are only 2 donors and the level of replication is low (2-3 plates per donor).
-Figure~\ref{fig:donorVar} shows  the expected and observed variation in the percentage of
-positively stained cells for the 189 markers. Discounting CD98, which had an unusual isotype control, the
-markers with the most variation (S.D. near 30\%) were CD85, CD97, CD154, CD184, and CD252. Since CD85, CD97, CD154, and 
-CD252 are associated with activated T-cells, it is tempting to speculate that this difference represents
-biological variation between the two donors as opposed to technical differences in the processing and gating
-of the cells.
 
-\begin{figure}
-\centering
-<<label=donorVar,fig=TRUE,echo=FALSE>>=
 
-temp <- read.csv("ppExp.csv",stringsAsFactors=FALSE,header=TRUE)
-
-perPos <- seq(0.01,0.99,0.01)
-predVar <- sqrt((perPos*(1-perPos))/5)
-
-markSDs <- apply(temp[,2:6],1,sd)
-markMs <- rowMeans(temp[,2:6])
-plot(markMs,markSDs,xlim=c(0,100),ylim=c(0,40),xlab="Mean % Positive",ylab="Standard Deviation")
-lines(100*perPos,100*predVar)
-#text(markMs[markSDs>20],markSDs[markSDs>20]+1,temp[markSDs>20,1],cex=0.8)
-@
-\caption{Scatterplot showing the mean percentage of positive cells for each positive marker
-versus the observed (circles) and expected (line) sample standard deviation. Expected
-values follow a binomial distribution with n=5. Markers that lie above the expected line will be 
-further evaluated using titration and competition experiments to see if these results represent
-real variation between the two donors. The curve in the expected line reflects the difficulty
-in gating samples whose median signal (MFI) is near the isotype cutoff, since the percentage of positive 
-cells calculated can shift dramatically with small changes in the gate.}
-\label{fig:donorVar}
-\end{figure}
 
 %\begin{figure}
 %\centering

@@ -9,14 +9,13 @@
 \@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Typical FC-HCS plate workflow on the left and corresponding steps from a PBMC lymphocyte {\textit  {plateCore}} analysis on the right. Compared to analyses performed using existing GUI FCM tools, {\textit  {plateCore}} can reduce the level of subjectivity associated with creating the negative control gates and also makes it easier to aggregate multiple plates into an experiment level object for visualization and reporting. Providing {\textit  {plateCore}} scripts along with the raw FCM data for FC-HCS experiments helps to ensure that analysis is transparent and reproducible.}}{4}}
 \newlabel{fig:analysis}{{1}{4}}
 \citation{lemeur2007}
-\newlabel{fig:mfiRatio}{{}{7}}
 \newlabel{isoGate}{{1}{7}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Percent positive results for 189 BD FACS CAP markers analyzed using either {\textit  {plateCore}} or FlowJo for the 5 PBMC plates. Markers that varied the most between the the two methods tended to have intermediate percent positive values (30\% to 70\%), reflecting the difficulty of gating populations whose MFI is near the isotype threshold. (\%need to say what the P0907 labels mean, need mroe informative labels thatn just "`plate Cote and FlowJo (maybe jsut stick "`analysis) at the end. Again its confusing what positive vs 30\% positive is. You said there was a threshold at 10\% to get the label of positive. -- Ryan) }}{10}}
-\newlabel{fig:pcVSman}{{3}{10}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Dotplot for CD98 in well G01 and its isotype control well H08 for plate 9208. FlowJo (86\%) and plateCore (0\%) reported dramatically different percent positive values for this marker. The difference was caused by the isotype well having >1\% of the events above the main population, which resulted in the automated gate being set at the 99th\% instead of the MFI+4MADs. (indicate that G01 is a well ID PLate0909 is a plate ID - Ryan)}}{11}}
-\newlabel{fig:disagree}{{4}{11}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Scatterplot showing the mean percentage of positive cells for each positive marker versus the observed (circles) and expected (line) sample standard deviation. Expected values follow a binomial distribution with n=5. Markers that lie above the expected line will (\%were? - Ryan) be further evaluated using titration and competition experiments to see if these results represent real variation between the two donors. The curve in the expected line reflects the difficulty in gating samples whose median signal (MFI) is near the isotype cutoff, since the percentage of positive cells calculated can shift dramatically with small changes in the gate. (standard deveiation of what? mean \% positive of what? - Ryan)) }}{13}}
-\newlabel{fig:donorVar}{{5}{13}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Percent positive results for 189 BD FACS CAP markers analyzed using either {\textit  {plateCore}} or FlowJo for the 5 PBMC plates. }}{8}}
+\newlabel{fig:pcVSman}{{2}{8}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces CD112}}{9}}
+\newlabel{fig:pcVSman}{{3}{9}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Plot of the Median Fluorescence Intensity (MFI) ratio for each of the 189 antibody-dye conjugates versus the percentage of events called positive using plateCore from the five PBMC plates. The MFI ratio refers to the ratio of the test well MFI to the corresponding isotype control on a linear scale. }}{10}}
+\newlabel{fig:mfiRatio}{{4}{10}}
 \bibstyle{plain}
 \bibdata{outline}
 \bibcite{lemeurFQ}{{1}{}{{Gentleman et~al.}}{{Gentleman, Hahne, Kettman, and Le~Meur}}}

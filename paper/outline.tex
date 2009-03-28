@@ -122,7 +122,7 @@ analysis is transparent and reproducible.}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
 \section*{Materials and Methods}
-\subsection*{Data}
+\subsection*{Flow Cytometry Data}
 
 The data analyzed in this study was part of the initial set of experiments
 used to validate the BD FACS CAP platform. BD FACS CAP was designed as a cell
@@ -140,7 +140,7 @@ for the 5 plates (two for Donor 1 and three for Donor 2), are available for
 download from http://www.ficcs.org.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{Analysis}
+\subsection*{\Rpackage{plateCore}}
 
 The \Rpackage{plateCore}
 scripts used to perform the analysis are provided in supplementary materials.
@@ -169,6 +169,8 @@ the plate annotation file with the \Robject{flowSet}. The \Robject{flowPlate}
 was then compensated, data quality was assessed, and gates were set according
 to a negative control. These control gates were then applied to test wells to
 find cells that had specific staining in channels of interest.
+
+\subsection*{FlowJo}
 
 In addition to \Rpackage{plateCore}, the five PBMC plates were also analyzed
 using FlowJo. First, an analysis template was created where test wells and
@@ -204,7 +206,54 @@ profiles in the literature. The PBMC lymphocyte staining results presented in
 the following section represent one of the cell types used for validating the
 technology.
 
-\subsection*{\Rpackage{plateCore}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Comparison to FlowJo}
+
+Automating the creation and modification of isotype gates made by cytometrists
+analyzing BD FACS CAP data using FlowJo is challenging. Cytometrists adjust
+gates based on expert knowledge about the performance of specific antibody
+types and dyes, or after identifying positive or negative test samples. If the
+isotype gate cut off the bottom portion of a positive cell population, then
+the gate was moved down.  Similarly, if the the isotype gate included too many
+cells from negative test wells, it was moved up.
+
+The automated approach employed in \Rpackage{plateCore} determines the
+threshold using isotype controls. The gate (G$_{ij}$) for isotype $i$, channel
+$j$ is set according to:
+\begin{equation}
+\text{G}_{ij} = \text{MFI}_{ij} + 4 \text{MAD}_{ij},
+\label{isoGate}
+\end{equation}
+where MAD is the Median Absolute Deviation on a linear scale. While this simple,
+non-parametric method works surprisingly well for BD FACS CAP, advances in model-based
+clustering methods, such as those in \Rpackage{flowClust}, should lead to
+future performance improvements in automated gating. Comparisons of the
+\Rpackage{plateCore} and FlowJo analysis are shown in Figure~\ref{fig:pcVSman}.
+
+FlowJo and \Rpackage{plateCore} produced very similar percent positive
+estimates for markers that were clearly positive ($\ge$99) or negative (0\%).
+Differences between the methods are more apparent when the isotype gate split
+the population of stained cells. If the isotype gate is near the median
+fluorescence signal for the marker, then small changes to the gate can
+dramatically change estimates of the percentage of positive cells. 
+
+\begin{figure}
+\centering
+\includegraphics{fjVSr.pdf}
+\caption{Percent positive results for 189 BD FACS CAP markers analyzed using
+either \Rpackage{plateCore} or FlowJo for the 5 PBMC plates. }
+\label{fig:pcVSman}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{fjVSr3.pdf}
+\caption{CD112}
+\label{fig:pcVSman}
+\end{figure}
+
+\subsection*{Gating Quality Assessment}
 
 Descriptions of marker expression profiles for particular cell populations in
 flow cytometry often use terms like positive-negative, or bright-dim, to
@@ -255,168 +304,10 @@ approaches would produce similar estimates.
 \caption{Plot of the Median Fluorescence Intensity (MFI) ratio for each of the
 189 antibody-dye conjugates versus the percentage of events called positive
 using plateCore from the five PBMC plates. The MFI ratio refers to the ratio of
-the test well MFI to the corresponding isotype control on a linear scale. 
-
-Cell
-populations with MFIs that are close to the isotype control are often split by
-the isotype gate, reflecting the range of percent positive values for MFI
-ratios between 1 and 10.}
+the test well MFI to the corresponding isotype control on a linear scale.
+}
 \label{fig:mfiRatio}
 \end{figure}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{Comparison to FlowJo}
-
-Automating the creation and modification of isotype gates made by cytometrists
-analyzing BD FACS CAP data using FlowJo is challenging. Cytometrists adjust
-gates based on expert knowledge about the performance of specific antibody
-types and dyes, or after identifying positive or negative test samples. If the
-isotype gate cut off the bottom portion of a positive cell population, then
-the gate was moved down.  Similarly, if the the isotype gate included too many
-cells from negative test wells, it was moved up.
-
-The automated approach employed in \Rpackage{plateCore} determines the
-threshold using isotype controls. The gate (G$_{ij}$) for isotype $i$, channel
-$j$ is set according to:
-\begin{equation}
-\text{G}_{ij} = \max (\text{99th}_{ij} \text{, MFI}_{ij}+ 4 \text{MAD}_{ij}),
-\label{isoGate}
-\end{equation}
-where 99th$_{ij}$ is the 99th percentile for the fluorescence signal and MAD is
-Median Absolute Deviation on a linear scale. While this simple, non-parametric
-method works surprisingly well for BD FACS CAP, advances in model-based
-clustering methods, such as those in \Rpackage{flowClust}, should lead to
-future performance improvements in automated gating. Comparisons of the
-\Rpackage{plateCore} and FlowJo analysis are shown in Figure~\ref{fig:pcVSman}.
-
-FlowJo and \Rpackage{plateCore} produced very similar percent positive
-estimates for markers that were clearly positive ($\ge$99) or negative (0\%).
-Differences between the methods are more apparent when the isotype gate split
-the population of stained cells and the percent positive estimates were between
-30\% and 70\%. If the isotype gate is near the median signal for the marker,
-then small changes to the gate can dramatically change estimates of the
-percentage of positive cells. This same effect can be seen in
-Figure~\ref{fig:mfiRatio}, where estimates of the percentage of positive cells
-rapidly increases as the MFI ratio goes from 1 to 10.
-
-Examining in detail at one case where the \Rpackage{plateCore} and FlowJo
-methods disagree, such as CD98 on plate 9208 (Figure~\ref{fig:disagree}),
-highlights situations where our automated gating approach will fail. In this
-case the marker is 86\% by FlowJo and 0\% by \Rpackage{plateCore}. The isotype
-control for CD98 (well H08 in Figure~\ref{fig:disagree}) has >1\% of its events
-in the FL1-H (FITC and Alexa 488) channel that are above the main population,
-resulting in the automated gate being set at the 99th percentile instead of the
-MFI+4MADS. Fortunately, this type of mistake can also be detected by looking
-the MFI ratio plot in Figure~\ref{fig:mfiRatio}. CD98 for plate 9208 has an MFI
-ratio of 5 and a percent positive value of 0\%, while other markers with a
-similar MFI ratio have values near 70\%. 
-
-\begin{figure}
-\centering
-\includegraphics{outline-pcVSman}
-\caption{Percent positive results for 189 BD FACS CAP markers analyzed using
-either \Rpackage{plateCore} or FlowJo for the 5 PBMC plates. Markers that
-varied the most between the the two methods tended to have intermediate percent
-positive values (30\% to 70\%), reflecting the difficulty of gating populations
-whose MFI is near the isotype threshold. (\%need to say what the P0907 labels
-mean, need mroe informative labels thatn just "`plate Cote and FlowJo (maybe
-jsut stick "`analysis) at the end. Again its confusing what positive  vs 30\%
-positive is. You said there was a threshold at 10\% to get the label of
-positive. -- Ryan) }
-\label{fig:pcVSman}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics{fjVSr2.pdf}
-\caption{Dotplot for CD98 in well G01 and its isotype control well H08 for
-plate 9208. FlowJo (86\%) and plateCore (0\%) reported dramatically different
-percent positive values for this marker. The  difference was caused by the
-isotype well having >1\% of the events above the main population, which
-resulted in the automated gate being set at the 99th\% instead of the
-MFI+4MADs. (indicate that G01 is a well ID PLate0909 is a plate ID - Ryan)}
-\label{fig:disagree}
-\end{figure}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{Donor Variation}
-
-In addition to identifying positively staining markers, another goal for this
-PBMC BD FACS CAP screen was to find markers that showed variation in their
-expression levels between the two donors. Simply performing a t-test
-on the percent positive estimates for the two donors resulted in a large number
-of markers with significant differences, even after correcting for multiple
-tests. Most of these differences are not biologically relevant, since they
-reflect the uncertainty in the placement of the isotype gate rather than
-differences in marker expression between the two donors. As shown in
-Figure~\ref{fig:pcVSman}, small changes to the isotype gate can have large
-effects on the estimates of the percentage of positive cells for values between
-30\% and 70\%. These markers will be called differentially expressed, even
-though the signal levels for the two populations may be very close. Similarly,
-tests for differences in fluorescence signal intensities are also often
-significant due to the large number of events in cell population.
-
-Instead of testing for differences in means, we instead used a graphical
-approach classify markers are candidates for donor variation and for further
-analysis. Variation in estimates of the percentage of positive cells was
-modeled using a binomial (n=5), where markers that are clearly positive or
-negative (0 or 100\%) have little variation and those near the isotype gate
-(50\%) are highly variable (Figure~\ref{fig:donorVar}). Variation in percent
-positve estimates that exceeds what is expected from a binomial may represent
-biological differences in the donors. The expected and observed variations in
-the percentage of positively stained cells for the 189 markers in this study
-are shown in Figure~\ref{fig:donorVar}. Discounting CD98, which had an unusual
-isotype control, the markers with the most variation (S.D. near 30\%) were
-CD85, CD97, CD154, CD184, and CD252. Since CD85, CD97, CD154, and CD252 are
-associated with activated T-cells, it is tempting to speculate that this
-difference represents biological variation between the two donors as opposed to
-technical differences in the processing and gating of the cells.
-
-\begin{figure}
-\centering
-\includegraphics{outline-donorVar}
-\caption{Scatterplot showing the mean percentage of positive cells for each
-positive marker versus the observed (circles) and expected (line) sample
-standard deviation. Expected values follow a binomial distribution with n=5.
-Markers that lie above the expected line will (\%were? - Ryan) be further
-evaluated using titration and competition experiments to see if these results
-represent real variation between the two donors. The curve in the expected line
-reflects the difficulty in gating samples whose median signal (MFI) is near the
-isotype cutoff, since the percentage of positive cells calculated can shift
-dramatically with small changes in the gate. (standard deveiation of what? mean
-\% positive of what? - Ryan)) }
-\label{fig:donorVar}
-\end{figure}
-
-%\begin{figure}
-%\centering
-%<<label=pbmcCDbd69,fig=TRUE,echo=FALSE>>=
-%
-%fileNames <- list.files("../../publicationPlateCore/pbmcRData",full.names=TRUE)
-%
-%plates <- lapply(fileNames,function(x){
-%			load(x)
-%			platePBMC[c("A03","B06")]
-%		})
-%
-%virtPlate <- fpbind(plates[[1]],plates[[2]],
-% plates[[3]],plates[[4]],plates[[5]])
-%
-%
-%print(densityplot(~ `FL2-H` | as.factor(plateName), transform("FL2-H"=log10)
-% %on% virtPlate, filterResult="Negative.Control",col=c('red','blue')))
-%
-%@
-%\caption{Histograms for CDbd69, which is one of the 3 candidates for
-% differential expression from Figure~\ref{fig:donorVar}.
-%Isotypes are shown in red and test wells are in blue. Similar plots were
-% automatically created using \Rpackage{plateCore}
-%for each of 189 markers assayed in this experiment, allowing cytometry experts
-% to quickly survey the results from the 5
-%different plates.}
-%\label{fig:pbmcCDbd69}
-%\end{figure}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

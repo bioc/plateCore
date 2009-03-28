@@ -1,0 +1,53 @@
+This is BibTeX, Version 0.99c (Web2C 7.5.6)
+The top-level auxiliary file: outline.aux
+The style file: plainnat.bst
+Illegal, another \bibstyle command---line 21 of file outline.aux
+ : \bibstyle
+ :          {plain}
+I'm skipping whatever remains of this command
+Database file #1: outline.bib
+Warning--empty journal in lemeurFQ
+Warning--empty year in lemeurFQ
+Warning--empty year in lemeurFQ
+You've used 7 entries,
+            2774 wiz_defined-function locations,
+            644 strings with 7266 characters,
+and the built_in function-call counts, 6741 in all, are:
+= -- 489
+> -- 849
+< -- 0
++ -- 283
+- -- 276
+* -- 704
+:= -- 1159
+add.period$ -- 24
+call.type$ -- 7
+change.case$ -- 106
+chr.to.int$ -- 7
+cite$ -- 17
+duplicate$ -- 138
+empty$ -- 244
+format.name$ -- 283
+if$ -- 1294
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 7
+newline$ -- 46
+num.names$ -- 28
+pop$ -- 218
+preamble$ -- 1
+purify$ -- 99
+quote$ -- 0
+skip$ -- 167
+stack$ -- 0
+substring$ -- 80
+swap$ -- 6
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 77
+warning$ -- 3
+while$ -- 26
+width$ -- 0
+write$ -- 101
+(There was 1 error message)
