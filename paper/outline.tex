@@ -96,6 +96,15 @@ model-based clustering and automated gating, such as \Rpackage{flowClust}
 We have developed an R package (\Rpackage{plateCore}) that also takes advantage
 of the functionality in \Rpackage{flowCore} and \Rpackage{flowViz} to create
 methods and data structures for processing large, plate-based FCM datasets.
+Additionally, we have implemented new tools to make it easier to integrate
+textual descriptions of plate layouts and also functions for automated gating
+based on non-parametric analysis of negative control wells. This study presents
+results from an automated \Rpackage{plateCore} analysis of a PBMC lymphocyte
+FACS CAP data set, which included 189 different antibody-dye conjugates
+and their controls arranged on a 96-well plate. The \Rpackage{plateCore} output
+was compared to an analysis by an expert cytometrist using FlowJo to evaluate
+the performance of the automated approach.
+
 \Rpackage{plateCore} is not designed to be a GUI driven end-user tool, but
 rather to help develop a standardized platform for the analysis of FC-HCS data.
 These analyses often represent a collaborative effort between cytometry experts
@@ -105,20 +114,6 @@ cytometrists must have confidence in the results of the automated analysis. To
 this point, we demonstrate the equality of our results to those produced by an
 expert cytometrist using FlowJo.
 
-\begin{figure}
-\centering
-\includegraphics[width=7in,height=6in]{analysisSteps.pdf}
-\caption{Typical FC-HCS plate workflow on the left and corresponding steps from
-a PBMC lymphocyte \Rpackage{plateCore} analysis on the right. Compared to
-analyses performed using existing GUI FCM tools, \Rpackage{plateCore} can
-reduce the level of subjectivity associated with creating the negative control
-gates and also makes it easier to aggregate multiple plates into an experiment
-level object for visualization and reporting. Providing \Rpackage{plateCore}
-scripts along with the raw FCM data for FC-HCS experiments helps to ensure that
-analysis is transparent and reproducible.}
-\label{fig:analysis}
-\end{figure}
- 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
 \section*{Materials and Methods}
@@ -170,6 +165,21 @@ was then compensated, data quality was assessed, and gates were set according
 to a negative control. These control gates were then applied to test wells to
 find cells that had specific staining in channels of interest.
 
+\begin{figure}
+\centering
+\includegraphics[width=7in,height=6in]{analysisSteps.pdf}
+\caption{Typical FC-HCS plate workflow on the left and corresponding steps from
+a PBMC lymphocyte \Rpackage{plateCore} analysis on the right. Compared to
+analyses performed using existing GUI FCM tools, \Rpackage{plateCore} can
+reduce the level of subjectivity associated with creating the negative control
+gates and also makes it easier to aggregate multiple plates into an experiment
+level object for visualization and reporting. Providing \Rpackage{plateCore}
+scripts along with the raw FCM data for FC-HCS experiments helps to ensure that
+analysis is transparent and reproducible.}
+\label{fig:analysis}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{FlowJo}
 
 In addition to \Rpackage{plateCore}, the five PBMC plates were also analyzed
