@@ -310,14 +310,18 @@ The effect of increasing the isotype threshold can be seen in these plots,
 where most disagreements are cases where plateCore estimates are higher than
 FlowJo. Detailed plots for one marker, CD112 (red diamond), where the two
 methods give different results are shown in Figure~\ref{fig:pcVSman2}.
- }
+}
 \label{fig:pcVSman}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics{fjVSr3.pdf}
-\caption{CD112}
+\caption{Density plots showing the plateCore (solid black) and FlowJo (dashed
+black) isotype gates for CD112  and CD109, which shared the same isotype control
+(IgG1-PE). The plateCore and FlowJo analyses gave different estimates for CD112
+(see Figure~\ref{fig:pcVSman}), which was the result of the gate being moved
+higher in FlowJo based on the presumed negative staining for CD109.}
 \label{fig:pcVSman2}
 \end{figure}
 
@@ -348,14 +352,34 @@ multiple populations of cells in the test well (Figure~\ref{fig:mfiRatio3}).
 \begin{figure}
 \centering
 \includegraphics{mfiRatioB.pdf}
-\caption{}
+\caption{Quality of the automated gating was assessed by performing a robust
+logistic regression of the percentage of cells above the isotype gate on the
+log transformed MFI ratio, and looking for estimates that were more than 2
+standardized residuals away from the best fit line (red line). The MFI ratio
+indicates the distance between the median fluoresence signals for the test
+sample and isotype cell populations, which the above graph shows is clearly
+related to the percentage of cells above the isotype gate. There were 18
+estimates flagged in this study (red diamonds) where the estimate was different
+than we would predict from the MFI ratio. Detailed examination of these 18
+cases showed that the isotype gate settings were reasonable, but they differed
+from other markers in that they had more than one population of stained cells.
+Plots for one of these markers, CD3, are provided in Figure~\ref{fig:mfiRatio3}.
+}
 \label{fig:mfiRatio}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics{mfiRatio2.pdf}
-\caption{}
+\caption{Density plot for CD3 (IgG1-Alexa 488), which was flagged for further
+evaluation by our gating quality assessement (Figure~\ref{fig:mfiRatio}).
+The MFI ratio for CD3 was very different from other markers that also had
+75-80\% of their cells above the isotype gate. Looking at
+Figure~\ref{fig:mfiRatio}, other markers with 75-80\% had MFI ratios near 5,
+while CD3 has an MFI ratio of 31-37. In this case the setting of the isotype
+gate looks reasonable and the flagging was caused by the 2 cell populations,
+whereas most other markers stain a single population.
+}
 \label{fig:mfiRatio3}
 \end{figure}
 
