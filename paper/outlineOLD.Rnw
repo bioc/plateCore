@@ -208,23 +208,70 @@ signal, then estimates of the percentage of positive cells will be unstable.
 library(robustbase)
 
 
-mfiDf <- read.csv('fjVSrDf.csv',stringsAsFactors=FALSE)
+mfiDf <- read.csv('virtWellAnn.csv',stringsAsFactors=FALSE)
+mfiDf <- subset(mfiDf,Sample.Type=="Test")
 mfiDf2 <- subset(mfiDf,abs(Gate.Score)<2)
 mfiDf3 <- subset(mfiDf,abs(Gate.Score)>=2)
 mfiDf$LogMFI.Ratio = log10(mfiDf$MFI.Ratio)
-mfiDf$PosCount <- round(mfiDf$R,0)
+mfiDf$PosCount <- round(mfiDf$Percent.Positive,0)
 mfiDf$NegCount <- 100-mfiDf$PosCount 
 robMFI <- glmrob(cbind(PosCount,NegCount) ~ LogMFI.Ratio, data=mfiDf,family=binomial(link="logit"))
 x=seq(-10,75,0.1)
 x2 <- -robMFI$coefficients[[1]]-robMFI$coefficients[[2]]*x
 
-pdf('mfiRatio.pdf')
-plot(mfiDf2$MFI.Ratio,mfiDf2$R, log="x",xlab="MFI Ratio (Test MFI / Isotype MFI)",
-		ylab="Percentage of cells above the isotype gate")
-points(mfiDf3$MFI.Ratio,mfiDf3$R,col="red")
-lines(10^x,100/(1 + exp(x2)),lwd=2,col='red')
+write.csv(mfiDf3,file='badGate.csv')
 
+pdf('mfiRatio.pdf')
+plot(mfiDf2$MFI.Ratio,mfiDf2$Percent.Positive, log="x",xlab="MFI Ratio (Test MFI / Isotype MFI)",xlim=c(0.1,250),
+		ylab="Percentage of cells above the isotype gate",pch=23)
+points(mfiDf3$MFI.Ratio,mfiDf3$Percent.Positive,col="red",pch=23)
+
+points(mfiDf3$MFI.Ratio[mfiDf3$Lab.Name=="CD5 APC-IgG1"],mfiDf3$Percent.Positive[mfiDf3$Lab.Name=="CD5 APC-IgG1"],col="red",pch=23)
+
+lines(10^x,100/(1 + exp(x2)),lwd=2,col='red')
 dev.off()
+
+
+fileNames <- list.files("../../publicationPlateCore/pbmcRData",full.names=TRUE)
+plates <- lapply(fileNames,function(x){
+			load(x)
+			plate[c("A03","B06")]
+		})
+
+#quants <- lapply(fileNames,function(x){
+#			load(x)
+#			quantile(plate[["C03"]]@exprs[,"FL2-H"],probs=c(0.25,0.73,0.95))
+#		})
+
+#16   16 P08774 CD112 PE-IgG1 27 87.60634 86.84027  0.1600624  7.247948
+#205 205 P08775 CD112 PE-IgG1 75 92.02237 92.16177  0.1150427  9.159607
+#394 394 P09206 CD112 PE-IgG1  8 64.40781 60.23478  0.1637208  4.185052
+#583 583 P09207 CD112 PE-IgG1  5 64.77341 58.70732  0.1952647  4.147542
+#772 772 P09208 CD112 PE-IgG1  8 64.84957 59.59625  0.1689158  4.185052
+
+
+virtPlate <- fpbind(plates[[1]],plates[[2]],plates[[3]],plates[[4]],plates[[5]])
+
+pdf('mfiRatio2.pdf')
+print(densityplot(~ `FL1-H` | as.factor(plateName), transform("FL1-H"=log10) %on% virtPlate,layout=c(3,2),
+				filterResult="Negative.Control",col=c('blue','red')))
+dev.off()				
+
+#plates <- lapply(fileNames,function(x){
+#			load(x)
+#			plate[c("A08","E06")]
+#		})
+#
+#virtPlate <- fpbind(plates[[1]],plates[[2]],plates[[3]],plates[[4]],plates[[5]])
+#
+##pdf('mfiRatio3.pdf')
+#print(densityplot(~ `FL4-H` | as.factor(plateName), transform("FL4-H"=log10) %on% virtPlate,layout=c(3,2),auto.key=TRUE,
+#				filterResult="Negative.Control",col=c('red','blue')))
+##dev.off()				
+
+
+
+
 @
 \caption{Plot of the Median Fluorescence Intensity (MFI) ratio for each of the 189 antibody-dye conjugates
 versus the percentage of positive cells identified using plateCore from the 5 PBMC plates.
@@ -275,7 +322,44 @@ should be evaluated manually.
 <<label=pcVSman,fig=TRUE,echo=FALSE>>=
 pdf('fjVSr.pdf')
 fjVSrDf <- read.csv('fjVSrDf.csv',stringsAsFactors=FALSE)
-print(xyplot(FJ ~ R | as.factor(plate), fjVSrDf,xlab="plateCore Analysis",ylab="FlowJo Analysis", aspect="iso"))
+print(xyplot(FJ ~ R | as.factor(plate), fjVSrDf,xlab="plateCore Analysis",groups=Off.Mark,ylab="FlowJo Analysis",
+				aspect="iso",pch=5,col=c('red','blue'),
+				panel= function (x,y,groups,col,...)  { 
+#					browser()
+					panel.xyplot(x,y,groups=groups,col=col,...)
+					panel.abline(0,1,col='red')
+				}))
+dev.off()
+
+
+fjDf <- read.csv('flowjo.csv',stringsAsFactors=FALSE)
+
+fj1 <- data.frame(fjDf[,c('P8774','P8775')],Plate="Plate 8774 vs 8775")
+fj1 <- fj1[apply(fj1[,1:2],1,function(x) !any(is.na(x))),]
+colnames(fj1) <- c("Replicate 1","Replicate 2","Plate")
+cor(x=fj1[,1],y=fj1[,2])
+#[1] 0.9188428
+fj2 <- data.frame(fjDf[,c('P9206','P9207')],Plate="Plate 9206 vs 9207")
+fj2 <- fj2[apply(fj2[,1:2],1,function(x) !any(is.na(x))),]
+colnames(fj2) <- c("Replicate 1","Replicate 2","Plate")
+cor(x=fj2[,1],y=fj2[,2])
+#[1] 0.9853118
+fj3 <- data.frame(fjDf[,c('P9206','P9208')],Plate="Plate 9206 vs 9207")
+fj3 <- fj3[apply(fj3[,1:2],1,function(x) !any(is.na(x))),]
+cor(x=fj3[,1],y=fj3[,2])
+#[1] 0.9835999
+fj3 <- data.frame(fjDf[,c('P9207','P9208')],Plate="Plate 9206 vs 9207")
+fj3 <- fj3[apply(fj3[,1:2],1,function(x) !any(is.na(x))),]
+cor(x=fj3[,1],y=fj3[,2])
+#[1] 0.99349
+
+stackDf <- rbind(fj1,fj2)
+pdf('replicate.pdf')
+print(xyplot(`Replicate 2` ~ `Replicate 1` | as.factor(Plate),stackDf,aspect="iso",col='blue',pch=5,
+		panel= function (x,y,col,...)  { 
+			panel.xyplot(x,y,col=col,...)
+			panel.abline(0,1,col='red')
+		}))
 dev.off()
 @
 \caption{Percent positive results for 189 BD FACS\tm CAP markers analyzed using either \Rpackage{plateCore}
@@ -329,8 +413,8 @@ virtPlate <- fpbind(plates[[1]],plates[[2]],plates[[3]],plates[[4]],plates[[5]])
 temp
 
 pdf('fjVSr2.pdf')
-print(densityplot(~ `FL2-H` | as.factor(plateName), transform("FL2-H"=log10) %on% virtPlate,layout=c(3,2),
-				filterResult="Negative.Control",col=c('blue','black','red','black')))
+print(densityplot(~ `FL2-H` | as.factor(plateName), transform("FL2-H"=log10) %on% virtPlate[c("C02","C03","A05")],layout=c(3,2),xlim=c(-0.2,2.5),
+				filterResult="Negative.Control",lty=c(1,2,3,4),col=c('blue','black','red')))
 dev.off()
 @
 

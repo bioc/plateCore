@@ -214,29 +214,51 @@ Automating the creation and modification of isotype gates made by cytometrists
 analyzing BD FACS CAP data using FlowJo is challenging. Cytometrists adjust
 gates based on expert knowledge about the performance of specific antibody
 types and dyes, or after identifying positive or negative test samples. If the
-isotype gate cut off the bottom portion of a positive cell population, then
-the gate was moved down.  Similarly, if the the isotype gate included too many
-cells from negative test wells, it was moved up.
+isotype gate cut off the bottom portion of a positive cell population in a test
+well, then the gate was moved down.  Similarly, if the the isotype gate
+included too many cells from negative test wells, it was moved up. Results from
+the FlowJo based gating of replicate PBMC plates are shown in
+Figure~\ref{fig:replicate}.
 
-The automated approach employed in \Rpackage{plateCore} determines the
+The automated approach to gating in \Rpackage{plateCore} determines the
 threshold using isotype controls. The gate (G$_{ij}$) for isotype $i$, channel
 $j$ is set according to:
 \begin{equation}
 \text{G}_{ij} = \text{MFI}_{ij} + 4 \text{MAD}_{ij},
 \label{isoGate}
 \end{equation}
-where MAD is the Median Absolute Deviation on a linear scale. While this simple,
-non-parametric method works surprisingly well for BD FACS CAP, advances in model-based
-clustering methods, such as those in \Rpackage{flowClust}, should lead to
-future performance improvements in automated gating. Comparisons of the
-\Rpackage{plateCore} and FlowJo analysis are shown in Figure~\ref{fig:pcVSman}.
+where MAD is the Median Absolute Deviation on a linear scale. The choice of 4
+MADS is an attempt to set the gate above the 99th percentile of cells in the
+isotype stained wells. Empirical evidence from analyses of FACS CAP experiments
+not shown here also indicate that the 4 MADS setting produces gates that are
+very similar to those made by expert cytometrists when analyzing PBMC cells.
+While this simple, non-parametric method works surprisingly well for BD FACS
+CAP, advances in model-based clustering methods, such as those in
+\Rpackage{flowClust}, should lead to future performance improvements in
+automated gating. 
 
-FlowJo and \Rpackage{plateCore} produced very similar percent positive
-estimates for markers that were clearly positive ($\ge$99) or negative (0\%).
-Differences between the methods are more apparent when the isotype gate split
-the population of stained cells. If the isotype gate is near the median
-fluorescence signal for the marker, then small changes to the gate can
-dramatically change estimates of the percentage of positive cells. 
+Comparisons of the output from the \Rpackage{plateCore} and FlowJo analyses are
+shown in Figure~\ref{fig:pcVSman}. Both methods prodcue nearly identical
+estimates for markers that were either highly positive ($\ge$99\%) or highly
+negative ($\le$1\%). These cell populations are not close to the isotype
+threshold, and therefore different isotype gate settings do not have a large
+effect. In situations where the isotype gate splits a test cell population, then
+small changes to the gate can dramatically change estimates of the percentage
+of positive cells. The difficulty in reliably gating test samples where the
+bulk of the cells are near the isotype gate is evident in the FlowJo results
+for replicate plates (Figure~\ref{fig:replicate}) and in the FlowJo versus
+\Rpackage{plateCore} comparison (~\ref{fig:pcVSman}). Estimates for markers
+having 50\% of the cells above the isotype gate are more variable than markers
+having $\le$1\% or $\ge$99\%.
+
+
+
+\begin{figure}
+\centering
+\includegraphics{replicate.pdf}
+\caption{}
+\label{fig:replicate}
+\end{figure}
 
 \begin{figure}
 \centering
@@ -300,15 +322,17 @@ approaches would produce similar estimates.
 
 \begin{figure}
 \centering
-\includegraphics{mfiRatio.pdf}
-\caption{Plot of the Median Fluorescence Intensity (MFI) ratio for each of the
-189 antibody-dye conjugates versus the percentage of events called positive
-using plateCore from the five PBMC plates. The MFI ratio refers to the ratio of
-the test well MFI to the corresponding isotype control on a linear scale.
-}
+\includegraphics{mfiRatioB.pdf}
+\caption{}
 \label{fig:mfiRatio}
 \end{figure}
 
+\begin{figure}
+\centering
+\includegraphics{mfiRatio2.pdf}
+\caption{}
+\label{fig:mfiRatio3}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
