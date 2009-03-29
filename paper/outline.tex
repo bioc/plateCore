@@ -284,21 +284,33 @@ on staining of CD109.
 \begin{figure}
 \centering
 \includegraphics{replicate.pdf}
-\caption{Estimates made using FlowJo for the percentage of cells above the
-isotype threshold for each marker on replicate plates for donor 1 (8774 vs
-8775) and donor 2 (9206 vs 9207). Estimates from markers where the population
-of cells was near the isotype threshold, around 50\%, were more
+\caption{FlowJo estimates for the percentage of cells above the isotype
+threshold for 189 markers on replicate plates for donor 1 (8774 vs 8775) and
+donor 2 (9206 vs 9207). Estimates from markers where the center of the
+cell population was near the isotype threshold, around 50\%, were more
 variable than samples which were clearly positive($\ge$99\%) or negative
-($\le$1\%). The correlation for replicate plates was strong in both donors, with
-donor 1 at 0.92 and donor 2 $\ge$0.98 (plate 9208 for donor 2 not shown).}
+($\le$1\%). The correlation for replicate plates was strong in both donors,
+with donor 1 at 0.92 and donor 2 at 0.98. Plate 9208 for donor 2 is not shown,
+but the results are similar to 9206 vs 9207.}
 \label{fig:replicate}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics{fjVSr.pdf}
-\caption{Percent positive results for 189 BD FACS CAP markers analyzed using
-either \Rpackage{plateCore} or FlowJo for the 5 PBMC plates. }
+\caption{Plot showing the percentage of cells above the isotype threshold
+from plateCore (x-axis) and FlowJo (y-axis) for each of the 189 markers on
+the 5 PBMC plates. If the two methods produce similar estimates, then the
+values should be near the red line (y=x). In plateCore the isotype threshold was
+determined using only information from the isotype control well, while the
+threshold in FlowJo may be adjusted after identifying either positively or
+negatively staining test samples. Generally, these FlowJo adjustments resulted
+in the isotype gate being set a higher level to exclude a negative test sample. 
+The effect of increasing the isotype threshold can be seen in these plots,
+where most disagreements are cases where plateCore estimates are higher than
+FlowJo. Detailed plots for one marker, CD112 (red diamond), where the two
+methods give different results are shown in Figure~\ref{fig:pcVSman2}.
+ }
 \label{fig:pcVSman}
 \end{figure}
 
