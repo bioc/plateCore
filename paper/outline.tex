@@ -400,16 +400,20 @@ populations for CD3, whereas most other markers stain a single population.
 \clearpage
 \section*{Discussion}
 
-Our approach to this PBMC BD FACS CAP study relied on processing the raw data
-in parallel using both FlowJo and \Rpackage{plateCore}. FlowJo allowed the
-ctyometrists to thoroughly investigate individual wells, and gave them
-confidence that the \Rpackage{plateCore} results were correct (see
-Figure~\ref{fig:pcVSman}). Using \Rpackage{plateCore}, we were able to reduce
-the level subjectivity in setting isotype gates, eliminate mistakes associated
-with manual export and merging of plate output, and automate the creation of
-plots and data quality reports that summarized the experiment. Additionally,
-the \Rpackage{plateCore} scripts and experimental annotation can be shared with
-other cytometry groups, allowing them to reproduce our analysis.
+The goal of this FACS CAP experiment was to measure the expression levels of 189
+different human cells surface markers on PBMC lymphocytes. Since FACS CAP is a
+standard platoform, and the antibody concentrations and isotypes were not
+optimized for these cell samples, the results for each marker are reported as
+the percentage of cells above the isotype gate rather than positive or
+negative. While FACS CAP data analysis can be performed relatively quickly in
+FlowJo, it can be difficult to capture and reproduce the subjective gating
+decisions made by a single expert user. Results from the plateCore analysis
+showed that it is possible to 
+
+
+
+
+
 
 In addition to subjective gating, the lack of a standard format for describing
 large FCM experiments also makes it difficult for anyone other than the
@@ -427,19 +431,13 @@ annotations provides a convenient way to manage the plate metadata associated
 with complex FC-HCS experiments.
 
 %moved from methods
-While this same analysis can be performed relatively quickly in 
-other FCM software packages, it can be difficult to reproduce the gating
-decisions made by a single expert user. (Expand - Ryan)
+
 
 Markers that are expressed on a small subset of lymphocytes, or markers that
 are dimly expressed, would not be found with this screening approach.
 (Expand - Ryan)
 
-Since, BD FACS CAP was designed as screening tool to 
-identify markers for further analysis, false negatives were a bigger concern
-than false positives. The plateCore settings were chosen to err on the side of
-calling samples positive. (Why, make it clear to uninformed readers by stating
-explicitly? what about for other studies? more discussion here - Ryan)
+
 
 The complexity of large FCM experiments, like BD FACS CAP, highlight the 
 difficulty of applying existing FCM analysis platforms to high-throughput
@@ -457,6 +455,24 @@ high-throughput biological problems. We found that \Rpackage{flowCore},
 that facilitated communication between the flow cytometrists generating the
 data, and the computational experts analyzing the data.
 
+
+
+%Our approach to this PBMC BD FACS CAP study relied on processing the raw data
+%in parallel using both FlowJo and \Rpackage{plateCore}. FlowJo allowed the
+%ctyometrists to thoroughly investigate individual wells, and gave them
+%confidence that the \Rpackage{plateCore} results were correct (see
+%Figure~\ref{fig:pcVSman}). Using \Rpackage{plateCore}, we were able to reduce
+%the level subjectivity in setting isotype gates, eliminate mistakes associated
+%with manual export and merging of plate output, and automate the creation of
+%plots and data quality reports that summarized the experiment. Additionally,
+%the \Rpackage{plateCore} scripts and experimental annotation can be shared with
+%other cytometry groups, allowing them to reproduce our analysis.
+
+%Since, BD FACS CAP was designed as screening tool to 
+%identify markers for further analysis, false negatives were a bigger concern
+%than false positives. The plateCore settings were chosen to err on the side of
+%calling samples positive. (Why, make it clear to uninformed readers by stating
+%explicitly? what about for other studies? more discussion here - Ryan)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
