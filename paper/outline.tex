@@ -33,16 +33,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Abstract}
 \subsection*{Background}
-High throughput flow cytometry (FCM) studies are often run in a 96 or 384-well
-plate format, with different samples, controls, and antibodies-dye conjugates
-present on each plate. Analyzing a plate requires tracking the contents of each
-well, matching sample wells with control wells, gating each well/channel
-separately, making the appropriate plots, assessing quality, and finally
-aggregating the results from multiple plates to make experiment level
-conclusions. This process can be a significant task using traditional
-point-and-click software packages, even when multiple instances are deployed.
-We developed \Rpackage{plateCore} as an R/Bioconductor packaged to make
-processing and analysis of large, complex datasets easier.
+Flow cytometry (FCM) software packages from R/Bioconductor, such as flowCore
+and flowViz, serve as an open platform for development of new analysis tools and
+methods. We created a new package, \Rpackage{plateCore}, that extends the
+functionality in these core packages to enable automated isotype-based gating
+and make the processing and analysis of plate-based data sets from
+high throughput FCM screening experiments easier.
 
 \subsection*{Methods}
 \Rpackage{plateCore} was used to analyze the data from a BD FACS CAP screening
@@ -222,19 +218,22 @@ technology.
 
 Descriptions of marker expression profiles for particular cell populations in
 flow cytometry often use terms like positive-negative, or bright-dim, to
-qualify the amount of target present. We chose to take a different approach
-to reporting FACS CAP results and instead give the percentage of cells with
-signal intensity above the isotype threshold, since FACS CAP is a screening
-platform intending for testing a large number of antibodies. Follow-up studies,
-including single color titrations and competition experiments, are needed to
-definitively say whether a marker is positive or negative. These additional
-analyses of markers that have been characterized using FACS CAP show that
-markers with $\ge$ 90\% of the cells above the isotype threshold are usually
-confirmed as positive, while staining in markers with $\le$ 10\% of cells above
-the isotype threshold is often the result of non-specific binding (data not
-shown). Note that these percentages refer to the fraction of cells above the
-isotype threshold, but this does not necessarily imply heterogeneous staining in
-multiple populations.
+qualify the amount of target present. Since FACS CAP is a
+standard platoform for screening a wide range of cell types, and antibody
+concentrations were not optimized for these PMBC samples, results are reported as
+the percentage of cells above the isotype gate rather than positive or
+negative. Follow-up studies, including single color titrations and competition
+experiments, are needed to definitively say whether a marker is positive or
+negative. These additional analyses of markers that have been characterized
+using FACS CAP show that markers with $\ge$ 90\% of the cells above the isotype
+threshold are usually confirmed as positive, while staining in markers with
+$\le$ 10\% of cells above the isotype threshold is often the result of
+non-specific binding (data not shown). Note that these percentages refer to the
+fraction of cells above the isotype threshold, but this does not necessarily
+imply heterogeneous staining in multiple populations.
+
+
+
 
 Automating the creation and modification of isotype gates made by cytometrists
 analyzing BD FACS CAP data using FlowJo is challenging. Cytometrists adjust
@@ -260,6 +259,7 @@ channel $j$ is set according to:
 \text{G}_{ij} = \text{MFI}_{ij} + 4 \text{MAD}_{ij},
 \label{isoGate}
 \end{equation}
+
 where MFI is the Median Fluoresence Intensity and MAD is Median Absolute
 Deviations on a linear scale. The choice of 4 MADS is an attempt to set the
 gate above the 99th percentile of cells in the isotype stained wells and
@@ -278,9 +278,9 @@ estimates for markers that were either clearly positive ($\ge$99\%) or clearly
 negative ($\le$1\%). These cell populations are not close to the isotype
 threshold, and therefore different isotype gate settings have little or no
 effect on estimates of the percentage of cells above the gate. In situations
-where the isotype gate splits a test cell population, small changes to the gate can
-dramatically change estimates of the percentage of positive cells. This effect
-is evident in the results from replicate plates using FlowJo
+where the isotype gate splits a test cell population, small changes to the gate
+can dramatically change estimates of the percentage of positive cells. This
+effect is evident in the results from replicate plates using FlowJo
 (Figure~\ref{fig:replicate}), and also in comparisons of FlowJo and plateCore
 (Figure~\ref{fig:pcVSman}), where estimates for markers having approximately
 50\% of the cells above the isotype gate are more variable than markers having
@@ -400,44 +400,39 @@ populations for CD3, whereas most other markers stain a single population.
 \clearpage
 \section*{Discussion}
 
-The goal of this FACS CAP experiment was to measure the expression levels of 189
-different human cells surface markers on PBMC lymphocytes. Since FACS CAP is a
-standard platoform, and the antibody concentrations and isotypes were not
-optimized for these cell samples, the results for each marker are reported as
-the percentage of cells above the isotype gate rather than positive or
-negative. While FACS CAP data analysis can be performed relatively quickly in
-FlowJo, it can be difficult to capture and reproduce the subjective gating
-decisions made by a single expert user. Results from the plateCore analysis
-showed that it is possible to 
+We showed that the non-parametric approach to gating implemented in plateCore
+produces results that are similar to those from an expert user when analyzing
+PBMC lymphocyte FACS CAP data. Since this was a screening assay, the goal was to
+quickly and reproducibly process a large volume of data and get an approximate
+answer for each of the 189 human cell surface markers, and then perform more
+in-depth analysis for markers that were of biological interest. Using
+\Rpackage{plateCore}, we were able to reduce the level subjectivity in setting
+isotype gates, eliminate mistakes associated with manual data annotation and
+export, and automate the creation of plots and data quality reports that
+summarized the experiment. Additionally, the \Rpackage{plateCore} scripts and
+experimental annotation can be shared with other cytometry groups, allowing
+them to reproduce our analysis.
 
+Looking at markers where FlowJo and plateCore gave different results, such as
+CD112, it is not clear that either method actually gated the cells correctly.
+The gene for CD112 (PVRL2) has been shown to be expressed on a subset of B cells,
+CD4 T cells, CD8 T cells, and NK cells in healthy donors using microarrays
+\citep{Critchley2007}, so the plateCore results showing 65-92\% of the cells
+above the isotype gate may actually represent specific staining. Unfortunately,
+increasing the isotype (IGg1-PE) threshold in FlowJo to eliminate what looks
+like negative, non-specific staining in CD109 (Figure~\ref{fig:pcVSman2}) also
+seems reasonable. More focused studies will have to be performed to determine
+if the staining for CD112, and other markers that disagreed, was positive or
+negative.
 
-
-
-
-
-In addition to subjective gating, the lack of a standard format for describing
-large FCM experiments also makes it difficult for anyone other than the
-original experimenter to replicate an analysis. (You could add something about
-MIFlowCyt here as well, as even if people had a format to follow, unless they
-put all the data in necessary to understand, just having a format isn't enough
-- Ryan) The development of mechanism to bundle experimental metadata
-descriptions with FCS data files should make it easier to access metadata in
-future FCM studies, but currently this information is typically provided either
-as spreadsheet or a pictorial layout of a 96 well plate. Since the creation of
-\Robject{flowPlate} requires users to make a standard sample annotation file,
-plate layouts from \Rpackage{plateCore} can then be easily shared along with
-the raw FCS2.0/3.0 files. The standard format for \Rpackage{plateCore} sample
-annotations provides a convenient way to manage the plate metadata associated
-with complex FC-HCS experiments.
-
-%moved from methods
-
-
-Markers that are expressed on a small subset of lymphocytes, or markers that
-are dimly expressed, would not be found with this screening approach.
-(Expand - Ryan)
-
-
+Another advantage of performing the analysis in plateCore is the ability to
+verify that that isotype-based gate settings were consistent across the 5
+PBMC plates. Comparing the MFI ratio to the percentage of cells above the
+isotype threshold (Figure~\ref{fig:mfiRatio}) shows that there is a
+relationship between the separation between a test and its control, and the
+fraction of cells above the gate. While this approach does not tell us if the
+gating was correct, it does help to ensure that the isotype gate for two
+replicate samples was set at the same level. 
 
 The complexity of large FCM experiments, like BD FACS CAP, highlight the 
 difficulty of applying existing FCM analysis platforms to high-throughput
@@ -453,26 +448,32 @@ should already be familiar to most quantitative individuals working on
 high-throughput biological problems. We found that \Rpackage{flowCore},
 \Rpackage{flowViz}, and \Rpackage{plateCore} provided an open analysis platform
 that facilitated communication between the flow cytometrists generating the
-data, and the computational experts analyzing the data.
+data and the computational experts analyzing the data.
 
 
+%Markers that are expressed on a small subset of lymphocytes, or markers that
+%are dimly expressed, would not be found with this screening approach.
+%(Expand - Ryan)
 
-%Our approach to this PBMC BD FACS CAP study relied on processing the raw data
-%in parallel using both FlowJo and \Rpackage{plateCore}. FlowJo allowed the
-%ctyometrists to thoroughly investigate individual wells, and gave them
-%confidence that the \Rpackage{plateCore} results were correct (see
-%Figure~\ref{fig:pcVSman}). Using \Rpackage{plateCore}, we were able to reduce
-%the level subjectivity in setting isotype gates, eliminate mistakes associated
-%with manual export and merging of plate output, and automate the creation of
-%plots and data quality reports that summarized the experiment. Additionally,
-%the \Rpackage{plateCore} scripts and experimental annotation can be shared with
-%other cytometry groups, allowing them to reproduce our analysis.
+%While FACS CAP data
+%analysis can be performed relatively quickly in FlowJo, it can be difficult to
+%capture and reproduce the subjective gating decisions made by a single expert
+%user. 
 
-%Since, BD FACS CAP was designed as screening tool to 
-%identify markers for further analysis, false negatives were a bigger concern
-%than false positives. The plateCore settings were chosen to err on the side of
-%calling samples positive. (Why, make it clear to uninformed readers by stating
-%explicitly? what about for other studies? more discussion here - Ryan)
+%In addition to subjective gating, the lack of a standard format for describing
+%large FCM experiments also makes it difficult for anyone other than the
+%original experimenter to replicate an analysis. (You could add something about
+%MIFlowCyt here as well, as even if people had a format to follow, unless they
+%put all the data in necessary to understand, just having a format isn't enough
+%- Ryan) The development of mechanism to bundle experimental metadata
+%descriptions with FCS data files should make it easier to access metadata in
+%future FCM studies, but currently this information is typically provided either
+%as spreadsheet or a pictorial layout of a 96 well plate. Since the creation of
+%\Robject{flowPlate} requires users to make a standard sample annotation file,
+%plate layouts from \Rpackage{plateCore} can then be easily shared along with
+%the raw FCS2.0/3.0 files. The standard format for \Rpackage{plateCore} sample
+%annotations provides a convenient way to manage the plate metadata associated
+%with complex FC-HCS experiments.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
