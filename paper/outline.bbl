@@ -1,9 +1,15 @@
-\begin{thebibliography}{7}
+\begin{thebibliography}{8}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Critchley-Thorne(2007)]{Critchley2007}
+N.~Nacu S. Weber J. Holmes SP. Lee~PP. Critchley-Thorne, RJ.~Yan.
+\newblock Down-regulation of the interferon signaling pathway in t lymphocytes
+  from patients with metastatic melanoma.
+\newblock \emph{PLoS Med}, 4:\penalty0 e176, 2007.
 
 \bibitem[Gentleman et~al.()Gentleman, Hahne, Kettman, and Le~Meur]{lemeurFQ}
 R.~Gentleman, F.~Hahne, J.~Kettman, and N.~Le~Meur.
