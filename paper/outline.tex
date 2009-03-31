@@ -34,7 +34,7 @@
 \section*{Abstract}
 Flow cytometry (FCM) software packages from R/Bioconductor, such as flowCore
 and flowViz, serve as an open platform for development of new analysis tools and
-methods. We created a new package, called \Rpackage{plateCore}, that extends the
+methods. We created \Rpackage{plateCore}, a new package that extends the
 functionality in these core packages to enable automated isotype-based gating
 and make the processing and analysis of plate-based data sets from
 high throughput FCM screening experiments easier. \Rpackage{plateCore} was used
@@ -53,10 +53,10 @@ We show that the expression values for markers characterized using
 While there are a number of different software packages available for analysis
 of FCM data, these programs are often ill-suited to the development of new
 methods needed for analyzing high-throughput FCM studies. Flow Cytometry High
-Content Screening (FC-HCS) experiments generate large volumes of data, and a
-systematic approach to preprocessing, gating (i.e. filtering), and summarizing
-results is needed for robust analyses. Automation of these steps would allow
-analysis pipelines to be robust, objective, and match the high-throughput
+Content Screening (FC-HCS) experiments generate large volumes of data,
+which requires a systematic approach to preprocessing, gating (i.e. filtering),
+and summarizing results for robust analyses. Automation of these steps would
+allow analysis pipelines to be robust, objective, and match the high-throughput
 capacity of modern cytometers. Unfortunately, current approaches to FC-HCS
 analysis are semi-automated at best, and they often require significant
 subjective and error-prone manual intervention to identify cells of interest
@@ -125,7 +125,7 @@ download from http://www.ficcs.org.
 The \Rpackage{plateCore}
 scripts used to perform the analysis are provided in supplementary materials.
 Briefly, the FCM files were first processed using a combination of static
-gates(\Robject{rectangleGate}) and data driven gates (using
+gates (\Robject{rectangleGate}) and data driven gates (using
 \Robject{norm2filter} and \Rpackage{flowCore}) to pick out the lymphocytes in
 the forward (FSC) and side scatter (SSC) channels.  The
 quality of the data was then assessed by looking for fluidic events such as
@@ -159,7 +159,7 @@ analyses performed using existing GUI FCM tools, \Rpackage{plateCore} can
 reduce the level of subjectivity associated with creating the negative control
 gates and also makes it easier to aggregate multiple plates into an experiment
 level object for visualization and reporting. Providing \Rpackage{plateCore}
-scripts along with the raw FCM data for FC-HCS experiments helps to ensure that
+scripts along with the raw FCM data for FC-HCS experiments helps ensure that an
 analysis is transparent and reproducible.}
 \label{fig:analysis}
 \end{figure}
@@ -191,7 +191,7 @@ the threshold for each of the 189 antibodies was then exported for each plate.
 \section*{Results}
 
 Although this study focuses on comparing two different FC-HCS analysis methods,
-it is important to consider the orignal goal of the experiment used to generate
+it is important to consider the original goal of the experiment used to generate
 the data when interpreting the results. BD FACS CAP was designed to provide a
 standard assay platform for screening a large number of markers on many
 different cell types. The validation effort for BD FACS CAP included running
@@ -208,11 +208,11 @@ technology.
 Descriptions of marker expression profiles for particular cell populations in
 flow cytometry often use terms like positive-negative, or bright-dim, to
 qualify the amount of target present. Since FACS CAP is a
-standard platoform for screening a wide range of cell types, and antibody
+standard platform for screening a wide range of cell types, and antibody
 concentrations were not optimized for these PMBC samples, results are reported as
 the percentage of cells above the isotype gate rather than positive or
 negative. Follow-up studies, including single color titrations and competition
-experiments, are needed to definitively say whether a marker is present.
+experiments, are needed to definitively show that a marker is present.
 These additional analyses of markers that have been characterized
 using FACS CAP show that markers with $\ge$ 90\% of the cells above the isotype
 threshold are usually confirmed as positive, while staining in markers with
@@ -258,7 +258,7 @@ advances in model-based clustering methods, such as those in
 automated gating.
 
 Comparisons of the output from the \Rpackage{plateCore} and FlowJo analyses are
-shown in Figure~\ref{fig:pcVSman}. Both methods prodcue nearly identical
+shown in Figure~\ref{fig:pcVSman}. Both methods produce nearly identical
 estimates for markers that were either clearly positive ($\ge$99\%) or clearly
 negative ($\le$1\%). These cell populations are not close to the isotype
 threshold, and therefore different isotype gate settings have little or no
@@ -275,7 +275,7 @@ Looking in detail at one marker, CD112 (Figure~\ref{fig:pcVSman}), where FlowJo
 and \Rpackage{plateCore} gave very different answers we see an example of a
 gate that was updated in the manual analysis based on a negative sample.
 Figure~\ref{fig:pcVSman2} shows the \Rpackage{plateCore} and FlowJo isotype
-gates for CD112 (IgG1-PE) and CD109 (IgG1-PE). The \Rpackage{plateCore} gate is
+gates for CD112 (IgG1-PE) and CD109 (IgG1-PE). The \Rpackage{plateCore} gate was
 set using the isotype signals, while the FlowJo gate was moved upwards based
 on staining of CD109. 
 
@@ -349,7 +349,7 @@ in fluorescence intensity between dyes, and variation in non-specific binding
 by different antibody types, would make direct comparisons difficult. 
 
 The 18 values that were more than 2 standard residuals away from the line were
-examined in detail and the isotype gate settings were found to be reasonble. In
+examined in detail and the isotype gate settings were found to be reasonable. In
 this case the flagging was the result of a positive and negative staining
 population of cells, which made the relationship between the MFI ratio and the
 fraction of cells above the isotype gate look very different than markers
@@ -417,11 +417,11 @@ have to be performed to determine if the staining for CD112, and other markers
 that disagreed, was positive or negative.
 
 Another advantage of performing the analysis in plateCore is the ability to
-easily verify that that isotype-based gate settings were consistent across the 5
+easily verify that isotype-based gate settings were consistent across the 5
 PBMC plates. Figure~\ref{fig:mfiRatio} shows that there is a linear
 relationship between the distance between the test and control cell
 populations, as measured by the MFI ratio, and the fraction of cells above the
-isotype gate. Deviation from this line can indicate a either problem with the
+isotype gate. Deviation from this line can indicate either a problem with the
 isotype gate or that the sample has multiple cell populations
 (Figure~\ref{fig:mfiRatio3}). We note that this approach does not actually tell
 us if the gating is correct, simply whether or not the isotype gating was
