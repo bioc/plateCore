@@ -223,17 +223,14 @@ standard platoform for screening a wide range of cell types, and antibody
 concentrations were not optimized for these PMBC samples, results are reported as
 the percentage of cells above the isotype gate rather than positive or
 negative. Follow-up studies, including single color titrations and competition
-experiments, are needed to definitively say whether a marker is positive or
-negative. These additional analyses of markers that have been characterized
+experiments, are needed to definitively say whether a marker is present.
+These additional analyses of markers that have been characterized
 using FACS CAP show that markers with $\ge$ 90\% of the cells above the isotype
 threshold are usually confirmed as positive, while staining in markers with
 $\le$ 10\% of cells above the isotype threshold is often the result of
 non-specific binding (data not shown). Note that these percentages refer to the
 fraction of cells above the isotype threshold, but this does not necessarily
 imply heterogeneous staining in multiple populations.
-
-
-
 
 Automating the creation and modification of isotype gates made by cytometrists
 analyzing BD FACS CAP data using FlowJo is challenging. Cytometrists adjust
@@ -259,7 +256,6 @@ channel $j$ is set according to:
 \text{G}_{ij} = \text{MFI}_{ij} + 4 \text{MAD}_{ij},
 \label{isoGate}
 \end{equation}
-
 where MFI is the Median Fluoresence Intensity and MAD is Median Absolute
 Deviations on a linear scale. The choice of 4 MADS is an attempt to set the
 gate above the 99th percentile of cells in the isotype stained wells and
@@ -279,7 +275,7 @@ negative ($\le$1\%). These cell populations are not close to the isotype
 threshold, and therefore different isotype gate settings have little or no
 effect on estimates of the percentage of cells above the gate. In situations
 where the isotype gate splits a test cell population, small changes to the gate
-can dramatically change estimates of the percentage of positive cells. This
+can dramatically change these estimates. This
 effect is evident in the results from replicate plates using FlowJo
 (Figure~\ref{fig:replicate}), and also in comparisons of FlowJo and plateCore
 (Figure~\ref{fig:pcVSman}), where estimates for markers having approximately
@@ -339,7 +335,6 @@ higher in FlowJo based on the presumed negative staining for CD109.}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\clearpage
 \subsection*{Gating Quality Assessment}
 
 Since we may not always have access to output from expert cytometrists to
@@ -361,7 +356,10 @@ standardized residuals from the best fit line, which is surprising since the 189
 different antibodies were conjugated to different fluorophores (either Alexa
 488, FITC, PE, PerCP, APC, or Alexa 647) and matched against different isotypes
 (either IgG1, IgG2, IgG2a, IgG2b, IgG3, or IgM). The 18 remaining cases were
-examined in detail and the isotype gates were reasonble, but there were
+examined in detail and the isotype gates were reasonble, 
+
+
+but they were
 multiple populations of cells in the test well (Figure~\ref{fig:mfiRatio3}). 
 
 \begin{figure}
@@ -371,11 +369,11 @@ multiple populations of cells in the test well (Figure~\ref{fig:mfiRatio3}).
 logistic regression of the percentage of cells above the isotype gate on the
 log transformed MFI ratio, and looking for estimates that were more than 2
 standardized residuals away from the best fit line (red line). There were 18
-estimates flagged in this study (red diamonds) where the estimate was different
+estimates flagged in this study (red diamonds) where the value was different
 than we would predict from the MFI ratio. Detailed examination of these 18
 cases showed that the isotype gate settings were reasonable, but they differed
 from other markers in that they had more than one population of stained cells.
-Density plots for one of these markers, CD3, are provided in
+Sample density plots for one of these markers, CD3, are provided in
 Figure~\ref{fig:mfiRatio3}.
 }
 \label{fig:mfiRatio}
@@ -386,13 +384,12 @@ Figure~\ref{fig:mfiRatio3}.
 \includegraphics{mfiRatio2.pdf}
 \caption{Density plot for CD3 (IgG1-Alexa 488), which was flagged for further
 evaluation by our gating quality assessement (Figure~\ref{fig:mfiRatio}).
-The MFI ratio for CD3 was very different from other markers that also had
-75-80\% of their cells above the isotype gate. Looking at
-Figure~\ref{fig:mfiRatio}, other markers with 75-80\% had MFI ratios near 5,
-while CD3 has an MFI ratio of 31-37. In this case the the isotype
-gate setting looks reasonable. The flagging was the result of 2 cell
-populations for CD3, whereas most other markers stain a single population.
-}
+The isotype gate setings look reasonable, however the MFI ratio for CD3 was
+very different from other markers that also had 75-80\% of their cells above
+the isotype gate. Looking at Figure~\ref{fig:mfiRatio}, other markers with
+75-80\% had MFI ratios near 5, while CD3 has an MFI ratio of 31-37. The
+flagging was the result of 2 cell populations for CD3, whereas most other
+markers stain a single population. }
 \label{fig:mfiRatio3}
 \end{figure}
 
@@ -417,17 +414,20 @@ Looking at markers where FlowJo and plateCore gave different results, such as
 CD112, it is not clear that either method actually gated the cells correctly.
 The gene for CD112 (PVRL2) has been shown to be expressed on a subset of B cells,
 CD4 T cells, CD8 T cells, and NK cells in healthy donors using microarrays
-\citep{Critchley2007}, so the plateCore results showing 65-92\% of the cells
-above the isotype gate may actually represent specific staining. Unfortunately,
-increasing the isotype (IGg1-PE) threshold in FlowJo to eliminate what looks
-like negative, non-specific staining in CD109 (Figure~\ref{fig:pcVSman2}) also
-seems reasonable. More focused studies will have to be performed to determine
-if the staining for CD112, and other markers that disagreed, was positive or
-negative.
+\citep{Critchley2007}, so the plateCore results showing 65-92\% of the
+lymphocytes above the isotype gate may actually represent specific staining.
+Unfortunately, increasing the isotype (IGg1-PE) threshold in FlowJo to
+eliminate what looks like negative, non-specific staining in CD109
+(Figure~\ref{fig:pcVSman2}) also seems reasonable. More focused studies will
+have to be performed to determine if the staining for CD112, and other markers
+that disagreed, was positive or negative.
 
 Another advantage of performing the analysis in plateCore is the ability to
 verify that that isotype-based gate settings were consistent across the 5
-PBMC plates. Comparing the MFI ratio to the percentage of cells above the
+PBMC plates. 
+
+
+Comparing the MFI ratio to the percentage of cells above the
 isotype threshold (Figure~\ref{fig:mfiRatio}) shows that there is a
 relationship between the separation between a test and its control, and the
 fraction of cells above the gate. While this approach does not tell us if the
