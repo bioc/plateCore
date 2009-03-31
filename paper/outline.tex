@@ -32,30 +32,19 @@
 \clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Abstract}
-\subsection*{Background}
 Flow cytometry (FCM) software packages from R/Bioconductor, such as flowCore
 and flowViz, serve as an open platform for development of new analysis tools and
-methods. We created a new package, \Rpackage{plateCore}, that extends the
+methods. We created a new package, called \Rpackage{plateCore}, that extends the
 functionality in these core packages to enable automated isotype-based gating
 and make the processing and analysis of plate-based data sets from
-high throughput FCM screening experiments easier.
+high throughput FCM screening experiments easier. \Rpackage{plateCore} was used
+to analyze data from a BD FACS CAP screening experiment where 5 Peripheral Blood
+Mononucleocyte Cell (PBMC) samples  were assayed for 189 different human cell
+surface markers. This same dataset was also manually analyzed by a cytometry
+expert using the FlowJo data analysis software package (TreeStar, Ashland OR).
+We show that the expression values for markers characterized using
+\Rpackage{plateCore} are in good agreement with those from the manual analysis.
 
-\subsection*{Methods}
-\Rpackage{plateCore} was used to analyze the data from a BD FACS CAP screening
-experiment where 5 Peripheral Blood Mononucleocyte Cell (PBMC) samples  were
-assayed for 189 different human cell surface markers. This same dataset was
-also manually analyzed by a cytometry expert using the FlowJo data analysis
-software package (TreeStar, Ashland OR).
-
-\subsection*{Results}
-Positive markers identified using \Rpackage{plateCore} are in good agreement
-with those found using manual analysis.
-
-\subsection*{Conclusions}
-\Rpackage{plateCore} provides a reproducible, objective platform for analyzing
-high throughput FCM experiments. The R/Bioconductor implementation allows
-bioinformaticians and statisticians access to the data, which should further
-the development of automated analysis methods.
 
 \clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -352,15 +341,20 @@ percentage of cells above the isotype gate (Figure~\ref{fig:mfiRatio}).
 Figure~\ref{fig:mfiRatio} shows the results of a robust logistic regression for
 the percentage of positive cells on the MFI ratio for the 189 markers
 from the 5 plates. The bulk of the marker values (927 out of 945) are within 2
-standardized residuals from the best fit line, which is surprising since the 189
+standard residuals from the best fit line, which is surprising since the 189
 different antibodies were conjugated to different fluorophores (either Alexa
 488, FITC, PE, PerCP, APC, or Alexa 647) and matched against different isotypes
-(either IgG1, IgG2, IgG2a, IgG2b, IgG3, or IgM). The 18 remaining cases were
-examined in detail and the isotype gates were reasonble, 
+(either IgG1, IgG2, IgG2a, IgG2b, IgG3, or IgM). We expected that differences
+in fluorescence intensity between dyes, and variation in non-specific binding
+by different antibody types, would make direct comparisons difficult. 
 
-
-but they were
-multiple populations of cells in the test well (Figure~\ref{fig:mfiRatio3}). 
+The 18 values that were more than 2 standard residuals away from the line were
+examined in detail and the isotype gate settings were found to be reasonble. In
+this case the flagging was the result of a positive and negative staining
+population of cells, which made the relationship between the MFI ratio and the
+fraction of cells above the isotype gate look very different than markers
+staining a single population. Detailed plots for one of the markers that was
+flagged, CD3, are shown in Figure~\ref{fig:mfiRatio3}. 
 
 \begin{figure}
 \centering
