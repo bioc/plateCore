@@ -400,18 +400,18 @@ markers stain a single population. }
 We showed that the non-parametric approach to gating implemented in plateCore
 produces results that are similar to those from an expert user when analyzing
 PBMC lymphocyte FACS CAP data. Since this was a screening assay, the goal was to
-quickly and reproducibly process a large volume of data and get an approximate
-answer for each of the 189 human cell surface markers, and then perform more
-in-depth analysis for markers that were of biological interest. Using
-\Rpackage{plateCore}, we were able to reduce the level subjectivity in setting
-isotype gates, eliminate mistakes associated with manual data annotation and
-export, and automate the creation of plots and data quality reports that
-summarized the experiment. Additionally, the \Rpackage{plateCore} scripts and
-experimental annotation can be shared with other cytometry groups, allowing
-them to reproduce our analysis.
+quickly and reproducibly process a large volume of data to get an approximate
+expression value for each of the 189 human cell surface markers, and then
+perform more in-depth analysis for markers that were of biological interest.
+Using \Rpackage{plateCore}, we were able to reduce the level subjectivity in
+setting isotype gates, eliminate mistakes associated with manual data
+annotation and export, and automate the creation of plots and data quality
+reports that summarized the experiment. Additionally, the \Rpackage{plateCore}
+scripts and experimental annotation can be shared with other cytometry groups,
+allowing them to reproduce our analysis.
 
 Looking at markers where FlowJo and plateCore gave different results, such as
-CD112, it is not clear that either method actually gated the cells correctly.
+CD112, it is not clear that either method gated the cells correctly.
 The gene for CD112 (PVRL2) has been shown to be expressed on a subset of B cells,
 CD4 T cells, CD8 T cells, and NK cells in healthy donors using microarrays
 \citep{Critchley2007}, so the plateCore results showing 65-92\% of the
@@ -423,16 +423,15 @@ have to be performed to determine if the staining for CD112, and other markers
 that disagreed, was positive or negative.
 
 Another advantage of performing the analysis in plateCore is the ability to
-verify that that isotype-based gate settings were consistent across the 5
-PBMC plates. 
-
-
-Comparing the MFI ratio to the percentage of cells above the
-isotype threshold (Figure~\ref{fig:mfiRatio}) shows that there is a
-relationship between the separation between a test and its control, and the
-fraction of cells above the gate. While this approach does not tell us if the
-gating was correct, it does help to ensure that the isotype gate for two
-replicate samples was set at the same level. 
+easily verify that that isotype-based gate settings were consistent across the 5
+PBMC plates. Figure~\ref{fig:mfiRatio} shows that there is a linear
+relationship between the distance between the test and control cell
+populations, as measured by the MFI ratio, and the fraction of cells above the
+isotype gate. Deviation from this line can indicate a either problem with the
+isotype gate or that the sample has multiple cell populations
+(Figure~\ref{fig:mfiRatio3}). We note that this approach does not actually tell
+us if the gating is correct, simply whether or not the isotype gating was
+consistent.
 
 The complexity of large FCM experiments, like BD FACS CAP, highlight the 
 difficulty of applying existing FCM analysis platforms to high-throughput
