@@ -208,6 +208,8 @@ signal, then estimates of the percentage of positive cells will be unstable.
 library(robustbase)
 
 
+
+
 mfiDf <- read.csv('virtWellAnn.csv',stringsAsFactors=FALSE)
 mfiDf <- subset(mfiDf,Sample.Type=="Test")
 mfiDf2 <- subset(mfiDf,abs(Gate.Score)<2)
@@ -270,6 +272,16 @@ dev.off()
 ##dev.off()				
 
 
+fjVSrDf <- read.csv('fjVSrDf.csv',stringsAsFactors=FALSE)
+pdf('rVSfjByFL.pdf')
+print(xyplot(FJ ~ R | as.factor(Channel), fjVSrDf,xlab="plateCore Analysis",groups=plate,ylab="FlowJo Analysis",
+				aspect="iso",pch=5,col=c('red','red','blue','blue','blue'),
+				panel= function (x,y,groups,col,...)  { 
+#					browser()
+					panel.xyplot(x,y,groups=groups,col=col,...)
+					panel.abline(0,1,col='red')
+				}))
+dev.off()
 
 
 @
