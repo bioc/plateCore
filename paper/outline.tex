@@ -1,7 +1,7 @@
 \documentclass[12pt]{article}
 
 \usepackage{amsmath}
-\usepackage[authoryear,round]{natbib}
+\usepackage[numbers]{natbib}
 %\usepackage{hyperref}
 
 \textwidth=6.2in
@@ -44,7 +44,6 @@ surface markers. This same dataset was also manually analyzed by a cytometry
 expert using the FlowJo data analysis software package (TreeStar, Ashland OR).
 We show that the expression values for markers characterized using
 \Rpackage{plateCore} are in good agreement with those from the manual analysis.
-
 
 \clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -150,19 +149,6 @@ was then compensated, data quality was assessed, and gates were set according
 to a negative control. These control gates were then applied to test wells to
 find cells that had specific staining in channels of interest.
 
-\begin{figure}
-\centering
-\includegraphics[width=7in,height=6in]{analysisSteps.pdf}
-\caption{Typical FC-HCS plate workflow on the left and corresponding steps from
-a PBMC lymphocyte \Rpackage{plateCore} analysis on the right. Compared to
-analyses performed using existing GUI FCM tools, \Rpackage{plateCore} can
-reduce the level of subjectivity associated with creating the negative control
-gates and also makes it easier to aggregate multiple plates into an experiment
-level object for visualization and reporting. Providing \Rpackage{plateCore}
-scripts along with the raw FCM data for FC-HCS experiments helps ensure that an
-analysis is transparent and reproducible.}
-\label{fig:analysis}
-\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{FlowJo}
@@ -279,62 +265,6 @@ gates for CD112 (IgG1-PE) and CD109 (IgG1-PE). The \Rpackage{plateCore} gate was
 set using the isotype signals, while the FlowJo gate was moved upwards based
 on staining of CD109. 
 
-\begin{figure}
-\centering
-\includegraphics{replicate.pdf}
-\caption{FlowJo estimates for the percentage of cells above the isotype
-threshold for 189 markers on replicate plates for donor 1 and donor 2.
-Estimates from markers where the center of the cell population was near the
-isotype threshold, around 50\%, were more variable than samples which were
-clearly positive($\ge$99\%) or negative ($\le$1\%). The correlation for
-replicate plates was strong in both donors, with donor 1 at 0.92 and donor 2 at
-0.98. Plate 9208 for donor 2 is not shown, since the results are very similar to
-9206 and 9207.}
-\label{fig:replicate}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics{fjVSr.pdf}
-\caption{Plot showing the percentage of cells above the isotype threshold
-from plateCore (x-axis) and FlowJo (y-axis) for each of the 189 markers on
-the 5 PBMC plates. If the two methods produce similar estimates, then the
-values should be near the red line (y=x). In plateCore the isotype threshold was
-determined using only information from the isotype control well, while the
-threshold in FlowJo may be adjusted after identifying either positively or
-negatively staining test samples. Generally, these FlowJo adjustments resulted
-in the isotype gate being set a higher level to exclude a negative test sample. 
-The effect of increasing the isotype threshold can be seen in these plots,
-where most disagreements are cases where plateCore estimates are higher than
-FlowJo. Detailed plots for one marker, CD112 (red diamond), where the two
-methods give different results are shown in Figure~\ref{fig:pcVSman2}.
-}
-\label{fig:pcVSman}
-\end{figure}
-
-
-\begin{figure}
-\centering
-\includegraphics{rVSfjByFL.pdf}
-\caption{Plot showing the percentage of cells above the isotype threshold
-from plateCore (x-axis) and FlowJo (y-axis) for donor 1 (red) and 2 (blue).
-plateCore gating for PE conjugated antibodies (FL2-H) channel was consistently
-lower than FlowJo, resulting in more cells above the isotype gate.}
-\label{fig:pcVSman1}
-\end{figure}
-
-
-\begin{figure}
-\centering
-\includegraphics{fjVSr3.pdf}
-\caption{Density plots showing the plateCore (solid black) and FlowJo (dashed
-black) isotype gates for CD112  and CD109, which shared the same isotype control
-(IgG1-PE). The plateCore and FlowJo analyses gave different estimates for CD112
-(see Figure~\ref{fig:pcVSman}), which was caused by the gate being moved
-higher in FlowJo based on the presumed negative staining for CD109.}
-\label{fig:pcVSman2}
-\end{figure}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Gating Quality Assessment}
 
@@ -368,50 +298,6 @@ fraction of cells above the isotype gate look very different than markers
 staining a single population. Detailed plots for one of the markers that was
 flagged, CD3, are shown in Figure~\ref{fig:mfiRatio3}. 
 
-\begin{figure}
-\centering
-\includegraphics{isoplot.pdf}
-\caption{Density plot showing an example of one case where the
-isotype (IgG1-Alexa 488) gate settings differed between replicate plates for
-donor 2 (blue). In this case, the low setting for plate 9207 did not result in a
-significant difference between plates for the percentage of cells above the
-gate for the corresponding test well (CXCR5), so the gate was not modified.
-Plates 9206, 9207, and 9208 had 14\%, 16\%, and 15\% percent of cells above the
-gate, respectively.}
-\label{fig:isoPlot}
-\end{figure}
-
-
-\begin{figure}
-\centering
-\includegraphics{mfiRatioB.pdf}
-\caption{Quality of the automated gating was assessed by performing a robust
-logistic regression of the percentage of cells above the isotype gate on the
-log transformed MFI ratio, and looking for estimates that were more than 2
-standardized residuals away from the best fit line (red line). There were 18
-estimates flagged in this study (red diamonds) where the value was different
-than we would predict from the MFI ratio. Detailed examination of these 18
-cases showed that the isotype gate settings were reasonable, but they differed
-from other markers in that they had more than one population of stained cells.
-Sample density plots for one of these markers, CD3, are provided in
-Figure~\ref{fig:mfiRatio3}.
-}
-\label{fig:mfiRatio}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics{mfiRatio2.pdf}
-\caption{Density plot for CD3 (IgG1-Alexa 488), which was flagged for further
-evaluation by our gating quality assessement (Figure~\ref{fig:mfiRatio}).
-The isotype gate setings look reasonable, however the MFI ratio for CD3 was
-very different from other markers that also had 75-80\% of their cells above
-the isotype gate. Looking at Figure~\ref{fig:mfiRatio}, other markers with
-75-80\% had MFI ratios near 5, while CD3 has an MFI ratio of 31-37. The
-flagging was the result of 2 cell populations for CD3, whereas most other
-markers stain a single population. }
-\label{fig:mfiRatio3}
-\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
@@ -470,29 +356,121 @@ that facilitated communication between the flow cytometrists generating the
 data and the computational experts analyzing the data.
 
 
-%Markers that are expressed on a small subset of lymphocytes, or markers that
-%are dimly expressed, would not be found with this screening approach.
-%(Expand - Ryan)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\begin{figure}
+\centering
+\includegraphics[width=7in,height=6in]{analysisSteps.pdf}
+\caption{Typical FC-HCS plate workflow on the left and corresponding steps from
+a PBMC lymphocyte \Rpackage{plateCore} analysis on the right. Compared to
+analyses performed using existing GUI FCM tools, \Rpackage{plateCore} can
+reduce the level of subjectivity associated with creating the negative control
+gates and also makes it easier to aggregate multiple plates into an experiment
+level object for visualization and reporting. Providing \Rpackage{plateCore}
+scripts along with the raw FCM data for FC-HCS experiments helps ensure that an
+analysis is transparent and reproducible.}
+\label{fig:analysis}
+\end{figure}
 
-%While FACS CAP data
-%analysis can be performed relatively quickly in FlowJo, it can be difficult to
-%capture and reproduce the subjective gating decisions made by a single expert
-%user. 
+\begin{figure}
+\centering
+\includegraphics{replicate.pdf}
+\caption{FlowJo estimates for the percentage of cells above the isotype
+threshold for 189 markers on replicate plates for donor 1 and donor 2.
+Estimates from markers where the center of the cell population was near the
+isotype threshold, around 50\%, were more variable than samples which were
+clearly positive($\ge$99\%) or negative ($\le$1\%). The correlation for
+replicate plates was strong in both donors, with donor 1 at 0.92 and donor 2 at
+0.98. Plate 9208 for donor 2 is not shown, since the results are very similar to
+9206 and 9207.}
+\label{fig:replicate}
+\end{figure}
 
-%In addition to subjective gating, the lack of a standard format for describing
-%large FCM experiments also makes it difficult for anyone other than the
-%original experimenter to replicate an analysis. (You could add something about
-%MIFlowCyt here as well, as even if people had a format to follow, unless they
-%put all the data in necessary to understand, just having a format isn't enough
-%- Ryan) The development of mechanism to bundle experimental metadata
-%descriptions with FCS data files should make it easier to access metadata in
-%future FCM studies, but currently this information is typically provided either
-%as spreadsheet or a pictorial layout of a 96 well plate. Since the creation of
-%\Robject{flowPlate} requires users to make a standard sample annotation file,
-%plate layouts from \Rpackage{plateCore} can then be easily shared along with
-%the raw FCS2.0/3.0 files. The standard format for \Rpackage{plateCore} sample
-%annotations provides a convenient way to manage the plate metadata associated
-%with complex FC-HCS experiments.
+\begin{figure}
+\centering
+\includegraphics{fjVSr.pdf}
+\caption{Plot showing the percentage of cells above the isotype threshold
+from plateCore (x-axis) and FlowJo (y-axis) for each of the 189 markers on
+the 5 PBMC plates. If the two methods produce similar estimates, then the
+values should be near the red line (y=x). In plateCore the isotype threshold was
+determined using only information from the isotype control well, while the
+threshold in FlowJo may be adjusted after identifying either positively or
+negatively staining test samples. Generally, these FlowJo adjustments resulted
+in the isotype gate being set a higher level to exclude a negative test sample. 
+The effect of increasing the isotype threshold can be seen in these plots,
+where most disagreements are cases where plateCore estimates are higher than
+FlowJo. Detailed plots for one marker, CD112 (red diamond), where the two
+methods give different results are shown in Figure~\ref{fig:pcVSman2}.
+}
+\label{fig:pcVSman}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{rVSfjByFL.pdf}
+\caption{Plot showing the percentage of cells above the isotype threshold
+from plateCore (x-axis) and FlowJo (y-axis) for donor 1 (red) and 2 (blue).
+plateCore gating for PE conjugated antibodies (FL2-H) channel was consistently
+lower than FlowJo, resulting in more cells above the isotype gate.}
+\label{fig:pcVSman1}
+\end{figure}
+
+
+\begin{figure}
+\centering
+\includegraphics{fjVSr3.pdf}
+\caption{Density plots showing the plateCore (solid black) and FlowJo (dashed
+black) isotype gates for CD112  and CD109, which shared the same isotype control
+(IgG1-PE). The plateCore and FlowJo analyses gave different estimates for CD112
+(see Figure~\ref{fig:pcVSman}), which was caused by the gate being moved
+higher in FlowJo based on the presumed negative staining for CD109.}
+\label{fig:pcVSman2}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{isoplot.pdf}
+\caption{Density plot showing an example of one case where the
+isotype (IgG1-Alexa 488) gate settings differed between replicate plates for
+donor 2 (blue). In this case, the low setting for plate 9207 did not result in a
+significant difference between plates for the percentage of cells above the
+gate for the corresponding test well (CXCR5), so the gate was not modified.
+Plates 9206, 9207, and 9208 had 14\%, 16\%, and 15\% percent of cells above the
+gate, respectively.}
+\label{fig:isoPlot}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{mfiRatioB.pdf}
+\caption{Quality of the automated gating was assessed by performing a robust
+logistic regression of the percentage of cells above the isotype gate on the
+log transformed MFI ratio, and looking for estimates that were more than 2
+standardized residuals away from the best fit line (red line). There were 18
+estimates flagged in this study (red diamonds) where the value was different
+than we would predict from the MFI ratio. Detailed examination of these 18
+cases showed that the isotype gate settings were reasonable, but they differed
+from other markers in that they had more than one population of stained cells.
+Sample density plots for one of these markers, CD3, are provided in
+Figure~\ref{fig:mfiRatio3}.
+}
+\label{fig:mfiRatio}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{mfiRatio2.pdf}
+\caption{Density plot for CD3 (IgG1-Alexa 488), which was flagged for further
+evaluation by our gating quality assessement (Figure~\ref{fig:mfiRatio}).
+The isotype gate setings look reasonable, however the MFI ratio for CD3 was
+very different from other markers that also had 75-80\% of their cells above
+the isotype gate. Looking at Figure~\ref{fig:mfiRatio}, other markers with
+75-80\% had MFI ratios near 5, while CD3 has an MFI ratio of 31-37. The
+flagging was the result of 2 cell populations for CD3, whereas most other
+markers stain a single population. }
+\label{fig:mfiRatio3}
+\end{figure}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
