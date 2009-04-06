@@ -74,8 +74,9 @@ panel.xyplot.flowPlate <-
 
 		if(!is.null(filterResults) && filterResults=="Negative.Control") {
 			nc <- subset(wellAnnotation,name==nm & Channel==as.character(channel.y[[1]]))$Negative.Control
+			ncp <- subset(wellAnnotation,name==nm & Channel==as.character(channel.y[[1]]))$plateName
 			if(nc %in% wellAnnotation$Well.Id) {
-				nc <- subset(wellAnnotation,Well.Id==nc)$name[[1]]
+				nc <- subset(wellAnnotation,Well.Id==nc & plateName==ncp)$name[[1]]
 				xx <- evalInFlowFrame(channel.x, frames[[nc]])
 				yy <- evalInFlowFrame(channel.y, frames[[nc]])
 			
