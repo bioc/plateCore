@@ -1,11 +1,11 @@
 Package: plateCore
-Version: 0.13
-Date: 2009-03-25
+Version: 0.14
+Date: 2009-04-15
 Title: Statistical tools and data structures for plate-based flow cytometry
 Author: E. Strain and P. Haaland
-Maintainer:Errol Strain <estrain@gmail.com>
+Maintainer: Errol Strain <estrain@gmail.com>
 Depends: R (>= 2.8.1), flowCore, lattice, latticeExtra
-Imports: flowCore, lattice, latticeExtra, geneplotter, Biobase
+Imports: flowCore, grDevices, graphics, lattice, latticeExtra, Biobase
 Description: Provides basic S4 data structures and routines for
         analysing plate based flow cytometry data.
 License: GNU General Public License 2.0.
