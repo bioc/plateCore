@@ -26,9 +26,9 @@ densityplot(formula,flowSet)(
 }
 
 \arguments{
-\item{x} { A formula describing the layout of the plots.}
-\item{data} { A flowPlate. }
-\item{filter} { A flowCore filter to apply to each flowFrame. Alternatively,
+\item{x}{A formula describing the layout of the plots.}
+\item{data}{A flowPlate.}
+\item{filter}{A flowCore filter to apply to each flowFrame. Alternatively,
 				filter can take the character string "Isogate" of "Negative.Control"
 				when creating overlay plots.}
 Other arguments are identical to densityPlot from flowViz.

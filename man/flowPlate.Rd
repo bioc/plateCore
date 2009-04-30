@@ -12,9 +12,9 @@ flowPlate(data,wellAnnotation,plateName,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{data}{ \code{flowSet} object to be made into a \code{flowPlate} }
-  \item{wellAnnotation}{ \code{data.frame} describing the layout and contents of the \code{flowPlate} }
-  \item{plateName} {Name of the \code{flowPate}, should be unique within the set \code{flowPlates} under consideration}
+  \item{data}{\code{flowSet} object to be made into a \code{flowPlate}}
+  \item{wellAnnotation}{\code{data.frame} describing the layout and contents of the \code{flowPlate}}
+  \item{plateName}{Name of the \code{flowPate}, should be unique within the set \code{flowPlates} under consideration}
 }
 
 \value{
