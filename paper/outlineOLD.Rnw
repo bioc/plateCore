@@ -398,6 +398,14 @@ fjVSrDf[fjVSrDf$Lab.Name=="CD112 PE-IgG1",]
 #583 583 P09207 CD112 PE-IgG1  5 64.77341 58.70732  0.1952647  4.147542
 #772 772 P09208 CD112 PE-IgG1  8 64.84957 59.59625  0.1689158  4.185052
 
+
+lapply(unique(fjVSrDf$plate),function(p){
+			temp <- subset(fjVSrDf,plate==p)
+			temp <- temp[!is.na(temp$FJ),]
+			(cor(temp$R,temp$FJ))^2
+		})
+
+
 print(xyplot(FJ ~ R | as.factor(plate), fjVSrDf,xlab="plateCore Analysis",ylab="FlowJo Analysis", aspect="iso"))
 
 
