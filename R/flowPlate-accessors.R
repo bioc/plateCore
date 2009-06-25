@@ -296,7 +296,8 @@ setMethod("summaryStats", signature("flowPlate"), function(data,...) {
 			
 		})
 
-setMethod("setControlGates", signature("flowPlate"), function(data,gateType="Negative.Control",threshType="MAD",numMads=5,isoquantile=.995,...) {
+setMethod("setControlGates", signature("flowPlate"), function(data,gateType="Negative.Control",
+				threshType="MAD",numMads=5,isoquantile=.995,minCut=NULL,...) {
 			
 			if(gateType=="Negative.Control") {
 				## First get the control gate for each of the isotype groups.	
@@ -318,9 +319,16 @@ setMethod("setControlGates", signature("flowPlate"), function(data,gateType="Neg
 							})
 				} else if(threshType=="isoQuant"){
 					isoGates <- lapply(unique(isoWells$name), function(x) {
-								sapply(isoWells[isoWells$name==x,"Channel"], function(i) {		
-											thresh <- quantile(exprs(data[[x]])[,i],isoquantile)
+								sapply(isoWells[isoWells$name==x,"Channel"], function(i) {	
+											y <- exprs(data[[x]])[,i]
+											if(is.null(minCut))	{
+												thresh <- quantile(y,isoquantile)
+											} else {
+												y = y[y>=minCut]
+												thresh <- quantile(y,isoquantile)
+											}
 											thresh <- as.numeric(thresh)
+											
 										})		
 							})
 				} else {
