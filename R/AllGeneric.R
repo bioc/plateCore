@@ -17,7 +17,7 @@ setGeneric("setRange", function(x,minF,maxF,type="truncate") standardGeneric("se
 
 setGeneric("fixAutoFl", function(fp,fsc="FSC.A",chanCols,unstain=NULL,...) standardGeneric("fixAutoFl"))
 
-setGeneric("setControlGates", function(data,gateType="Negative.Control",numMads=5,...) standardGeneric("setControlGates"))
+setGeneric("setControlGates", function(data,gateType="Negative.Control",threshType="MAD",numMads=5,isoquantile=.995,...) standardGeneric("setControlGates"))
 
 setGeneric("plateSet", function(fp,...) standardGeneric("plateSet"))
 
