@@ -266,8 +266,10 @@ setMethod("compensate", signature(x="flowPlate"), function(x,spillover) {
 ######################################################################
 ######################################################################
 setMethod("summaryStats", signature("flowPlate"), function(data,...) {
+	
+			require(robustbase)
 			
-			wellAnnotation <- data@wellAnnotation
+			wellAnnotation <- data.frame(data@wellAnnotation)
 			
 			wellAnnotation$MFI <- apply(wellAnnotation,1,function(x) {
 						chan <- x[["Channel"]]
@@ -281,14 +283,33 @@ setMethod("summaryStats", signature("flowPlate"), function(data,...) {
 			wellAnnotation$MFI.Ratio <- apply(wellAnnotation,1,function(x) {
 						negWell <- x[["Negative.Control"]]
 						chan <- x[["Channel"]]
-						negMFI <- subset(wellAnnotation,Well.Id==negWell & Channel==chan,select=MFI)
+						plateN <- x[["plateName"]]
 						frame <- data@plateSet[[x[["name"]]]]
 						
 						if(chan %in% colnames(exprs(frame)) && negWell!="" && nrow(exprs(frame))>0) {
-							negMFI <- subset(wellAnnotation,Well.Id==negWell & Channel==chan,select=MFI)
+							negMFI <- subset(wellAnnotation,Well.Id==negWell & Channel==chan & plateName==plateN)$MFI
 							if(!is.na(negMFI) && !is.na(x[["MFI"]])) return(as.numeric(x[["MFI"]])/as.numeric(negMFI))
 						} else { NA }	
 					})	
+			
+			
+			## Fit a robust glm to the MFI ratio vs Percent Positive to assess the
+			## quality of the gating
+			if("Percent.Positive" %in% colnames(wellAnnotation)) {
+				df <- subset(wellAnnotation, Sample.Type=="Test")
+				df$MFI.Ratio <- log(df$MFI.Ratio)
+				PosCount <- round(df$Percent.Positive,0)
+				NegCount <- 100-PosCount			
+				robMFI <- glmrob(cbind(PosCount,NegCount) ~ MFI.Ratio, data=df,family=binomial(link="logit"))		
+				x <- -robMFI$coefficients[[1]]-robMFI$coefficients[[2]]*log(wellAnnotation$MFI.Ratio)
+				wellAnnotation$Predict.PP <- 100/(1 + exp(x))		
+				diffR <- wellAnnotation$Percent.Positive-wellAnnotation$Predict.PP	
+			
+				resids <- (robMFI$residuals-mean(robMFI$residuals,na.rm=TRUE))/sd(robMFI$residuals,na.rm=TRUE)
+					
+				wellAnnotation$Gate.Score <- NA
+				wellAnnotation$Gate.Score[wellAnnotation$Sample.Type=="Test"] <- resids
+			}
 			
 			data@wellAnnotation <- wellAnnotation
 			
@@ -309,11 +330,11 @@ setMethod("setControlGates", signature("flowPlate"), function(data,gateType="Neg
 								sapply(isoWells[isoWells$name==x,"Channel"], function(i) {	
 											mfi <- median(exprs(data[[x]])[,i])
 											mfi.mad <- mad(exprs(data[[x]])[,i])
-											isoMad <- numMads
-											while(quantile(exprs(data[[x]])[,i],probs=0.99)>(mfi+isoMad*mfi.mad)) {
-												isoMad <- isoMad + 0.05
-											}
-											thresh <- mfi+isoMad*mfi.mad	
+#											isoMad <- numMads
+#											while(quantile(exprs(data[[x]])[,i],probs=0.99)>(mfi+isoMad*mfi.mad)) {
+#												isoMad <- isoMad + 0.05
+#											}
+											thresh <- mfi+numMads*mfi.mad	
 											thresh
 										})		
 							})
