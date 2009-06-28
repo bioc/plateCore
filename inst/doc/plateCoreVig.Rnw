@@ -73,7 +73,7 @@ to integrate flow results with other types of data using Bioconductor and access
 \Rpackage{plateCore} is built on top of \Rpackage{flowCore} and \Rpackage{flowViz}, and the functionality implemented
 for \Rclass{flowPlates} is a subset of what is available for \Rclass{flowSets}. Getting your data into a \Rclass{flowSet} 
 is the best way to start exploratory analysis, and also gives you access to other flow packages such as \Rpackage{flowQ},
-\Rpackage{flowStats}, and \Rpackage{flowClust}. Once the layout of the experiment has been standardized, then getting
+\Rpackage{flowStats}, and \Rpackage{flowClust}. Once the layout of the experiment has been standardized, loading
 the data into plateCore allows users to automate portions of the analysis, and makes summarizing the data and 
 extracting the results easier.
 
@@ -92,10 +92,11 @@ data(plateCore)
 ls()
 @ 
 
-The \Robject{pbmcPlate} is actually one of the 5 plates that make up the Peripheral Blood Mononucleocyte Cell (PMBC) dataset in the example analysis section. 
+The \Robject{pbmcPlate} is actually one of the 5 plates that make up the Peripheral
+Blood Mononucleocyte Cell (PMBC) dataset in the Section ~\ref{section:PBMC}. 
 This particular plate has 96 wells and is stained in the FL1.H (FITC), FL2.H (PE), FL3.H (PerCP.Cy5.5), and FL4.H (APC) channels. \Rpackage{flowCore}
 was used to read in the raw FCS files, and the \Robject{pbmcPlate} is a \Rclass{flowSet} resulting from \Rfunction{read.flowset} operation. \Rclass{flowSets}
-are modeled on the \Rclass{AffyBatch} structure used for micorarray analysis in Bioconductor.  The \Robject{pbmcPlate} is comprised of an
+are modeled on the microarray data structure used in Bioconductor.  The \Robject{pbmcPlate} is comprised of an
 \Rclass{exrs} expression matrix, along with the associated \Rclass{phenoData}.  
 
 <<echo=TRUE>>=
@@ -106,7 +107,7 @@ The wellAnnotation \Rclass{data.frame} describes the layout of the plate and the
 for each of the channels of interest, while unstained wells only have a single row. The information in well annotation is similar 
 to the \Robject{pData} matrix for \Rclass{phenoData(AffyBatch)}. For \Rclass{pData} all information about a sample is contained on a single row, which
 makes it difficult to handle a multiplexed flow dataset since each channel essentially requires multiple columns to 
-describe the contents of a well. The wellAnnotation format is easier for humans to create and maintain, and \Rpackage{plateCore}
+describe the contents of a well. The wellAnnotation format is easier to create and maintain, and \Rpackage{plateCore}
 handles organizing the relevant information into a \Rclass{pData} object and incorporating it into a \Rclass{flowSet}.
 
 <<echo=TRUE>>=
@@ -215,7 +216,7 @@ pbmcFPbgc <- fixAutoFl(pbmcFP.lymph,fsc="FSC-H",chanCols=rownames(comp.mat))
 @
 
 Dotplots for before and after the background correction are shown in Figure ~\ref{fig:bgc1}. The result of the background
-correction on lymphocytes is subtle, but it can have dramatic effects for other cells types that have a wider range of FSC values.
+correction on lymphocytes is subtle at best, but it can have dramatic effects for other cells types that have a wider range of FSC values.
 
 \begin{figure}
 \begin{center}
@@ -350,9 +351,9 @@ gates, and more options will be available in the future.
 
 In the plots shown in Figure ~\ref{fig:isoGate1}, a number of the test samples are heterogenous in expression for the markers
 in the FL1.H channel. For these samples it is clear that the gate created using \Rfunction{setControlGates} looks reasonable.
-In other situations where the difference between positive and negative cells is not as distinct. Making overlay dotplots
-showing both the test and negative control samples on the same graph can help to set the appropriate gate. These plots are 
-also made using xyplot. An example of the code use to generate the overlay plots in Figure ~\ref{fig:isoGate2}is shown below.
+In other situations where the difference between positive and negative cells is not as distinct, making overlay dotplots
+showing both the test and negative control samples on the same graph can help to determine the appropriate gate.
+An example of the code use to generate the overlay plots in Figure ~\ref{fig:isoGate2}is shown below.
 <<eval=FALSE>>=
 wells <- unique(subset(pbmcFPbgc@wellAnnotation,Negative.Control=="A06",
   select="name")[,1])
@@ -401,9 +402,10 @@ will result in additional columns created in the associated \Robject{wellAnnotat
 colnames(pbmcFPbgc@wellAnnotation)
 @
 These new columns include percentage of cells above the Negative.Control gate (Percent.Positive),
-the number of cells in the raw data (Total.Events), the number of positive cells (Positive Count),
+the number of cells in the raw data (Total.Count), the number of positive cells (Positive Count),
 the median fluorescence intensity (MFI), and the ratio of the test well MFI to the MFI of the negative
-control well (MFI.Ratio). In this PMBC example a number of the samples are heterogenous, so the MFI and MFI.Ratio
+control well (MFI.Ratio). The Predict.PP and Gate.Score columns are explained in Section ~\ref{section:Quality}.
+In this PMBC example a number of the samples have multiple cell populations, so the MFI and MFI.Ratio
 may not be helpful since they are based on all the cells in a well, and not just the positive cells.
 
 Now that we have this information we can display it using \Rfunction{xyplot}. We can add the marker names and percent
@@ -440,79 +442,60 @@ cells in blue. The strip above each plot now contains the Antibody-Marker name, 
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Quality Control}
+\clearpage
+\section{Quality Assessment}
+\label{section:Quality}
 
+Quality assessment using Bioconductor flow tools is covered in detail in
+the flowQ publication (Le Meur et al. 2007, Cytometry Part A). This example briefly covers
+how to check the number of lymphocyte events in each well, scan for fluidic
+events, and check the consistency of the isotype gating.
+
+The number of gated lymphocytes in each well of the pbmcFPbgc dataset can be found in the
+Total.Count column of the wellAnnotation. 
+<<echo=TRUE>>=
+summary(wellAnnotation(pbmcFPbgc)$Total.Count)
+@
+Since each well has at least 5742 gate lymphocyte events there are no apparent
+problems with the sample acquisition on the plate.
+
+Fluidic events (bubbles, etc.) can cause the cytometer readings to shift. These
+type of events can often be identified by plotting FSC vs Time, or through ecdf
+plots (as described in Le Meur et al. 2007, Cytometry Part A). An example of an ecdf plot
+for FSC looking for a row effect, since the samples are acquired by row, is shown
+in Figure ~\ref{fig:ecdf}.  The code used to produce the figure is shown below.
+<<eval=FALSE>>=
+print(flowViz::ecdfplot(~`FSC-H` | as.factor(Column.Id),
+				data=plateSet(pbmcFPbgc), groups=Row.Id, auto.key=TRUE))
+@
+
+One approach to 
+
+\clearpage
+\begin{figure}
+\begin{center}
+<<label=ecdf,fig=TRUE,echo=FALSE>>=
+print(flowViz::ecdfplot(~`FSC-H` | as.factor(Column.Id),
+				data=plateSet(pbmcFPbgc), groups=Row.Id, auto.key=TRUE))
+@
+\end{center}
+\caption{Empirical Cumulative Distribution Function (ecdf) plot for FSC from the
+pmbc lymphocyte example plate. }
+\label{fig:ecdf}
+\end{figure}
 
 \clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Example: PBMC Large Panel Study}
-%
-%The PBMC dataset used in this example is available for download from ficcs.org as the "plateData.tar.gz" file. The data consists
-%of 5 different PBMC samples that were analyzed with 189 different antibodies on 96-well plates. Each plate has a set of
-%unstained, isotype, and control wells. Antibodies and isotype controls are arrayed 3 per well, but the data was compensated
-%on the cytometer so there is no need to correct for spillover.
-%
-%The data for each plate was analyzed exactly as shown in the previous sections. The default dataset that comes with \Rpackage{plateCore}
-%is one of these five plates, and the same gating approach works for the other 4 plates. The results of the analysis are summarized
-%in Figure ~\ref{fig:pbmcHeat}, which shows the percentage of postive cells for each antibody on each plate. Figure ~\ref{fig:pbmcHeat}
-%also shows that there are several markers which are differentially expressed between the different PBMC samples. The dotplots
-%for one of these differentially expressed markers, CDbd69, is shown in Figure ~\ref{fig:pbmcCDbd69}. The plots in 
-%Figure ~\ref{fig:pbmcCDbd69} were created by making a virtual plate using \Rfunction{fpbind}, which binds
-%\Rclass{flowPlate} objects together. 
-%<<eval=FALSE>>=
-%virtPlate <- fpbind(plates[[1]],plates[[2]],plates[[3]],plates[[4]],plates[[5]])
-%xyplot(`FL2-H` ~ `FSC-H` | as.factor(Ab.Name) * as.factor(plateName), 
-%  transform("FL2-H"=log10) %on% virtPlate,smooth=FALSE,
-%  displayFilter=TRUE,filter="Negative.Control")
-%@
-%
-%\begin{figure}
-%\begin{center}
-%<<label=pbmcHeat,fig=TRUE,echo=FALSE>>=
-%
-%temp <- read.delim("../pbmcReports/ppExp.csv",stringsAsFactors=FALSE,header=TRUE)
-%rownames(temp) <- temp[,1]
-%temp <- temp[,-1]
-%
-%mapcol <- rev(heat.colors(10))
-%b <- seq(0,100,by=10)
-%heatmap.2(as.matrix(temp),col=mapcol,breaks=b,scale='none',trace='none',cexRow=0.6)
-%
-%@
-%\end{center}
-%\caption{Heatmap showing the percentage of positive cells for the 5 different PBMC lymphocyte plates. Only markers with
-%more than 10\% positive cells in at least one sample are shown on the plot.}
-%\label{fig:pbmcHeat}
-%\end{figure}
-%
-%
-%
-%\begin{figure}
-%\begin{center}
-%<<label=pbmcCDbd69,fig=TRUE,echo=FALSE>>=
-%
-%fileNames <- list.files("../pbmcRData",full.names=TRUE)
-%
-%plates <- lapply(fileNames,function(x){
-%			load(x)
-%			platePBMC[c("A03","B06")]
-%		})
-%
-%virtPlate <- fpbind(plates[[1]],plates[[2]],plates[[3]],plates[[4]],plates[[5]])
-%
-%
-%print(xyplot(`FL2-H` ~ `FSC-H` | as.factor(FL2.H) * as.factor(plateName), transform("FL2-H"=log10) %on% virtPlate,smooth=FALSE,
-%				displayFilter=TRUE,filter="Negative.Control"))
-%
-%@
-%\end{center}
-%\caption{Dotplots for CDbd69, which was differentially expressed between the 5 PBMC plates.}
-%\label{fig:pbmcCDbd69}
-%\end{figure}
-%
-%
-%
-%\clearpage
+\label{section:PBMC}
+
+The PBMC dataset used in this example is available for download from ficcs.org
+as the \href{http://www.ficcs.org/data/plateData.tar.gz}{plateData.tar.gz} file. The data consists
+of 5 different PBMC samples that were analyzed with 189 different antibodies on 96-well plates. Each plate has a set of
+unstained, isotype, and control wells. Antibodies and isotype controls are arrayed 3 per well, but the data was compensated
+on the cytometer so there is no need to correct for spillover. This example assumes
+that the plates have been unpacked and stored in the folder "data/PBMC". Each 
+of the 5 subfolders in the PBMC directory contains 96 fcs files.
 
 
 \end{document}
