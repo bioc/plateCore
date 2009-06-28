@@ -1,643 +1,518 @@
-\documentclass[11pt]{article}
+\documentclass[12pt]{article}
 
-\SweaveOpts{keep.source=TRUE,pdf=TRUE,eps=FALSE}
+\usepackage{amsmath,pstricks}
+\usepackage[authoryear,round]{natbib}
+\usepackage{hyperref}
 
+\SweaveOpts{keep.source=TRUE}
+
+<<echo=FALSE,results=hide>>=
+library(gplots)
+@
+
+\textwidth=6.2in
+\textheight=8.5in
+\oddsidemargin=.1in
+\evensidemargin=.1in
+\headheight=-.3in
 
 \newcommand{\scscst}{\scriptscriptstyle}
 \newcommand{\scst}{\scriptstyle}
-\newcommand{\Rfunction}[1]{{\texttt{#1}}}
-\newcommand{\Rcode}[1]{{\texttt{#1}}}
+\newcommand{\Rfunction}[1]{{\texttt{#1()}}}
+\newcommand{\Rmethod}[1]{{\texttt{#1}}}  
+\newcommand{\Rclass}[1]{{\texttt{#1}}}
 \newcommand{\Robject}[1]{{\texttt{#1}}}
-\newcommand{\Rpackage}[1]{{\textsf{#1}}}
-\newcommand{\Rdata}[1]{{\textsf{#1}}}
-\newcommand{\Rclass}[1]{{\textit{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+\newcommand{\code}[1]{{\texttt{#1}}}
+\bibliographystyle{plainnat}
 
+\title{Analysis of High Throughput Flow Cytometry Data using \Rpackage{plateCore}}
 
+\author{Errol Strain}
 
-\title{Analysis of Plate-Based Cytometry Experiments Using plateCore} 
-\date{\today}
-
-
-
-\usepackage[text={7.5in,9in},centering]{geometry}
-\usepackage{Sweave}
-\setkeys{Gin}{width=0.95\textwidth}
-\usepackage[round]{natbib}
-
-\usepackage{graphicx}
-\usepackage{url}
-\usepackage{hyperref}
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
+
 \maketitle
+\tableofcontents
 
-\begin{abstract}
-  The \Rpackage{plateCore} package provides tools for visualization of
+\section{Overview}
+\Rpackage{plateCore} is a Bioconductor packaged created to make processing and analysis of large, complex flow datasets
+in R easier. High throughput flow studies are often run in a 96 or 384-well plate format, with a number of different samples, 
+controls, and antibodies-dye conjugates present on the plate. Analyzing the output from the cytometer requires keeping track of the contents
+of each well, matching sample wells with control wells, gating each well/channel separately, making the appropriate plots, and
+summarizing the results. \Rpackage{plateCore} extends the \Rpackage{flowCore} and \Rpackage{flowViz} packages to work on
+\Rclass{flowPlate} objects that represent these large flow datasets. For those familiar with \Rpackage{flowCore} and \Rpackage{flowViz}, 
+the gating (filtering), transformation, and other data manipulations for \Rclass{flowPlates} are very similar to \Rclass{flowSets}. 
 
-\end{abstract}
+In this document we show how setup a \Rpackage{plateCore} analysis and provide examples for a publicly available dataset. The 
+peripheral blood mononucleocyte (PBMC) dataset is a collection of five 96-well plates that have been stained with 189 different antibody-dye conjugates.
+The goal is to identify cells that are positively stained relative to some corresponding negative control.
 
 
-<<loadPackage, echo=false,results=hide>>=
-library(flowViz)
-@
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
-Tools to read in and otherwise manipulate flow cytometry data are
-implemented in the \Rpackage{flowCore} package.  The
-\Rpackage{flowViz} package provides visualization support for such
-data.  In this document we give examples dealing with gated or
-filtered data. Please consult the online documentation for more
-details on the high-level visualization functions used here.
+
+\subsection{Background}
+\Rpackage{plateCore} was created to address the need for robust methods to analyze data from
+\href{http://www.bd.com/technologies/discovery_platform/BD_FACS_CAP.asp}{BD FACS\texttrademark CAP} experiments.
+The current version of FACS\texttrademark CAP has 200+ antibody-dye conjugates on a single 96-well plate,
+where the antibodies are specific for different human cell surface markers or proteins. The output
+from an experiment is a per cell measurement of protein/marker expression for each antibody.  
+FACS\texttrademark CAP is designed to be a tool for screening a large number of surface markers 
+on different types of human tissue or blood samples. Analyzing the data requires objective, high throughput
+approaches to gating and summarizing large amounts of flow data. 
+
+In addition to BD FACS\texttrademark CAP, \Rpackage{plateCore} also works for any other type of plate-based flow
+data, or any collection of samples that can be organized into a \Rclass{flowPlate} object. \Rclass{flowPlates}
+are simply a convenient way to structure the data and manage the annotation for a set of related flow samples.
+Once the data is in \Rpackage{plateCore}, it's also easy to summarize results across multiple experiments and
+to integrate flow results with other types of data using Bioconductor and access statistical methods in R.
+
+\subsection{Bioconductor Flow Tools}
+\Rpackage{plateCore} is built on top of \Rpackage{flowCore} and \Rpackage{flowViz}, and the functionality implemented
+for \Rclass{flowPlates} is a subset of what is available for \Rclass{flowSets}. Getting your data into a \Rclass{flowSet} 
+is the best way to start exploratory analysis, and also gives you access to other flow packages such as \Rpackage{flowQ},
+\Rpackage{flowStats}, and \Rpackage{flowClust}. Once the layout of the experiment has been standardized, then getting
+the data into plateCore allows users to automate portions of the analysis, and makes summarizing the data and 
+extracting the results easier.
 
 
-
-
-\subsection{Filters and filter results}
-The \Rpackage{flowCore} package defines the concepts of
-\Rclass{filters} and \Rclass{filterResults}.  Filters are abstract
-entities defined in terms of markers that are measured on the flow
-instrument as different channels, whereas a filter result is the
-result of applying a filter to one or more \Rclass{flowFrames} (data
-objects representing individual FCM experiments).  Some filters are
-data driven, while some are not. We will later see how this
-distinction has an impact on their plotting. All abstractions of
-filters or gates inherit from class \Rclass{filter}, whereas objects
-generated as the result of applying a filter inherit from class
-\Rclass{filterResult}.
-
-
-\subsection{Visualization}
-Before we discuss how to visualize gates in \Rpackage{flowViz}, we need
-to point out that this may only be reasonable for certain types of the
-many possible plots, namely one-dimensional density plots and
-two-dimensional scatter plots. Over time we might add gate-plotting
-support for other plot types as well. There are two principal ways to
-add gates to a flow cytometry plot; either we render the outlines of
-the gate region (for both one and two-dimensional plots), or we
-highlight the points within a gate region by distinctive color,
-glyphs, or point size (this applies for two-dimensional plots
-only). It only makes sense to visualize the boundaries of a filter if
-it has a (one or two dimensional) geometric representation.  This is
-true for rectangle, ellipsoid and polygon gates, which are all
-frequently used.  It is also true for some data driven gates,
-e.g. \Rclass{norm2Filter} gates, which have a (data dependent)
-spherical representation.  Also, it makes sense to draw gate
-boundaries only when plotting (some of) the channels that define the
-gate.
-
-Visualizing \Rclass{filterResults} is more general.  Specifically, the
-result of applying a filter is usually a logical (\Rcode{TRUE} or
-\Rcode{FALSE}) vector for each cell, or more generally, a
-\Rclass{factor} (as long as we restrict ourselves to non-fuzzy
-filters).  This can be used as a grouping variable within a display,
-also when plotting channels other than those defining the gate.
-
-All data-driven filters depend on the \Rclass{filterResult} to be
-computed in order to plot them. The user doesn't have to worry about
-this fact, as the software will implicitly compute these objects if
-necessary. However, realizing filters and creating
-\Rclass{filterResult} is often computationally intense and
-time-consuming, and in many cases makes sense to explicitly create
-the \Rclass{filterResult} once and pass it on to the plotting
-functions instead of the input filter. In the course of this manual,
-\Rclass{filter} objects and \Rclass{filterResults} may be used
-interchangeably, unless stated otherwise.
-
-
-
-\subsection{Example Data}
-We use the \Rdata{GvHD} data set to provide some examples. It come as
-a serialized \Rclass{flowSet} with the \Rpackage{flowViz} package and
-the interested user is referred to its documentation for details. For
-the purpose of this demonstration it is sufficient to know that the
-\Robject{phenoData} slot of the \Robject{GvHD} set contains several
-factor variables, \Robject{Patient} and \Robject{Visit} two of the
-most descriptive ones. In general, all \Rclass{flowSets} contain an
-implicit \Robject{name} variable which is is used as the default
-conditioning variable in all of \Rpackage{flowViz's} high-level
-plotting functions.
-<<loadData>>=
-library(flowViz)
-data(GvHD)
-head(pData(GvHD))
-@ 
-%
-The set is quite large and reducing it to a reasonable subset will
-speed up things for our interactive demonstration purpose. Due to
-various constrains (data size, complexity of computations, limitations
-in the \Rpackage{grid} software underlying the \Rpackage{lattice} and
-\Rpackage{flowViz} packages), rendering plots is usually not
-instantaneous. It usually takes a little bit of time to output
-complex panel layouts. When producing postscript output, the user
-should be aware that file size may become an issue, and we will
-address solutions for this problem at the end of this document.
-
-The \Rpackage{lattice} package offers inline subsetting capabilities
-for all high level plotting functions though the \Robject{subset}
-argument, and this functionality (like most of the other typical
-\Rpackage{lattice} concepts) is also available for all derived
-plotting methods in \Rpackage{flowCore}. The general idea here is that
-all symbols defined in either the formula or one of the special
-arguments like \Robject{subset} are evaluated in the context of the
-\Rclass{flowFrame's} \Robject{phenoData} data frame or the raw data
-matrix. This is a slight extension of the fundamental
-\Rpackage{lattice} idea necessitated by the fact that raw data and
-annotation data are stored separately in a \Rpackage{flowSet}.
-<<subsetLattice, eval=FALSE>>=
-xyplot(`SSC-H` ~ `FSC-H` | Visit, data=GvHD,
-       subset=Patient=="6")
-@ 
-%
-Inline subsetting is useful to change plots on the fly, or to play
-around with various panel arrangements. However, we still pass the
-whole \Robject{GvHD} object down to the plotting function, potentially
-increasing memory usage and decreasing performance due to unnecessary
-heavy copying operations. Since we only want to use the subset for
-patient 6 in the following examples, it makes sense to directly subset
-the \Rclass{flowSet}.
-<<subsetFlowCore>>=
-GvHD <- GvHD[pData(GvHD)$Patient==6]
-@ 
-%
-We also want to transform some of the fluorescence channels to an
-adequate log-like scale. A good choice is the \Rfunction{asinh}
-function which can deal with negative values.
-<<transform>>=
-tf <- transformList(from=colnames(GvHD)[3:7], tfun=asinh)
-GvHD <- tf %on% GvHD
-@ 
-%
-For details on this step, please see the documentation of the
-\Rfunction{transformList} and \Rfunction{\%on\%} functions in the
-\Rpackage{flowCore} package.
-
-
-\section{Filters in scatter plots}
-Trellis scatter plots are created using \Rfunction{xyplot} methods.
-The \Rfunction{xyplot} method for \Rclass{flowSet} objects supports
-filters through the \Rcode{filter} argument. As mentioned before, its
-value can either be an object inheriting from class \Rclass{filter} or
-a \Rclass{filterResult} (a \Rclass{filterResultList} of multiple
-\Rclass{filterResults} for \Rclass{flowSets}).
-
-The key concepts here are that
-\begin{itemize}
+\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Installation and Getting Started}
   
-\item \Rclass{filters} and \Rclass{filterResults} can be used
-  interchangeably. Providing \Rcode{filterResults} directly may
-  increase performance for data-driven filters.
+Install the \Rpackage{plateCore} package and load the sample data containing a plate dataset, compensation files, and 
+a table decsribing the layout of the experiment.
+<<loadPacks,echo=TRUE,results=hide>>=
+library(plateCore)
+data(plateCore)
+@
+<<>>=
+ls()
+@ 
+
+The \Robject{pbmcPlate} is actually one of the 5 plates that make up the Peripheral Blood Mononucleocyte Cell (PMBC) dataset in the example analysis section. 
+This particular plate has 96 wells and is stained in the FL1.H (FITC), FL2.H (PE), FL3.H (PerCP.Cy5.5), and FL4.H (APC) channels. \Rpackage{flowCore}
+was used to read in the raw FCS files, and the \Robject{pbmcPlate} is a \Rclass{flowSet} resulting from \Rfunction{read.flowset} operation. \Rclass{flowSets}
+are modeled on the \Rclass{AffyBatch} structure used for micorarray analysis in Bioconductor.  The \Robject{pbmcPlate} is comprised of an
+\Rclass{exrs} expression matrix, along with the associated \Rclass{phenoData}.  
+
+<<echo=TRUE>>=
+pbmcPlate
+@
+
+The wellAnnotation \Rclass{data.frame} describes the layout of the plate and the content of each well. Stained wells have a row
+for each of the channels of interest, while unstained wells only have a single row. The information in well annotation is similar 
+to the \Robject{pData} matrix for \Rclass{phenoData(AffyBatch)}. For \Rclass{pData} all information about a sample is contained on a single row, which
+makes it difficult to handle a multiplexed flow dataset since each channel essentially requires multiple columns to 
+describe the contents of a well. The wellAnnotation format is easier for humans to create and maintain, and \Rpackage{plateCore}
+handles organizing the relevant information into a \Rclass{pData} object and incorporating it into a \Rclass{flowSet}.
+
+<<echo=TRUE>>=
+head(wellAnnotation)
+@
+
+The first column of the table contains a unique well identifier, which must correspond to one of of
+the samples from pbmcPlate. The FCS output from the cytometer usually contains the well id in the filename, and these filenames
+are what \Rpackage{flowCore} uses to assign sample names to a \Rclass{flowSet}. These well identifiers must be unique to a 
+well, which usually means using 3 character codes like "A01", "B09", "H10", etc.   \Rpackage{plateCore} assumes that the first
+character provides the row name and that second two characters give the column on the plate.  The second column in the annotation table
+gives the sample type, currently either "Unstained", "Test","Negative.Control", or "Isotype". Each well can only be a single sample type. The
+Ab.Name column contains either the name of the antibody, or some other descriptor that will be useful for making plots.
+Looking at well B05 in the FL4.H, we see that it is stained with an antibody named CDbd14.  
+<<echo=TRUE>>=
+wellAnnotation[50,]
+@
+
+The antibody names in this PBMC dataset were masked prior to public release, so these names will not correspond to the standard
+CD names. The Channel column tells which channel was used to detect fluoresence for the antibody-dye conjugate. Negative.Control
+information indicates which well is the negative control (e.g. isotype) for test samples. The current version of plateCore only
+supports a single negative control well for each test well, but multiple test wells can use the same negative control.  Each negative
+control well should be assigned as it's own negative control for reasons that will be explained in following sections.
+
+Additional columns can be included in wellAnnotation and will be incorporated in later results, but the 5 columns described here 
+are the minimum for a \Rclass{flowPlate}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Creating a \Rclass{flowPlate}}
+
+Making a \Rclass{flowPlate} requires a \Rclass{flowset}, a well annotation table, and a name for the plate that is unique within
+the set of flow data under analysis. Later we may want to combine information from multiple plates, so having a unique plate name
+identifier (e.g. barcode) makes it easier to track the samples.  Using the sample dataset from the \Rpackage{plateCore}, a 
+\Rclass{flowPlate} can be built.
+<<echo=TRUE>>=
+pbmcFP <- flowPlate(pbmcPlate,wellAnnotation,plateName="PBMC.001")
+@
+
+Looking at the first \Rclass{pData} entry from the \Robject{pbmcPlate} and from \Robject{pbmcFP}, we can see how the \Robject{wellAnnotation}
+ was incorporated into \Rclass{pData}. 
+<<echo=TRUE>>=
+pData(phenoData(pbmcPlate))[1,]
+pData(phenoData(pbmcFP))[1,]
+@
+
+The following examples use the lymphocyte population from \Robject{pbmcFP}, so we select the cells of interest using
+a \Rclass{rectangleGate} and \Rclass{norm2Filter}.  Details on how to use \Rfunction{Subset} can be found in the Gating section 
+and in \Rpackage{flowCore}. The cells selected by this gate are shown in Figure ~\ref{fig:lymphGate}.
+<<echo=TRUE>>=
+rectGate <- rectangleGate("FSC-H"=c(300,700),"SSC-H"=c(50,400))
+normGate <- norm2Filter("SSC-H","FSC-H",scale.factor=1.5)
+pbmcFP.lymph <- Subset(pbmcFP, rectGate & normGate)
+@
+
+\begin{figure}
+\begin{center}
+<<label=lymphGate,fig=TRUE,echo=FALSE>>=
+
+print(xyplot(`SSC-H` ~ `FSC-H` | as.factor(Well.Id),pbmcFP[1:4],smooth=FALSE,displayFilter=TRUE,col=c("red","blue"),
+filter=rectangleGate("FSC-H"=c(300,700),"SSC-H"=c(50,400)) & norm2Filter("SSC-H","FSC-H",scale.factor=1.5)))	
   
-\item visualization of \Rclass{filters} depends on the type of
-  rendering.  For example, with \Rcode{smooth=TRUE}, filters are
-  visualized geometrically, which makes sense only under certain
-  circumstances (e.g. display axes matching filter parameters, the
-  \Rclass{filter} class has a geometric represention). For scatter
-  plots of individual dots for all events (\Rcode{smooth=FALSE}),
-  filters are visualized through grouping and/or geometric filter
-  outlines; the former makes sense more generally, as display
-  variables need not match filter parameters. Grouping has the
-  drawback of overplotting.  The effect of overplotting can be reduced
-  somewhat using transparency, but scalability issues remain.  We may
-  try dealing with this at some point if it becomes enough of a
-  hassle.
-  
-\item the software will check for matching parameters and available
-  visualization representations as much as possible, yet finally it is
-  up to the user to construct reasonable calls to the plotting
-  functions.
-\end{itemize}
-
-
-\subsection{Simple Geometric Filter Types}
-Visualization of most of the typical FCM filter types is straight
-forward and doesn't require the computation of
-\Rclass{filterResult}. All parameters (e.g. min and max values in a
-recangular gate) are unambigously defined in the \Rclass{filter}
-object. We will start with a simple \Rclass{rectangleGate} in the
-\Robject{FSC-H} and \Robject{SSC-H} dimensions.
-
-
-<<simpleRG>>=
-rgate <- rectangleGate("FSC-H"=c(0, 400),"SSC-H"=c(-50, 300))
-xyplot(`SSC-H` ~ `FSC-H` | Visit, data=GvHD, filter=rgate)
-@ 
-%
-\begin{center}
-<<fig=TRUE,width=9,height=5,echo=FALSE>>=
-plot(trellis.last.object())
 @
 \end{center}
+\caption{Forward (FSC) and side-scatter (SSC) dotplots for the first four wells of the PMBC plate. The lymphocyte population is
+shown in blue while monocytes are located in the upper right corner. Lymphocytes were selected using the \Rclass{rectangleGate} 
+and \Rclass{norm2Filter} gates from \Rpackage{flowCore}.}
+\label{fig:lymphGate}
+\end{figure}
 
 
-As default for smoothed scatter plots, the gate boundaries are
-drawn. Orientation of the gate will be handled by the plotting
-function and the user doesn't have to worry about the order of
-arguments when defining the \Rclass{filter}. The software also decides
-on a reasonable two-dimensional geometric representation of more
-complex filters. E.g., we can add a third dimension to the
-\Rclass{rectangleGate} and still achive the same visualization in the
-\Robject{FSC-H} and \Robject{SSC-H} dimensions.
-<<threeDRG>>=
-rgate2 <- rgate * rectangleGate("FL1-H"=c(2, 4))
-xyplot(`SSC-H` ~ `FSC-H` | Visit, data=GvHD, filter=rgate)
-@ 
-%
-Most of the customization options defined in the \Rpackage{lattice}
-package will also work here. A more detailed discussion about the
-filter-specific graphical settings will follow in one of the later
-sections.
+\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Compensation and Background Correction}
 
-For the non-smoothed rendering (i.e., all events are plotted as
-individual points), the default filter visualization uses
-different colors for the different subpopulations.
+The \Rfunction{compensation} function from \Rpackage{flowCore} is used to create a compensation matrix for the sample data.
+Channel names in the compensation \Rclass{flowSet} must match the dataset under analysis, otherwise the matrix will not work correctly. 
+Details about how \Rfunction{compensation} works can be found in \Rpackage{flowCore}. We can create a compensation matrix
+using the sample data in \Rpackage{plateCore} and the \Rfunction{spillover} from \Rpackage{flowCore}.
 
-
-<<nonSmoothScatter>>=
-xyplot(`SSC-H` ~ `FSC-H` | Visit, data=GvHD, filter=rgate, smooth=FALSE)
+<<echo=TRUE>>=
+comp.mat <- spillover(x=compensationSet,unstain=sampleNames(compensationSet)[5],
+patt=".*H",fsc="FSC-H",ssc="SSC-H",method="median")
 @
-%
+
+This \Robject{comp.mat} matrix can then be applied to a \Rclass{flowPate} to correct for the effects of spillover. The difference between compensating
+in \Rpackage{flowCore} and compensating in \Rpackage{plateCore} is that \Rpackage{plateCore} only compensates for the dyes listed
+in \Robject{wellAnnotation}, whereas \Rpackage{flowCore} compensates each sample the same way. Since \Rpackage{plateCore} does this custom
+compensation, it is important to list each dye or fluorophore in the wellAnnotation, even if the sample will not be used for further
+analysis. If all the samples are stained the same way, then compensating with either approach should give the same results. The
+\Robject{pbmcFP} can be compensated using the \Robject{comp.mat} from above.
+<<echo=TRUE,eval=FALSE>>=
+pbmcFPcomp <- compensate(pbmcFP.lymph,comp.mat)
+@
+
+In this particular case the \Robject{pbmcPlate} has already compensated on the cytometer, so no further compensation is necessary.
+
+The process of analyzing and gating (filtering) the large amount of data in a \Rclass{flowPlate} can be simplified by first correcting
+for the effects of cell size on background fluoresence. This correction will later allows us to define a one-dimensional gate between positive and negative
+cells in only the channel interest, instead of having two dimensional gate that includes the forward scatter (FSC) channel. The background
+correction uses the unstained wells and fits a log-log linear model to FSC versus each fluorescence channel (Insert Florian's ref).  The
+correction is then applied to all the wells on a the plate. The \Rfunction{fixAutoFl} function takes a \Rclass{flowPlate}, and character variables
+indicating the FSC channel and the fluorsence channels (chanCols).  
+<<echo=TRUE>>=
+pbmcFPbgc <- fixAutoFl(pbmcFP.lymph,fsc="FSC-H",chanCols=rownames(comp.mat))
+@
+
+Dotplots for before and after the background correction are shown in Figure ~\ref{fig:bgc1}. The result of the background
+correction on lymphocytes is subtle, but it can have dramatic effects for other cells types that have a wider range of FSC values.
+
+\begin{figure}
 \begin{center}
-<<fig=TRUE,width=9,height=5,echo=FALSE>>=
-plot(trellis.last.object())
+<<label=bgc1,fig=TRUE,echo=FALSE>>=
+
+temp <- transform("FL1-H"=log10) %on% pbmcFP.lymph[[96]]
+temp2 <- transform("FL1-H"=log10) %on% pbmcFPbgc[[96]]
+temp <- list("H11"=temp,"H11 (corrected)"=temp2)
+temp <- as(temp,"flowSet")
+
+print(flowViz::levelplot(`FL1-H` ~ `FSC-H` | as.factor(name),data=temp,ylim=c(0,2.2)))	
+
 @
 \end{center}
+\caption{Dotplots showing the effects of cell size (FSC) on fluorescence for the unstained cells before (left) and after (right) the 
+background correction. In the uncorrected data the fluorescence signal generally increases with increasing cell size (FSC).}
+\label{fig:bgc1}
+\end{figure}
 
 
-Additionally, We can add the \Rclass{filter} boundaries to the plot
-using the \Robject{outline} argument.
+\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Gating}
+Gating on \Rclass{flowplates} is mainly performed using \Rfunction{Subset}. The first argument to this function is a \Rclass{flowPlate} and
+the second is a valid \Rpackage{flowCore} filter(s). For exploratory analysis and setting up the initial gates, it is more
+convenient to work with a \Rclass{flowSet}, which can be extracted from a \Rclass{flowPlate} using the \Rfunction{plateSet}
+function.    
+<<echo=TRUE>>=
+fs <- plateSet(pbmcFP)
+@
 
+For example, we can use a \Rclass{rectangleGate} to separate the lymphocytes from the debris and monocytes. Looking at the 
+plots in Figure ~\ref{fig:lymphGate}, the lymphocytes look like they are located from about 400 to 650 on the FSC scale, and
+100 to 300 on the SSC scale.  We can use \Rfunction{xyplot} from the \Rpackage{flowViz} package to display the gates.
+<<echo=TRUE,eval=FALSE>>=
+rectGate <- rectangleGate("FSC-H"=c(400,700),"SSC-H"=c(100,300))
+xyplot(`SSC-H` ~ `FSC-H` | as.factor(Well.Id), fs[1:2], displayFilter=TRUE,
+smooth=FALSE, col=c("red","blue"),filter=rectGate)
+@
+Since we want this gate to be applicable to all the wells, it may help to enlarge the \Rclass{rectangleGate} and then use
+a data-driven gate like \Rclass{norm2Filter} to pick out lymphocytes.  The lymphocyte population may drift over the course of analyzing
+the plate. \Rclass{norm2Filter} will fit a bivariate normal to the FSC and SSC channels to identify an elliptical 
+region of high density. 
+<<echo=TRUE,eval=FALSE>>=
+rectGate <- rectangleGate("FSC-H"=c(300,700),"SSC-H"=c(50,400))
+normGate <- norm2Filter("SSC-H","FSC-H",scale.factor=1.5)
+xyplot(`SSC-H` ~ `FSC-H` | as.factor(Well.Id), fs[1:4], displayFilter=TRUE,
+smooth=FALSE, col=c("red","blue"),filter=rectGate & normGate)
+@
+The results of applying the \Rclass{rectangleGate} and \Rclass{norm2filt} are shown in Figure~\ref{fig:lymphGate}.
 
-<<nonSmoothScatterOutline>>=
-xyplot(`SSC-H` ~ `FSC-H` | Visit, data=GvHD, filter=rgate,
-smooth=FALSE, outline=TRUE)
-@ 
-%
+Once the population of interest has been identified, \Rfunction{Subset} the \Rclass{flowPlate} to select those cells. These same
+gates were used to select lymphocytes when we were initially creating the flowSet. If your sample is comprised of multiple
+cell populations, as in this PBMC example, then it is necessary to \Rfunction{Subset} before the compensation and background correction steps. The
+\Robject{compensationSet} should be processed with the \Rclass{rectangleGate} and \Rclass{norm2Filter}
+gates prior to constructing the compensation matrix. 
+<<echo=TRUE,eval=FALSE>>=
+rectGate <- rectangleGate("FSC-H"=c(300,700),"SSC-H"=c(50,400))
+normGate <- norm2Filter("SSC-H","FSC-H",scale.factor=1.5)
+pbmcFP.lymph <- Subset(pbmcFP, rectGate & normGate)
+@
+
+Now we're ready to set the isotype (Negative.Control) gates that will be used to idenfity 
+positively and negatively stained cells. We will estimate the gates using the \Rclass{flowPlate} that
+has been subsetted for lymphocytes, compensate, and then background corrected. The default settings for the
+\Rfunction{setControlGates} assumes the data is on a linear scale.
+<<controlGates,echo=TRUE>>=
+pbmcFPbgc <- setControlGates(pbmcFPbgc,gateType="Negative.Control",numMads=5)
+pbmcFPbgc <- applyControlGates(pbmcFPbgc)
+@
+The \Robject{numMads} parameter indicates how far above the isotype population the 
+positive-negative threshold is set. The threshold is set by taking the median fluorescence
+intensity (MFI) and adding 5 median absolute deviations (MADs). The default value of
+5 works well for a number of cell types but may need to be adjusted for specific applications.
+Future versions of \Rpackage{plateCore} will use more sophisticated methods of estimating kernel
+density to fit distrubutions to the data and have a more robust esimtate of the positive-negative
+threshold. Once the control gates have be created, they are applied to the test wells using
+the \Rfunction{applyControlGates}.
+
+We see how reasonable the gates look using \Rfunction{xyplot}. Examples of the
+test wells associated with the negative control well A03 are shown in Figure ~\ref{fig:isoGate1}.
+To check all the gates in the FL1.H channel we would use the following code.  
+<<echo=TRUE,eval=FALSE>>=
+xyplot(`FL1-H` ~ `FSC-H` | as.factor(Well.Id), 
+transform("FL1-H"=log10) %on% pbmcFPbgc, displayFilter=TRUE,
+smooth=FALSE,col=c("red","blue"),filter="Negative.Control")
+@
+
+\begin{figure}
 \begin{center}
-<<fig=TRUE,width=9,height=5,echo=FALSE>>=
-plot(trellis.last.object())
+<<label=isoGate1,fig=TRUE,echo=FALSE>>=
+
+wells <- unique(subset(pbmcFPbgc@wellAnnotation,Negative.Control=="A03",select="name")[,1])
+
+print(xyplot(`FL1-H` ~ `FSC-H` | as.factor(Well.Id), transform("FL1-H"=log10) %on% pbmcFPbgc[wells], displayFilter=TRUE,smooth=FALSE, col=c("red","blue"),
+filter="Negative.Control"))
+
 @
 \end{center}
-
-
-The constraint for a valid two-dimensional representation doesn't
-apply any more for this type of rendering. Since each event is
-represented by a single point on the plot, we can visualize
-arbitrarily complex \Rclass{filters} using different colors or point
-glyphs for the different sub-populations.  However this implies that
-we need to evaluate each filter, i.e., we need to figure out which of
-the events are in and which are outside of the filter. We will see in
-a minute how we can optimize these operations. Going back to our
-three-dimensional rectangle, we notice that not all points within the
-rectangle are also color red, because the additional third dimension
-further reduced the selection of positive events in the
-\Robject{FSC-H} and \Robject{SSC-H} dimensions.
-
-
-<<nonSmoothScatterOutline>>=
-xyplot(`SSC-H` ~ `FSC-H` | Visit, data=GvHD, filter=rgate2,
-smooth=FALSE, outline=TRUE)
-@ 
-%
-\begin{center}
-<<fig=TRUE,width=9,height=5,echo=FALSE>>=
-plot(trellis.last.object())
-@
-\end{center}
-
-
-Overplotting is a potential problem for this representation. As a
-matter of fact, it is problematic for all visualization approaches of
-high-volume FCM data that try to display individual events rather than
-some form of summary statistic like density estimates. Partial
-transparency can alliviate some of these shortcomings but this
-approach does not scale well and has certain technical limitations on
-graphic devices that don't support transparency. We will see in one of
-the following sections how to enable partial transparency in scatter
-plots.
-
-\subsection{Data-Driven Filters}
-Data-driven filters don't have a natural geometric representation a
-priori; they are data-driven. Once all parameters are estimated, we
-can usually derive such a representation from the
-\Rclass{filterResult}. There is only a small subet of \Rclass{filter}
-classes for which this is not directly possible
-(\Rclass{kmeansFilter}, \Rclass{timeFilter}), although one might be
-able to fall back to approximations like convex hulls or similar. So
-far, \Rpackage{flowViz} has nor support for plotting gate outlines of
-these filter types, and they are silently ignored when passed on as
-argument \Robject{filter} to any of the high-level plotting
-functions. As shown in the previous example, the absence of a
-two-dimensional spherical representation only poses a problem when
-trying to plot filter boundaries, the non-smooth representation of
-individual events is available for virtually all \Rclass{filter}
-types.
-
-In the following example, we first compute the \Rclass{filterResults}
-of a \Rclass{norm2Filter} in \Robject{FSC-H} and \Robject{SSC-H} for
-each frame in our \Robject{GvHD} \Rclass{flowSet} and plot their
-geometric elliptic representation.
-
-
-<<norm2Filter>>=
-n2Filter <- norm2Filter("SSC-H", "FSC-H", scale=2, filterId="Lymphocytes")
-n2Filter.results <- filter(GvHD, n2Filter)
-xyplot(`SSC-H` ~ `FSC-H` | Visit, data=GvHD, filter=n2Filter.results)
-@ 
-%
-\begin{center}
-<<fig=TRUE,width=9,height=5,echo=FALSE>>=
-plot(trellis.last.object())
-@
-\end{center}
-
-
-There are data-driven filter types that may result in more than just
-one sub-population. \Rclass{curv1Filters} and \Rclass{curv2Filters}
-are a prominent example. In the next code chunk we use a
-\Rclass{curv2Filter} to identify high-density areas in the
-\Robject{FSC-H} and \Robject{FL4-H} projections of the data.
-
-
-<<curv2Filter>>=
-c2f <- curv2Filter("FSC-H", "FL4-H", bwFac=1.8)
-c2f.results <- filter(GvHD, c2f)
-xyplot(`FL4-H` ~ `FSC-H` | Visit, data=GvHD, filter=c2f.results)
-@ 
-%
-\begin{center}
-<<fig=TRUE,width=9,height=5,echo=FALSE>>=
-plot(trellis.last.object())
-@
-\end{center}
-
-
-This is a good example for a case where passing the
-\Rclass{filterResult} instead of the \Rclass{filter} helps to optimize
-computation time. Depending on the hardware it can take quite a while
-to complete the extensive computations necessary for the
-identification of siginficant high-density areas in two
-dimensions. Imagine you want to make slight changes to your plot (and
-producing good graphical output is almost always an iterative
-approach); having to recompute the \Rpackage{filterResult} on each
-iteration would be very time-cosuming and annoying at best.
-
-\section{Filters in one-dimensional density plots}
-The \Rpackage{lattice} package provides the high-level
-\Rfunction{densityplot} function to draw one-dimensional Kernel
-density estimates of univariate data. Density estimates are a
-generalization of the well-known histograms; instead of drawing boxes
-of relative or absolute frequencies of binned observations, a
-continous relative density is displayed, usually beautified by
-applying a smoother function with an appropriate bandwidth. The
-\Rfunction{densityplot} methods in the \Rpackage{flowViz} package
-assume an implicit conditioning variable (the measurement channel or
-channels) and display the density estimates of all frames for one
-channel as a stacked layout. This has proven to be a useful
-visualization, since the direct comparison of univariate channel
-distributions is of great interest in many FCM application, however the
-typically large number of samples makes superimposing in a single
-display impratical. See the documention of \Rfunction{densityplot} for
-more details.
-
-In one-dimensional density plots it only makes sense to plot filter
-boundaries. The densities are basically a summary of the distribution
-of events for a particular channel, and there is no real notion of
-individual events any more. Similar to the \Rfunction{xyplot} methods,
-we can pass \Rclass{filters} or \Rclass{filterResults} to the function
-as optional argument \Robject{filter}. We decided to indicate gate
-boundaries by different shading of the the respective integrals of the
-density regions rather than simply adding vertical lines. These tend
-to be distracting in the stacked layout or are often partly masked by
-overplotting of neighbouring density areas.
-
-
-<<densityplots>>=
-densityplot(~ `FSC-H`, GvHD, filter=curv1Filter("FSC-H"))
-@ 
-%
-\begin{center}
-<<fig=TRUE,width=9,height=5,echo=FALSE>>=
-plot(trellis.last.object())
-@
-\end{center}
-
-
-The situation gets slightly more complex when we are conditioning on
-multiple FCM channels. In this case, filter has to be a list of equal
-length as the number of channels that are supposed to be displayed
-(i.e., the number of panels). Each list item may contain one of the
-familiar objects of class \Rclass{filter}, \Rclass{filterResult},
-\Rclass{filterResultList}, or \Robject{NULL} in case no filter should
-be plotted at all for a given panel.
-
-
-
-
-<<multDensityplots>>=
-densityplot(~ ., GvHD, channels=c("FSC-H", "SSC-H", "FL1-H"), 
-filter=list(curv1Filter("FSC-H"), NULL, rgate2))
-@ 
-%
-\begin{center}
-<<fig=TRUE,width=9,height=5,echo=FALSE>>=
-plot(trellis.last.object())
-@
-\end{center}
-
-
-Note that by default the scale of the x axis has been adjusted for
-each panel. This is contrary to the default settings in the
-\Rpackage{lattice} package and can be reversed using appropriate
-settings in in the \Robject{scales} argument.
-
-\section{Plotting parameters}
-\Rpackage{Lattice} graphics are a great tool to easily create
-informative and consise data visualization with a minimal amount of
-code. Most of its default graphical parameters are well thought
-through. However, there is also a wealth of customization available,
-and we refer readers to the package's documentation as well as
-%% Deepayan Sarkar's excellent book 
-\citet{Sarkar} for details. With
-respect to \Rpackage{flowViz}, it should suffice to mention that
-customization follows the exact same principles defined in the
-\Rpackage{lattice} package. As a matter of fact, most customization
-actually happens at the level of the underlying \Rpackage{lattice}
-software. The facts to mention are:
-
-\begin{itemize}
-\item There are session-wide global defaults that can be queried and
-  set using the \Rfunction{flowViz.par.get} and
-  \Rfunction{flowViz.par.set} functions. These are extensions to the
-  \Rfunction{trellis.par.get} and \Rfunction{trellis.par.set}
-  functions in the \Rpackage{lattice} package, and work in exactly the
-  same way. All graphical parameters that are not defined in
-  \Rpackage{flowViz} are directly passed on to \Rpackage{lattice}.
-  
-\item Parameters can also be set for a single function call using the
-  \Robject{par.settings} argument. These setting take precedence over
-  global settings.
-  
-\item Parameters are split up into logical categories and have to be
-  provided as named lists or lists of lists. The categories directly
-  relevant for filter plotting are \Robject{gate},
-  \Robject{gate.density}, and \Robject{gate.text}, the basic
-  \Rpackage{flowViz} settings are controlled by the
-  \Robject{flow.symbol} category. See the documentation for
-  \Rfunction{flowViz.par.set} for a complete list of available
-  parameters. All additional graphical parameters (like \Robject{cex},
-  \Robject{pch} and \Robject{col}) known from the \Rpackage{lattice}
-  high-level plotting functions are also still available.
-  
-\end{itemize}
-
-
-
-<<plotPars1>>=
-xyplot(`SSC-H` ~ `FSC-H` | Visit, data=GvHD, filter=rgate,
-       par.settings=list(gate=list(fill="black", alpha=0.2)))
-@ 
-%
-\begin{center}
-<<fig=TRUE,width=9,height=5,echo=FALSE>>=
-plot(trellis.last.object())
-@
-\end{center}
-
-
-We could have achieved the same customization by changing the session defaults:
-<<plotPars2, eval=FALSE>>=
-flowViz.par.set(gate=list(fill="black", alpha=0.2))
-xyplot(`SSC-H` ~ `FSC-H` | Visit, data=GvHD, filter=rgate)
-@
-%
-Depending on the rendering, the graphical parameters may have slightly
-different effects. The \Robject{col} parameters for instance sets the
-line color for filter boundaries and the point color for non-smooth
-scatter plots (and also the outline if \Robject{outline=TRUE}). In the
-following code sample we try to make use of partial transparency to
-address the problem of overplotting. Dense regions of the plot with
-many overplotted points will apprear darker. Although this is better
-than using opaque colors, lots of the underlying structure could still
-be hidden and we strongly emphasize the advantages of smoothed scatter
-plots for vizualization of FCM data.
-
-
-<<plotPars3>>=
-xyplot(`SSC-H` ~ `FSC-H` | Visit, data=GvHD, filter=rgate,
-       smooth=FALSE, par.settings=list(gate=list(col="orange", alpha=0.04,
-                                                 pch=20, cex=0.7),
-                                       flow.symbol=list(alpha=0.04, pch=20,
-                                                        cex=0.7)))
-@ 
-%
-\begin{center}
-<<fig=TRUE,width=9,height=5,echo=FALSE>>=
-plot(trellis.last.object())
-@
-\end{center}
-
-
-
-For multiple population filters, R ordinary recycling rules apply, and
-we can spice up out plot of the \Rclass{curv2Filter} results by using
-a different color for each sub-population.
-
-
-<<plotPars4>>=
-xyplot(`FL4-H` ~ `FSC-H` | Visit, data=GvHD, filter=c2f.results,
-par.settings=list(gate=list(fill=rainbow(10), alpha=0.5, col="transparent")))
-@ 
-%
-\begin{center}
-<<fig=TRUE,width=9,height=5,echo=FALSE>>=
-plot(trellis.last.object())
-@
-\end{center}
-
-
-
-Sometimes it helps to add population names to a
-plot. \Rpackage{flowCore} provides default names for each
-\Rclass{filter} and their associated results, but the user is free to
-pass their own custom names. The interface is very simple: argument
-\Robject{names} either takes a logical scalar (default names are used
-if \Robject{TRUE}) or a character vector. Again, recycing rules apply
-when there are multiple sub-populations (unless default names are uses
-in which case the software provides a reasonable choice).
-
-
-
-<<norm2FilterNames>>=
-xyplot(`SSC-H` ~ `FSC-H` | Visit, data=GvHD, filter=n2Filter.results,
-       names=TRUE, par.settings=list(gate=list(fill="black", alpha=0.2, 
-                                               col="transparent"),
-                                     gate.text=list(col="darkred", alpha=0.7, cex=0.6)))
-@ 
-%
-\begin{center}
-<<fig=TRUE,width=9,height=5,echo=FALSE>>=
-plot(trellis.last.object())
-@
-\end{center}
-
-
-
-\section{Restrictions on the formula interface}
-We mentioned before that all elements of the formulae used in
-\Rpackage{flowViz} are evaluated in the context of either the raw data
-matrix or the \Robject{phenoData} slot. This implies that formula
-components can themselves be valid R expressions including function
-calls. To a certain extend this is true, and the user might be able to
-produce reasonable graphical output by evaluating expressions on
-existing data or annotation objects, however we strongly discourage
-this use. The software makes certain assumptions on the relationship
-between gate definitions and data, the most prominent one being that
-both are on the same scale. The use of expressions in
-\Rpackage{flowViz} potentially changes the scale of the raw data, in
-which case the gate representation doesn't make much sense
-anymore. Furthermore, FCM data is naturally censored (by the available
-measurement range of the instrument) and we try to protect the user
-from irritating visual artifacts caused by the piling up of events on
-the margins of the data range. This is most notable in the
-one-dimensional densityplots, where densities are only computed within
-the data range, and margin events are added as vertical
-bars. Similarily, in the two-dimensional smoothed scatter plots, we
-display margin events as ticks around the actual data display. Again,
-changing the scale of the data would potentially invalidate many of
-the necessary computations.
-
-In summary, \Rpackage{lattice} encourages the use of expressions in the formula
-interface and for the sake of customizability we didn't want to
-exclude this feature completely in the \Rpackage{flowViz} methods.
-However, the tool has to be used with great care, particularly when
-plotting gates.
-
-
-
-\section{Filters in parallel coodinate plots}
-Although the \Rcode{filter} argument does not make much sense except
-in scatter plots, \Rcode{filterResults} can be used for grouping in
-other contexts.  So far, only the \Rfunction{parallel} method supports
-this syntax.
-
-<<parCoord>>=
-parallel(~ . | Visit, GvHD, filter=n2Filter.results, alpha = 0.01)
-@ 
-
-\begin{center}
-  
-<<fig=TRUE,width=9,height=8,echo=FALSE>>=
-plot(trellis.last.object())
-@
-
-\end{center}
+\caption{Dotplots showing the test wells associated with the negative control well A03. The gate was created automatically using
+\Rfunction{setControlGates} to estimate the threshold between positive and negative cells based on the staining in A03.
+\Rclass{rectangleGates} are drawn around the positive cells in each plot. Positive cells are shown in blue and negative cells in
+red.}
+\label{fig:isoGate1}
+\end{figure}
 
 
 
 \clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Displaying Data}
+Tools for visualizing \Rclass{flowPlates} are based on the collection of functions in \Rpackage{flowViz}, which is itself
+based on \Rpackage{lattice}. Currently on \Rfunction{xyplot} works directly on a \Rclass{flowPlate} object, but the
+other functions like \Rfunction{levelplot} (shown in Figure \ref{fig:bgc1}) can be used by accessing the \Rclass{flowSet} inside a \Rclass{flowPlate}
+via \Rfunction{plateSet}. \Rfunction{xyplot} is the primary tool for making dotplots, showing gates, and creating overlay
+plots. 
 
+If the negative control gates have been created using \Rfunction{setControlGates}, then they can be shown using \Rfunction{xyplot}.
+The code used to generate Figure ~\ref{fig:isoGate1} is shown below.
+<<eval=FALSE>>=
+wells <- unique(subset(pbmcFPbgc@wellAnnotation,Negative.Control=="A03",
+  select="name")[,1])
+xyplot(`FL1-H` ~ `FSC-H` | as.factor(Well.Id), 
+  transform("FL1-H"=log10) %on% pbmcFPbgc[wells], 
+  displayFilter=TRUE,smooth=FALSE, col=c("red","blue"),
+  filter="Negative.Control")
+@
+The wells of interest are identified by looking for all the wells that have A03 are their negative control. When used for plotting
+\Rclass{flowSets}, the filter argument takes a \Rpackage{flowCore} \Rclass{filter}. For \Rclass{flowPlates} the filter can also
+accept a character string indicating what type of gate to display.  \Rpackage{plateCore} currently supports "Negative.Control"
+gates, and more options will be available in the future.  
+
+In the plots shown in Figure ~\ref{fig:isoGate1}, a number of the test samples are heterogenous in expression for the markers
+in the FL1.H channel. For these samples it is clear that the gate created using \Rfunction{setControlGates} looks reasonable.
+In other situations where the difference between positive and negative cells is not as distinct. Making overlay dotplots
+showing both the test and negative control samples on the same graph can help to set the appropriate gate. These plots are 
+also made using xyplot. An example of the code use to generate the overlay plots in Figure ~\ref{fig:isoGate2}is shown below.
+<<eval=FALSE>>=
+wells <- unique(subset(pbmcFPbgc@wellAnnotation,Negative.Control=="A06",
+  select="name")[,1])
+xyplot(`FL1-H` ~ `FSC-H` | as.factor(Well.Id), 
+  transform("FL1-H"=log10) %on% pbmcFPbgc[wells], 
+  displayFilter=TRUE,smooth=FALSE, col=c("blue","green"),
+  filter="Negative.Control",filterResults="Negative.Control")
+@
+In order for the gates to display correctly, any transformations must be applied directly on the \Rclass{flowPlate}. This ensures
+that the Negative.Control gates, along with the fluorescence signal data, are on the same scale. If the transformation is in the 
+formula, as in the following example, the the gates will not show up.
+<<eval=FALSE>>=
+xyplot(log10(`FL1-H`) ~ `FSC-H` | as.factor(Well.Id), pbmcFPbgc[wells], 
+displayFilter=TRUE,smooth=FALSE, col=c("blue","green"),
+filter="Negative.Control",filterResults="Negative.Control")
+@
+
+\begin{figure}
+\begin{center}
+<<label=isoGate2,fig=TRUE,echo=FALSE>>=
+
+wells <- unique(subset(pbmcFPbgc@wellAnnotation,Negative.Control=="A06",select="name")[,1])
+
+print(xyplot(`FL1-H` ~ `FSC-H` | as.factor(Well.Id), transform("FL1-H"=log10) %on% pbmcFPbgc[wells], displayFilter=TRUE,smooth=FALSE, col=c("blue","green"),
+filter="Negative.Control",filterResults="Negative.Control"))
+
+@
+\end{center}
+\caption{Overlay dotplots for the test wells associated with the negative control well A06. The cells from A06 (green) are shown in
+each dotplot along with the results from the test cells (blue). In cases where the test well population is close to the positive-negative 
+threshold, such as well D08, these plots can help determine if the Negative.Control gates should be adjusted.}
+\label{fig:isoGate2}
+\end{figure}
+
+
+\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Extracting Results}
+Once the Negative.Control gates have been created and applied, we can then use the \Rfunction{summaryStats} to calculate different
+metrics of interest from the \Rclass{flowPlate}. Running \Rfunction{summaryStats} on the \Robject{pbmcFPbgc}, 
+<<echo=TRUE>>=
+pbmcFPbgc <- summaryStats(pbmcFPbgc)
+@
+will result in additional columns created in the associated \Robject{wellAnnotation} \Rclass{data.frame}.  
+<<echo=TRUE>>=
+colnames(pbmcFPbgc@wellAnnotation)
+@
+These new columns include percentage of cells above the Negative.Control gate (Percent.Positive),
+the number of cells in the raw data (Total.Events), the number of positive cells (Positive Count),
+the median fluorescence intensity (MFI), and the ratio of the test well MFI to the MFI of the negative
+control well (MFI.Ratio). In this PMBC example a number of the samples are heterogenous, so the MFI and MFI.Ratio
+may not be helpful since they are based on all the cells in a well, and not just the positive cells.
+
+Now that we have this information we can display it using \Rfunction{xyplot}. We can add the marker names and percent
+positive results to our  dotplots (Figure ~\ref{fig:isoGate3}).
+<<eval=FALSE>>=
+wells <- unique(subset(pbmcFPbgc@wellAnnotation,Negative.Control=="A03",select="name")[,1])
+print(xyplot(`FL1-H` ~ `FSC-H` | as.factor(Well.Id), 
+  transform("FL1-H"=log10) %on% pbmcFPbgc[wells],
+  displayFilter=TRUE,smooth=FALSE, col=c("blue","green"),
+  filter="Negative.Control",
+  flowStrip=c("Well.Id","Ab.Name","Percent.Positive")))
+
+@
+
+The \Robject{wellAnnotation} \Rclass{data.frame} can be exported as a comma delimited for a record of the analysis.
+<<eval=FALSE>>=
+write.csv(pbmcFPbgc@wellAnnotation,file="PMBC.001.csv")
+@
+
+\begin{figure}
+\begin{center}
+<<label=isoGate3,fig=TRUE,echo=FALSE>>=
+
+wells <- unique(subset(pbmcFPbgc@wellAnnotation,Negative.Control=="A03",select="name")[,1])
+
+print(xyplot(`FL1-H` ~ `FSC-H` | as.factor(Well.Id), transform("FL1-H"=log10) %on% pbmcFPbgc[wells], displayFilter=TRUE,smooth=FALSE, col=c("red","blue"),
+filter="Negative.Control",flowStrip=c("Well.Id","Ab.Name","Percent.Positive")))
+
+@
+\end{center}
+\caption{Dotplots and Negative.Control gates for wells associated with control well A03. Negative cells are shown in read and positive
+cells in blue. The strip above each plot now contains the Antibody-Marker name, along with the percentage of positive cells in the well.}
+\label{fig:isoGate3}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Quality Control}
+
+
+\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Example: PBMC Large Panel Study}
+%
+%The PBMC dataset used in this example is available for download from ficcs.org as the "plateData.tar.gz" file. The data consists
+%of 5 different PBMC samples that were analyzed with 189 different antibodies on 96-well plates. Each plate has a set of
+%unstained, isotype, and control wells. Antibodies and isotype controls are arrayed 3 per well, but the data was compensated
+%on the cytometer so there is no need to correct for spillover.
+%
+%The data for each plate was analyzed exactly as shown in the previous sections. The default dataset that comes with \Rpackage{plateCore}
+%is one of these five plates, and the same gating approach works for the other 4 plates. The results of the analysis are summarized
+%in Figure ~\ref{fig:pbmcHeat}, which shows the percentage of postive cells for each antibody on each plate. Figure ~\ref{fig:pbmcHeat}
+%also shows that there are several markers which are differentially expressed between the different PBMC samples. The dotplots
+%for one of these differentially expressed markers, CDbd69, is shown in Figure ~\ref{fig:pbmcCDbd69}. The plots in 
+%Figure ~\ref{fig:pbmcCDbd69} were created by making a virtual plate using \Rfunction{fpbind}, which binds
+%\Rclass{flowPlate} objects together. 
+%<<eval=FALSE>>=
+%virtPlate <- fpbind(plates[[1]],plates[[2]],plates[[3]],plates[[4]],plates[[5]])
+%xyplot(`FL2-H` ~ `FSC-H` | as.factor(Ab.Name) * as.factor(plateName), 
+%  transform("FL2-H"=log10) %on% virtPlate,smooth=FALSE,
+%  displayFilter=TRUE,filter="Negative.Control")
+%@
+%
+%\begin{figure}
+%\begin{center}
+%<<label=pbmcHeat,fig=TRUE,echo=FALSE>>=
+%
+%temp <- read.delim("../pbmcReports/ppExp.csv",stringsAsFactors=FALSE,header=TRUE)
+%rownames(temp) <- temp[,1]
+%temp <- temp[,-1]
+%
+%mapcol <- rev(heat.colors(10))
+%b <- seq(0,100,by=10)
+%heatmap.2(as.matrix(temp),col=mapcol,breaks=b,scale='none',trace='none',cexRow=0.6)
+%
+%@
+%\end{center}
+%\caption{Heatmap showing the percentage of positive cells for the 5 different PBMC lymphocyte plates. Only markers with
+%more than 10\% positive cells in at least one sample are shown on the plot.}
+%\label{fig:pbmcHeat}
+%\end{figure}
+%
+%
+%
+%\begin{figure}
+%\begin{center}
+%<<label=pbmcCDbd69,fig=TRUE,echo=FALSE>>=
+%
+%fileNames <- list.files("../pbmcRData",full.names=TRUE)
+%
+%plates <- lapply(fileNames,function(x){
+%			load(x)
+%			platePBMC[c("A03","B06")]
+%		})
+%
+%virtPlate <- fpbind(plates[[1]],plates[[2]],plates[[3]],plates[[4]],plates[[5]])
+%
+%
+%print(xyplot(`FL2-H` ~ `FSC-H` | as.factor(FL2.H) * as.factor(plateName), transform("FL2-H"=log10) %on% virtPlate,smooth=FALSE,
+%				displayFilter=TRUE,filter="Negative.Control"))
+%
+%@
+%\end{center}
+%\caption{Dotplots for CDbd69, which was differentially expressed between the 5 PBMC plates.}
+%\label{fig:pbmcCDbd69}
+%\end{figure}
+%
+%
+%
+%\clearpage
 
 
 \end{document}
