@@ -5,7 +5,9 @@
 \description{
   This function computes the median fluorescence intensity (MFI) and the
   MFI ratio (ratio of test well MFI to negative control MFI) for each
-  well/channel in a \code{flowPlate}. These results are stored in the
+  well/channel in a \code{flowPlate}. The 
+  
+  These results are stored in the
   \code{wellAnnotation data.fame}.
 }
 \usage{
