@@ -32,7 +32,7 @@ data(plateCore)
 fp <- flowPlate(pbmcPlate,wellAnnotation,plateName="P1")
 
 ## Create a rectangle filter
-rectGate <- rectangleGate("FSC.H"=c(300,700),"SSC.H"=c(50,400))
+rectGate <- rectangleGate("FSC-H"=c(300,700),"SSC-H"=c(50,400))
 
 ## Apply the filter only to sample A01. The other flowFrames
 ## are not filtered.

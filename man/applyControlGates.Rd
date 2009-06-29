@@ -28,8 +28,8 @@ library(plateCore)
 data(plateCore)
 
 ## Get the lymphocytes
-rectGate <- rectangleGate("FSC.H"=c(300,700),"SSC.H"=c(50,400))
-normGate <- norm2Filter("SSC.H","FSC.H",scale.factor=1.5)
+rectGate <- rectangleGate("FSC-H"=c(300,700),"SSC-H"=c(50,400))
+normGate <- norm2Filter("SSC-H","FSC-H",scale.factor=1.5)
 pbmcPlate <- Subset(pbmcPlate, rectGate & normGate)
 
 # Create a flowPlate from the sample data in plateCore

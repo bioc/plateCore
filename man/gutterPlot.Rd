@@ -31,7 +31,7 @@ data(plateCore)
 ## Create a flowPlate
 fp <- flowPlate(pbmcPlate,wellAnnotation,"p1001")
 
-gutterPlot(fp,chans=c("FSC.H","SSC.H","FL1.H","FL2.H","FL3.H","FL4.H"))
+gutterPlot(fp,chans=c("FSC-H","SSC-H","FL1-H","FL2-H","FL3-H","FL4-H"))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

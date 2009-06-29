@@ -32,14 +32,14 @@ library(plateCore)
 data(plateCore)
 
 ## Get the lymphocytes
-rectGate <- rectangleGate("FSC.H"=c(300,700),"SSC.H"=c(50,400))
-normGate <- norm2Filter("SSC.H","FSC.H",scale.factor=1.5)
+rectGate <- rectangleGate("FSC-H"=c(300,700),"SSC-H"=c(50,400))
+normGate <- norm2Filter("SSC-H","FSC-H",scale.factor=1.5)
 pbmcPlate <- Subset(pbmcPlate, rectGate & normGate)
 
 ## Create a flowPlate object from the platePBMC and the wellAnnotation
 fp <- flowPlate(pbmcPlate,wellAnnotation,plateName="P1")
 
 ## Correct for autofluorescence in FL1.H-FL4.H
-fp <- fixAutoFl(fp,fsc="FSC.H",chanCols=c("FL1.H","FL2.H","FL3.","FL4.H")) 
+fp <- fixAutoFl(fp,fsc="FSC-H",chanCols=c("FL1-H","FL2-H","FL3-","FL4-H")) 
 }
 \keyword{methods}
