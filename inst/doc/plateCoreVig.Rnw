@@ -96,7 +96,7 @@ The \Robject{pbmcPlate} is actually one of the 5 plates that make up the Periphe
 Blood Mononucleocyte Cell (PMBC) dataset in the Section ~\ref{section:PBMC}. 
 This particular plate has 96 wells and is stained in the FL1.H (FITC), FL2.H (PE), FL3.H (PerCP.Cy5.5), and FL4.H (APC) channels. \Rpackage{flowCore}
 was used to read in the raw FCS files, and the \Robject{pbmcPlate} is a \Rclass{flowSet} resulting from \Rfunction{read.flowset} operation. \Rclass{flowSets}
-are modeled on the microarray data structure used in Bioconductor.  The \Robject{pbmcPlate} is comprised of an
+are modeled on the microarray data structures used in Bioconductor.  The \Robject{pbmcPlate} is comprised of an
 \Rclass{exrs} expression matrix, along with the associated \Rclass{phenoData}.  
 
 <<echo=TRUE>>=
@@ -207,7 +207,7 @@ In this particular case the \Robject{pbmcPlate} has already compensated on the c
 
 The process of analyzing and gating (filtering) the large amount of data in a \Rclass{flowPlate} can be simplified by first correcting
 for the effects of cell size on background fluoresence. This correction will later allows us to define a one-dimensional gate between positive and negative
-cells in only the channel interest, instead of having two dimensional gate that includes the forward scatter (FSC) channel. The background
+cells in only the channel interest, instead of having a two dimensional gate that includes the forward scatter (FSC) channel. The background
 correction uses the unstained wells and fits a log-log linear model to FSC versus each fluorescence channel (Insert Florian's ref).  The
 correction is then applied to all the wells on a the plate. The \Rfunction{fixAutoFl} function takes a \Rclass{flowPlate}, and character variables
 indicating the FSC channel and the fluorsence channels (chanCols).  
