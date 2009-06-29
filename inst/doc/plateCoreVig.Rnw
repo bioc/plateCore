@@ -411,7 +411,8 @@ may not be helpful since they are based on all the cells in a well, and not just
 Now that we have this information we can display it using \Rfunction{xyplot}. We can add the marker names and percent
 positive results to our  dotplots (Figure ~\ref{fig:isoGate3}).
 <<eval=FALSE>>=
-wells <- unique(subset(pbmcFPbgc@wellAnnotation,Negative.Control=="A03",select="name")[,1])
+wells <- unique(subset(pbmcFPbgc@wellAnnotation,Negative.Control=="A03",
+	select="name")[,1])
 print(xyplot(`FL1-H` ~ `FSC-H` | as.factor(Well.Id), 
   transform("FL1-H"=log10) %on% pbmcFPbgc[wells],
   displayFilter=TRUE,smooth=FALSE, col=c("blue","green"),
@@ -466,10 +467,43 @@ for FSC looking for a row effect, since the samples are acquired by row, is show
 in Figure ~\ref{fig:ecdf}.  The code used to produce the figure is shown below.
 <<eval=FALSE>>=
 print(flowViz::ecdfplot(~`FSC-H` | as.factor(Column.Id),
-				data=plateSet(pbmcFPbgc), groups=Row.Id, auto.key=TRUE))
+ data=plateSet(pbmcFPbgc), groups=Row.Id, auto.key=TRUE))
 @
 
-One approach to 
+One approach to evaluating the consistency of isotype-based gating is to plot
+the MFI ratio versus the percentage of positive cells. The MFI ratio is the
+ratio of the median fluorescence intensity of the test sample to its corresponding
+isotype control. If two sample have approximately the same percentage of positive
+cells, then their MFI ratios should be similar. The \Rfunction{summaryStats} function
+in \Rpackage{plateCore} performs a robust logistic regression on the MFI ratio to the 
+percentage of positive cells, and results from the fit are stored in the Predict.PP
+and Gate.Score columns of wellAnnotation. Predict.PP gives the estimated percentage
+of positive cells based on the MFI ratio, and Gate.Score indicates how many 
+standard residuals a sample data point is from the best fit line. Figure ~\ref{fig:mfiRatio}
+shows the MFI ratio versus percent positive plot for the PBMC lymphocyte 
+example. The code used to generate the plot is shown below. The \Rfunction{glmrob}
+function from the \Rpacakage{robustbase} package is used to perform the regression.
+
+<<eval=FALSE>>=
+mfiDf <- subset(wellAnnotation(pbmcFPbgc),Sample.Type=="Test")
+mfiDf2 <- subset(mfiDf,abs(Gate.Score)<2)
+mfiDf3 <- subset(mfiDf,abs(Gate.Score)>=2)
+mfiDf$LogMFI.Ratio = log10(mfiDf$MFI.Ratio)
+mfiDf$PosCount <- round(mfiDf$Percent.Positive,0)
+mfiDf$NegCount <- 100-mfiDf$PosCount 
+robMFI <- glmrob(cbind(PosCount,NegCount) ~ LogMFI.Ratio, data=mfiDf,
+		family=binomial(link="logit"))
+x=seq(-10,75,0.1)
+x2 <- -robMFI$coefficients[[1]]-robMFI$coefficients[[2]]*x
+
+
+plot(mfiDf2$MFI.Ratio,mfiDf2$Percent.Positive, log="x",
+	xlab="MFI Ratio (Test MFI / Isotype MFI)",xlim=c(0.1,250),
+	ylab="Percentage of cells above the isotype gate",pch=23)
+points(mfiDf3$MFI.Ratio,mfiDf3$Percent.Positive,col="red",pch=23)
+lines(10^x,100/(1 + exp(x2)),lwd=2,col='red')
+@
+
 
 \clearpage
 \begin{figure}
@@ -484,6 +518,35 @@ pmbc lymphocyte example plate. }
 \label{fig:ecdf}
 \end{figure}
 
+
+<<echo=FALSE,results=hide>>=
+mfiDf <- subset(wellAnnotation(pbmcFPbgc),Sample.Type=="Test")
+mfiDf2 <- subset(mfiDf,abs(Gate.Score)<2)
+mfiDf3 <- subset(mfiDf,abs(Gate.Score)>=2)
+mfiDf$LogMFI.Ratio = log10(mfiDf$MFI.Ratio)
+mfiDf$PosCount <- round(mfiDf$Percent.Positive,0)
+mfiDf$NegCount <- 100-mfiDf$PosCount 
+robMFI <- glmrob(cbind(PosCount,NegCount) ~ LogMFI.Ratio, data=mfiDf,family=binomial(link="logit"))
+x=seq(-10,75,0.1)
+x2 <- -robMFI$coefficients[[1]]-robMFI$coefficients[[2]]*x
+@
+
+\clearpage
+\begin{figure}
+\begin{center}
+<<label=mfiRatio,fig=TRUE,echo=FALSE>>=
+plot(mfiDf2$MFI.Ratio,mfiDf2$Percent.Positive, log="x",xlab="MFI Ratio (Test MFI / Isotype MFI)",xlim=c(0.1,250),
+		ylab="Percentage of cells above the isotype gate",pch=23)
+points(mfiDf3$MFI.Ratio,mfiDf3$Percent.Positive,col="red",pch=23)
+lines(10^x,100/(1 + exp(x2)),lwd=2,col='red')
+@
+\end{center}
+\caption{Plot of the MFI ratio versus the percentage of positive cells for the 
+example PBMC lymphocytes. The robust best fit line is shown in red, and samples
+that are more than 2 standard residuals away from the line are shown in red.}
+\label{fig:mfiRatio}
+\end{figure}
+
 \clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Example: PBMC Large Panel Study}
@@ -494,8 +557,50 @@ as the \href{http://www.ficcs.org/data/plateData.tar.gz}{plateData.tar.gz} file.
 of 5 different PBMC samples that were analyzed with 189 different antibodies on 96-well plates. Each plate has a set of
 unstained, isotype, and control wells. Antibodies and isotype controls are arrayed 3 per well, but the data was compensated
 on the cytometer so there is no need to correct for spillover. This example assumes
-that the plates have been unpacked and stored in the folder "data/PBMC". Each 
-of the 5 subfolders in the PBMC directory contains 96 fcs files.
+that the plates have been unpacked and stored in the folder "data/pbmc". Each 
+of the 5 subfolders in the PBMC directory contains 96 fcs files. The text delimited
+file describing the layout of the plate is named pmbcPlateLayout.csv.
+
+Processing all 5 plates is memory intensive, so each plate was loaded separately
+and the resulting \Robject{flowPlate} was stored in an R data image in the pbmcRData folder. The code used 
+to process plate 8774 is shown below. Settings for the remaining 4 plates were identical to 
+plate 8774.
+<<eval=FALSE>>=
+plateName <- "lymph08774"
+
+plateDescription <- read.delim("pmbcPlateLayout.csv",
+	as.is=TRUE,header=TRUE,stringsAsFactors=FALSE)
+
+platePBMCraw <- flowPlate(data=read.flowSet(path="data/pbmc/08774"),
+	plateDescription,plateName=plateName)
+
+platePBMC <- Subset(platePBMCraw,
+	rectangleGate("FSC-H"=c(300,700),"SSC-H"=c(50,400)) & 
+	norm2Filter("SSC-H","FSC-H",scale.factor=1.5))
+
+platePBMC <- setControlGates(platePBMC,gateType="Negative.Control")
+
+platePBMC <- applyControlGates(platePBMC)
+
+platePBMC <- summaryStats(platePBMC)
+
+save.image(file=paste("pbmcRData/",plateName,".Rdata",sep=""))
+@
+
+Once the 5 plates have been processed, the \Robject{flowPlates} can then be combined
+using \Rfunction{fpBind}. In this case the plates were saved using the same name,
+platePBMC. The \Robject{flowPlates} were read into a list, and then combined into
+a large "virtPlate". 
+<<eval=FALSE>>=
+fileNames <- list.files("pbmcRData",full.names=TRUE)
+plates <- lapply(fileNames,function(x){
+			load(x)
+			platePBMC
+		})
+virtPlate <- fpbind(plates[[1]],plates[[2]],plates[[3]],plates[[4]],plates[[5]])
+@
+
+
 
 
 \end{document}
