@@ -5,9 +5,13 @@
 \description{
   This function computes the median fluorescence intensity (MFI) and the
   MFI ratio (ratio of test well MFI to negative control MFI) for each
-  well/channel in a \code{flowPlate}. The 
-  
-  These results are stored in the
+  well/channel in a \code{flowPlate}. The predicted percent
+  positive (Predict.PP) and gate score (Gate.Score) come from a robust
+  logistic regression of the MFI ratio to the percentage of positive cells.
+  Predict.PP is the estimated percent positive based on the MFI ratio and
+  Gate.Score is the number of standardized residuals the sample data point
+  is away from the best fit line. The glmrob function from the robustbase
+  package is used for the regression. Results from summaryStats are stored in the
   \code{wellAnnotation data.fame}.
 }
 \usage{
