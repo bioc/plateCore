@@ -10,17 +10,12 @@
 ##
 #########################################################################################################
 
-#setClass("overlayFilterResult",
-#		representation(subSet="numeric"),
-#		prototype=list(subSet=vector("numeric")))
-
 setClass("flowPlate",                   
 	representation(
 		plateName="character",
 		plateSet="flowSet",
 		plateFilters="filterSet",
 		wellAnnotation="data.frame",
-#		overlayFilterResults="list",
 		fjWorkspaces="environment"),
 	prototype=list(
 		plateName=character(0),

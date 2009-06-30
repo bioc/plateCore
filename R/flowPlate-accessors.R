@@ -104,6 +104,8 @@ setMethod("getGroups",signature("flowPlate"),function(data,type="Negative.Contro
 							if(!length(wells)) NA
 							else wells
 						})
+			} else {
+				stop("invalid option for type")
 			}
 			
 			wells <- wells[!is.na(wells)]
@@ -134,6 +136,9 @@ setMethod("%on%",signature(e2="flowPlate"),function(e1,e2) {
 ######################################################
 setMethod("flowPlate",signature("flowSet"),function(data,wellAnnotation,plateName="",...) {
 			
+			## Getting rid of R CMD Check errors
+			name <- ""
+
 			temp <- new("flowPlate")
 			
 			## Add plateName to well annotation

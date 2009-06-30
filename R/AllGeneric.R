@@ -27,7 +27,7 @@ setGeneric("applyControlGates", function(data,gateType="Negative.Control",...) s
 
 setGeneric("summaryStats", function(data,...) standardGeneric("summaryStats"))
 
-setGeneric("getGroups", function(data,...) standardGeneric("getGroups"))
+setGeneric("getGroups", function(data,type="Negative.Control",chan,...) standardGeneric("getGroups"))
 
 setGeneric("fpbind", function(p1,p2,...) standardGeneric("fpbind"))
 
@@ -41,7 +41,9 @@ setGeneric("setGate",function(fp,chan,wells,newGate,type="Negative.Control.Gate"
 setGeneric("adjustGateLog10",function(fp,wells,chan,xlim,ylim,
 				fsc="FSC.A",asFact="Well.Id",numEvents=250,type="Negative.Control.Gate",...) standardGeneric("adjustGateLog10"))
 			
-setGeneric("xyplot", function(x, data, ...)
+setGeneric("xyplot", function(x, data,...) 
 			standardGeneric("xyplot"))
-setGeneric("densityplot", function(x, data, ...)
+
+setGeneric("densityplot", function(x, data, xlab, prepanel=prepanel.densityplot.flowPlate,
+				panel = panel.densityplot.flowPlate, filterResult=NULL, ...)
 			standardGeneric("densityplot"))
