@@ -20,7 +20,9 @@ setControlGates(data, gateType, threshType="MAD", numMads=5, isoquantile=.995, \
 \arguments{
   \item{data}{ A \code{flowPlate} }
   \item{gateType}{ The type of gate to be set. Currently only "Negative.Control" gates are supported. }
+  \item{threshType}{}
   \item{numMads}{ Number of median absolute deviations above the median to set the initial gate. }
+  \item{isoquantile}{}
   \item{\dots}{optional arguments.}
 }
 

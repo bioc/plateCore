@@ -23,6 +23,7 @@ panel.densityplot.flowPlate(x,
   \item{channel}{}
   \item{wellAnnotation}{wellAnnotation data.frame}
   \item{groups}{} 
+  \item{subscripts}{}
   \item{col}{}
   \item{col.points}{}
   \item{col.line}{}

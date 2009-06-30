@@ -21,7 +21,7 @@ Subset(x, subset, select=NULL,\dots)
 \arguments{
   \item{x}{ A \code{flowPlate} }
   \item{subset}{A filter object }
-  \item{i}{An optional vector of either sample names or well ids.}
+  \item{select}{An optional vector of either sample names or well ids.}
   \item{\dots}{optional arguments}
 }
 

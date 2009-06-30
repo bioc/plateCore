@@ -27,7 +27,7 @@ panel.xyplot.flowPlate(x,
   \item{channel.x.name}{}
   \item{channel.y.name}{}
   \item{filter}{}
-  \item{filterResult}{}
+  \item{filterResults}{}
   \item{displayFilter}{}
   \item{pch}{} 
   \item{smooth}{}

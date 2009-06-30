@@ -33,10 +33,22 @@ xyplot(x, data, xlab, ylab,
 \arguments{
 \item{x}{A formula describing the layout of the plots.}
 \item{data}{A flowPlate.}
+\item{xlab}{}
+\item{ylab}{}
+\item{as.table}{}
+\item{prepanel}{}
+\item{panel}{}
+\item{pch}{}
+\item{smooth}{}
 \item{filter}{A flowCore filter to apply to each flowFrame. Alternatively,
 				filter can take the character string "Isogate" of "Negative.Control"
 				when creating overlay plots.}
-Other arguments are identical to xyplot from flowViz.
+\item{filterResults}{}
+\item{displayFilter}{}
+\item{flowStrip}{}
+\item{flowStripCex}{}
+\item{strip}{}
+\item{\dots}{Optional arguments}
 }
 
 \value{

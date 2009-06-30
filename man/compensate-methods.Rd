@@ -5,7 +5,6 @@
 
 \docType{methods}
 
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Compensate a flowPlate to correct for the effects of spillover. }
 \description{
   Flow samples are often stained with multiple types fluorophores, and their
@@ -14,13 +13,14 @@
   only adjusts for the dyes/fluorophores listed in wellAnnotation.
   }
 \usage{
-compensate(x, spillover)
+compensate(x, spillover,\dots)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{ flowPlate }
   \item{spillover}{ The compensation matrix where the row and column names match the 
   fluorescence channels of the flowPlate. }
+  \item{\dots}{Optional arguments}
 }
 \value{
   Returns a compensated \code{flowPlate}.
