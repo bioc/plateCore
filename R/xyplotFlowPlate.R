@@ -121,6 +121,13 @@ setMethod("xyplot",
 				...)
 		{
 
+			
+			## Fixing R Check errors
+			Channel <- ""
+			Well.Id <- ""
+			plateName <- ""
+			Negative.Control.Gate <- 0
+			
 			flowData <- plateSet(data)
 			pd <- pData(phenoData(flowData))
 			uniq.name <- createUniqueColumnName(pd)

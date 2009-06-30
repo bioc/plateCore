@@ -10,6 +10,10 @@
 ##
 #########################################################################################################
 
+setGeneric("compensate", function(x, spillover, ...)
+			standardGeneric("compensate"))
+
+setGeneric("Subset",function(x,subset,select=NULL,...) standardGeneric("Subset"))
 
 setGeneric("flowPlate", function(data,wellAnnotation,plateName,...) standardGeneric("flowPlate"))
 
@@ -41,9 +45,22 @@ setGeneric("setGate",function(fp,chan,wells,newGate,type="Negative.Control.Gate"
 setGeneric("adjustGateLog10",function(fp,wells,chan,xlim,ylim,
 				fsc="FSC.A",asFact="Well.Id",numEvents=250,type="Negative.Control.Gate",...) standardGeneric("adjustGateLog10"))
 			
-setGeneric("xyplot", function(x, data,...) 
-			standardGeneric("xyplot"))
+setGeneric("xyplot", function(x, data, xlab, ylab,
+		as.table = TRUE,
+		prepanel = prepanel.xyplot.flowPlate,
+		panel = panel.xyplot.flowPlate,
+		pch = ".", smooth = TRUE,
+		filter = NULL,
+		filterResults = NULL,
+		displayFilter = TRUE,
+		flowStrip=NULL,
+		flowStripCex=1,
+		strip=function(...,style=1) strip.default(...,style=1),
+		...)
+standardGeneric("xyplot"))
 
-setGeneric("densityplot", function(x, data, xlab, prepanel=prepanel.densityplot.flowPlate,
-				panel = panel.densityplot.flowPlate, filterResult=NULL, ...)
+setGeneric("densityplot", function(x, data, xlab,
+				prepanel=prepanel.densityplot.flowPlate,
+				panel = panel.densityplot.flowPlate,
+				as.table=TRUE, filterResult=NULL, ...)
 			standardGeneric("densityplot"))

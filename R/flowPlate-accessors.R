@@ -91,6 +91,12 @@ setMethod("fpbind",signature("flowPlate","flowPlate"),function(p1,p2,...,plateNa
 #########################################################
 setMethod("getGroups",signature("flowPlate"),function(data,type="Negative.Control",chan,...) {
 			
+			## Fixing R Check Errors
+			Channel <- ""
+			Negative.Control <- ""
+			name <- ""
+			Well.Id <- ""
+			
 			wellIds <- unique(data@wellAnnotation$Negative.Control)
 			wellIds <- wellIds[wellIds %in% pData(phenoData(data@plateSet))$Well.Id]
 			
@@ -443,14 +449,14 @@ setMethod("plateSet","flowPlate",function(fp,...) {
 			return(fp@plateSet)
 		})
 
-setMethod("Subset","flowPlate",function(x,subset,i=NULL,...) {
+setMethod("Subset","flowPlate",function(x,subset,select=NULL,...) {
 #	browser()
-			if(is.null(i)) {
+			if(is.null(select)) {
 				x@plateSet <- Subset(x@plateSet,subset)
 			} else {
-				i <- unlist(i)
-				copy = i[i %in% sampleNames(x)]
-				if(length(copy) != length(i)) copy <- c(copy,sampleNames(x)[pData(phenoData(x@plateSet))[,"Well.Id"] %in% i[!(i %in% sampleNames(x))]])
+				select <- unlist(select)
+				copy = select[select %in% sampleNames(x)]
+				if(length(copy) != length(select)) copy <- c(copy,sampleNames(x)[pData(phenoData(x@plateSet))[,"Well.Id"] %in% select[!(select %in% sampleNames(x))]])
 				
 				temp <- x@plateSet@frames
 				
