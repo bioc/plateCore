@@ -2,6 +2,7 @@
 \alias{densityplot}
 \alias{densityplot-method}
 \alias{densityplot,formula,flowPlate-method}
+\alias{densityplot,formula,flowPlate,ANY,ANY,ANY,missing-method}
 
 \docType{methods}
 
@@ -16,23 +17,25 @@
 }
 
 \usage{
-densityplot(formula,flowPlate)(
-    x,
-    data, 
-    xlab,
+densityplot(x, data, xlab,
     prepanel=prepanel.densityplot.flowPlate,
     panel = panel.densityplot.flowPlate,
-    filter=NULL,
+    as.table=TRUE,
+    filterResult=NULL,
     \dots)
 }
 
 \arguments{
   \item{x}{A formula describing the layout of the plots.}
   \item{data}{A flowPlate.}
-  \item{filter}{A flowCore filter to apply to each flowFrame. Alternatively,
-				filter can take the character string "Isogate" of "Negative.Control"
+  \item{xlab}{Label for the x-axis}
+  \item{prepanel}{ Lattice prepanel function.}
+  \item{panel}{ Lattice panel function.}
+  \item{as.table}{}
+  \item{filterResult}{A flowCore filter to apply to each flowFrame. Alternatively,
+				filterResult can take the character string "Isogate" of "Negative.Control"
 				when creating overlay plots.}
-  \item{\dots}{optional arguments.}
+  \item{\dots}{optional arguments}
 Other arguments are identical to densityPlot from flowViz.
 }
 

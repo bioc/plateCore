@@ -14,7 +14,7 @@
   linear scale, but will need to be adjusted for transformed data.
 }
 \usage{
-setControlGates(data, gateType, numMads=5, \dots)
+setControlGates(data, gateType, threshType="MAD", numMads=5, isoquantile=.995, \dots)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

@@ -12,11 +12,11 @@
   \code{flowPate}, where each row corresponds to one well-channel. 
 }
 \usage{
-wellAnnotation(data, \dots)
+wellAnnotation(fp, \dots)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{data}{ A flowPlate dataset. }
+  \item{fp}{ A flowPlate dataset. }
   \item{\dots}{optional arguments}
 }
 \value{
