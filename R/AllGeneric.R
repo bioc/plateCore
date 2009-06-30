@@ -34,7 +34,7 @@ setGeneric("fpbind", function(p1,p2,...) standardGeneric("fpbind"))
 setGeneric("plotPlate", function(fp,x=NA,method="median",main,col,values,
 				width=1,na.action="zero",...) standardGeneric("plotPlate"))
 
-setGeneric("gutterPlot", function(fp,chans=c("FSC.H","SSC.H","FL1.H","FL2.H","FL3.H","FL4.H"),...) standardGeneric("gutterPlot"))
+setGeneric("gutterPlot", function(fp,chans=c("FSC-H","SSC-H","FL1-H","FL2-H","FL3-H","FL4-H"),...) standardGeneric("gutterPlot"))
 
 setGeneric("setGate",function(fp,chan,wells,newGate,type="Negative.Control.Gate",...) standardGeneric("setGate"))
 

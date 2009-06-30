@@ -484,6 +484,9 @@ setMethod("wellAnnotation","flowPlate",function(fp,...) {
 ## subsetting methods
 #############################################################
 setMethod("[",c("flowPlate"),function(x,i,j,...,drop=FALSE) {
+			
+			name <- ""
+			
 			if(missing(drop)) drop = FALSE
 			if(missing(i)) return(x)
 			
