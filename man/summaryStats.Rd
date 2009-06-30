@@ -15,11 +15,12 @@
   \code{wellAnnotation data.fame}.
 }
 \usage{
-summaryStats(data, ...)
+summaryStats(data, \dots)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{data}{ A \code{flowPlate} }
+  \item{\dots}{optional arguments}
 }
 
 \value{

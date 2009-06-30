@@ -9,7 +9,7 @@
   (MFI) is the same before and after \code{fixAutoFl}.
 }
 \usage{
-fixAutoFl(fp,fsc="FSC.A",chanCols,unstain,...) 
+fixAutoFl(fp,fsc="FSC.A",chanCols,unstain,\dots) 
 }
 
 \arguments{
@@ -19,7 +19,7 @@ fixAutoFl(fp,fsc="FSC.A",chanCols,unstain,...)
   Sample.Type="Unstained" if no names are given. If there are multiple unstained samples the
   function will average the slopes. }
   \item{fsc}{ Name of the FSC parameter. }
-
+  \item{\dots}{optional arguments}
 }
 
 \value{

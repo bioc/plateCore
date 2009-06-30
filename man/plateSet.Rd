@@ -6,10 +6,11 @@
   A function to retrieve the \code{flowSet} from a \code{flowPlate}.
 }
 \usage{
-plateSet(fp, ...)
+plateSet(fp, \dots)
 }
 \arguments{
   \item{fp}{ A \code{flowPlate} }
+  \item{\dots}{optional arguments}
 }
 
 \value{

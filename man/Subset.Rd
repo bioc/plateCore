@@ -11,13 +11,14 @@
 
 }
 \usage{
-Subset(x, subset, i=NULL,...)
+Subset(x, subset, select=NULL,\dots)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{ A \code{flowPlate} }
   \item{subset}{A filter object }
   \item{i}{An optional vector of either sample names or well ids.}
+  \item{\dots}{optional arguments}
 }
 
 \value{

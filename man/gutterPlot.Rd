@@ -8,13 +8,13 @@
   a problem with the sample.
 }
 \usage{
-gutterPlot(fp, chans = c("FSC-H", "SSC-H", "FL1-H", "FL2-H", "FL3-H", "FL4-H"), ...)
+gutterPlot(fp, chans = c("FSC-H", "SSC-H", "FL1-H", "FL2-H", "FL3-H", "FL4-H"), \dots)
 }
 
 \arguments{
   \item{fp}{ A \code{flowPlate}. }
   \item{chans}{ Channels of interest to show on the \code{gutterPlot}. }
-
+  \item{\dots}{optional arguments}
 }
 
 \value{

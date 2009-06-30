@@ -10,13 +10,14 @@
   linear scale, but will need to be adjusted for transformed data.
 }
 \usage{
-setControlGates(data, gateType, numMads=5,...)
+setControlGates(data, gateType, numMads=5, \dots)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{data}{ A \code{flowPlate} }
   \item{gateType}{ The type of gate to be set. Currently only "Negative.Control" gates are supported. }
   \item{numMads}{ Number of median absolute deviations above the median to set the initial gate. }
+  \item{\dots}{optional arguments.}
 }
 
 \value{

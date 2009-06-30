@@ -8,13 +8,14 @@
   which is usually ensured by using the 3 character designations for wells (e.g. "A01","A02",...,"H12").
 }
 \usage{
-flowPlate(data,wellAnnotation,plateName,...)
+flowPlate(data,wellAnnotation,plateName,\dots)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{data}{\code{flowSet} object to be made into a \code{flowPlate}}
   \item{wellAnnotation}{\code{data.frame} describing the layout and contents of the \code{flowPlate}}
   \item{plateName}{Name of the \code{flowPate}, should be unique within the set \code{flowPlates} under consideration}
+  \item{\dots}{optional arguments}
 }
 
 \value{

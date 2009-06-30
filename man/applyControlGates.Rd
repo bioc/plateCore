@@ -8,12 +8,13 @@ samples using this function. The applyControlGates function is separated from se
   outside of setControlGates.  
 }
 \usage{
-applyControlGates(data, gateType="Negative.Control", ...)
+applyControlGates(data, gateType="Negative.Control", \dots)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{data}{ A flowPlate dataset. }
   \item{gateType}{ The type of gate to be applied to the flowPlate. Currently only "Negative.Control" gates are supported. }
+  \item{\dots}{optional arguments}
 }
 \value{
   Returns a \code{flowPlate} where the wellAnnotation now contains additional 

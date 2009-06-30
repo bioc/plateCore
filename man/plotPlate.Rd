@@ -7,7 +7,7 @@
   of choice (e.g. number of events, median signal intensity, percent positive, etc.)
 }
 \usage{
-plotPlate(fp, x = NA, method = "median", main, col, values, width = 1, na.action = "zero", ...)
+plotPlate(fp, x = NA, method = "median", main, col, values, width = 1, na.action = "zero", \dots)
 }
 
 \arguments{
@@ -23,7 +23,7 @@ plotPlate(fp, x = NA, method = "median", main, col, values, width = 1, na.action
   used for plotting. }
   \item{width}{ Width of the well. }
   \item{na.action}{ Handling of NA values, either "zero" or "omit". }
-
+  \item{\dots}{optional arguments}
 }
 
 \value{
