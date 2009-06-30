@@ -24,7 +24,6 @@ wellAnnotation(fp, \dots)
 }
 \author{ Errol Strain }
 
-\seealso{ }
 \examples{
 library(plateCore)
 data(plateCore)

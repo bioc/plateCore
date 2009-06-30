@@ -13,7 +13,7 @@
 
 }
 \details{
-
+One plate from a BD FACS CAP analysis of Peripheral Blood Mononucleocyte cells.
 }
 \source{
   Complete dataset available at
@@ -21,7 +21,7 @@
   Cytometry Society website (FICCS)  
 }
 \references{
-
+  Add reference for plateCore paper in Advances in Bioinformatics.
 }
 
 \keyword{datasets}

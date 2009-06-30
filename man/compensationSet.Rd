@@ -13,9 +13,6 @@
   one channel.
 }
 
-\details{
-
-}
 \source{
   Sample data set from BD FACS CAP analysis.
 }
