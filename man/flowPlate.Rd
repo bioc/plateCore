@@ -3,7 +3,7 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Create a flowPlate }
 \description{
-  Constructor for a \code{\link{flowPlate-class}} object. \code{sampleNames} for the \code{flowSet} 
+  Constructor for a \code{\link{flowPlate}} object. \code{sampleNames} for the \code{flowSet} 
   should match the Well.Id column of \code{wellAnnotation}. Well.Ids must be unique to \code{sampleNames},
   which is usually ensured by using the 3 character designations for wells (e.g. "A01","A02",...,"H12").
 }
