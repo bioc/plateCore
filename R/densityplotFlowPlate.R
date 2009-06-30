@@ -40,6 +40,13 @@ panel.densityplot.flowPlate <-
 				...)
 {
 
+	
+	## Getting rid of "no visible binding errors" in CHECK
+	name <- ""
+	Well.Id <- ""
+	plateName <- ""
+	Channel <- ""
+	
 	superpose.symbol <- trellis.par.get("superpose.symbol")
 
 	if (is.null(groups))

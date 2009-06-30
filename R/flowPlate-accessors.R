@@ -266,9 +266,14 @@ setMethod("compensate", signature(x="flowPlate"), function(x,spillover) {
 ######################################################################
 ######################################################################
 setMethod("summaryStats", signature("flowPlate"), function(data,...) {
-	
-			require(robustbase)
 			
+			
+			## Getting rid of "no visible binding errors" in CHECK
+			Well.Id <- ""
+			Channel <- ""
+			plateName <- ""
+			Sample.Type <- ""
+
 			wellAnnotation <- data.frame(data@wellAnnotation)
 			
 			wellAnnotation$MFI <- apply(wellAnnotation,1,function(x) {
@@ -330,10 +335,6 @@ setMethod("setControlGates", signature("flowPlate"), function(data,gateType="Neg
 								sapply(isoWells[isoWells$name==x,"Channel"], function(i) {	
 											mfi <- median(exprs(data[[x]])[,i])
 											mfi.mad <- mad(exprs(data[[x]])[,i])
-#											isoMad <- numMads
-#											while(quantile(exprs(data[[x]])[,i],probs=0.99)>(mfi+isoMad*mfi.mad)) {
-#												isoMad <- isoMad + 0.05
-#											}
 											thresh <- mfi+numMads*mfi.mad	
 											thresh
 										})		
@@ -379,7 +380,7 @@ setMethod("applyControlGates", signature("flowPlate"), function(data,gateType="N
 				wa <- data@wellAnnotation 
 				
 				##If any applyControlGate or summaryStats columns already exist, get rid of them
-				newNames <- c('Percent.Positive','Total.Count','Positive.Count','MFI','MFI.Ratio')
+				newNames <- c('Percent.Positive','Total.Count','Positive.Count','MFI','MFI.Ratio','Predict.PP','Gate.Score')
 				if(any(newNames %in% colnames(wa))) {
 					keepCols <- which(!colnames(wa) %in% newNames)
 					wa <- wa[,keepCols]

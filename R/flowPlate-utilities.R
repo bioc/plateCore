@@ -85,6 +85,12 @@ makePlateLayout <- function(plateDesc,abName="Ab.Name",sampleType="Sample.Type",
 	##
 	##--------------------------------------------------------------------------
 	
+	## Getting rid of "no visible binding errors" in CHECK
+	name <- ""
+	Well.Id <- ""
+	plateName <- ""
+	Channel <- ""
+	
 	
 	## Add some validity check function
 	

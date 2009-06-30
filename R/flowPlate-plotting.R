@@ -5,6 +5,11 @@
 
 setMethod("plotPlate",signature("flowPlate"),function(fp,x=NA,method="median",main,col,values,
 						width=2,na.action="zero",...) {
+	
+	## Getting rid of "no visible binding errors" in CHECK
+	name <- ""
+	Row.Id <- ""
+	Column.Id <- ""
 					
 	ncol = length(unique((pData(phenoData(fp)))[,"Column.Id"]))		
 	nrow = length(unique((pData(phenoData(fp)))[,"Row.Id"]))		
@@ -143,7 +148,7 @@ setMethod("plotPlate",signature("flowPlate"),function(fp,x=NA,method="median",ma
 	invisible(res)
 })
 
-setMethod("gutterPlot",signature("flowPlate"),function(fp,chans=c("FSC.H","SSC.H","FL1.H","FL2.H","FL3.H","FL4.H"),...) {
+setMethod("gutterPlot",signature("flowPlate"),function(fp,chans=c("FSC-H","SSC-H","FL1-H","FL2-H","FL3-H","FL4-H"),...) {
 
 	resultMat <- fsApply(plateSet(fp),function(x) {
 		apply(exprs(x)[,chans],2,function(y) {

@@ -14,8 +14,8 @@ exportClasses("flowPlate")
 exportMethods("compensate","flowPlate","setRange","fixAutoFl","plateSet",
               "phenoData","getGroups","wellAnnotation","Subset","%on%",
               "applyControlGates","summaryStats","sampleNames","fpbind",
-              "setControlGates","plotPlate","gutterPlot","adjustGateLog10",
-              "setGate","densityplot","xyplot")
+              "setControlGates","plotPlate","gutterPlot",
+              "densityplot","xyplot")
 		
 export("panel.densityplot.flowPlate",
        "prepanel.densityplot.flowPlate", 

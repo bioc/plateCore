@@ -4,8 +4,8 @@ Date: 2009-04-15
 Title: Statistical tools and data structures for plate-based flow cytometry
 Author: E. Strain and P. Haaland
 Maintainer: Errol Strain <estrain@gmail.com>
-Depends: R (>= 2.8.1), flowCore, lattice, latticeExtra, robustbase
-Imports: flowCore, grDevices, graphics, lattice, latticeExtra, Biobase
+Depends: R (>= 2.8.1), flowCore, lattice, latticeExtra, robustbase, MASS
+Imports: flowCore, grDevices, graphics, lattice, Biobase, methods
 Description: Provides basic S4 data structures and routines for
         analysing plate based flow cytometry data.
 License: GNU General Public License 2.0.

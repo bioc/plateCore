@@ -23,10 +23,6 @@ setGeneric("plateSet", function(fp,...) standardGeneric("plateSet"))
 
 setGeneric("wellAnnotation", function(fp,...) standardGeneric("wellAnnotation"))
 
-#setGeneric("overlayFilterResult", function(subSet,...) standardGeneric("overlayFilterResult"))
-#
-#setGeneric("overlay", function(data,...) standardGeneric("overlay"))
-
 setGeneric("applyControlGates", function(data,gateType="Negative.Control",...) standardGeneric("applyControlGates"))
 
 setGeneric("summaryStats", function(data,...) standardGeneric("summaryStats"))

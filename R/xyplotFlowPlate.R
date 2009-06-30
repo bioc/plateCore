@@ -36,7 +36,12 @@ panel.xyplot.flowPlate <-
 				col = superpose.symbol$col,
 				...)
 {
-	
+	## Getting rid of "no visible binding errors" in CHECK
+	name <- ""
+	Well.Id <- ""
+	plateName <- ""
+	Channel <- ""
+
 	superpose.symbol <- trellis.par.get("superpose.symbol")
 	
 	x <- as.character(x)
