@@ -173,28 +173,28 @@ setMethod("flowPlate",signature("flowSet"),function(data,wellAnnotation,plateNam
 			return(temp)
 		})
 
-######################################################################
-## There are sometimes weird fluorescence values in the flowFrame.  This function removes them in a naive fashion.
-## I should change it so it only affects the channels of interest, not time, etc.
-######################################################################
-setMethod("setRange",signature("flowPlate","numeric","numeric","character"), function(x,minF,maxF,type="truncate") {
-			if(type=="truncate") {
-				x@plateSet <- fsApply(x@plateSet,function(z) {
-							z@exprs[z@exprs>=maxF] <- maxF
-							z@exprs[z@exprs<=minF] <- minF	
-							z
-						})
-				
-			} else if (type=="remove"){
-				x@plateSet <- fsApply(x@plateSet,function(z) {
-							z@exprs <- z@exprs[apply(exprs(z),1, function(y) {sum(!y<=maxF)==0}),]
-							z@exprs <- z@exprs[apply(exprs(z),1, function(y) {sum(!y>=minF)==0}),]	
-							z
-						})
-				
-			}
-			return(x)		
-		})
+#######################################################################
+### There are sometimes weird fluorescence values in the flowFrame.  This function removes them in a naive fashion.
+### I should change it so it only affects the channels of interest, not time, etc.
+#######################################################################
+#setMethod("setRange",signature("flowPlate","numeric","numeric","character"), function(x,minF,maxF,type="truncate") {
+#			if(type=="truncate") {
+#				x@plateSet <- fsApply(x@plateSet,function(z) {
+#							z@exprs[z@exprs>=maxF] <- maxF
+#							z@exprs[z@exprs<=minF] <- minF	
+#							z
+#						})
+#				
+#			} else if (type=="remove"){
+#				x@plateSet <- fsApply(x@plateSet,function(z) {
+#							z@exprs <- z@exprs[apply(exprs(z),1, function(y) {sum(!y<=maxF)==0}),]
+#							z@exprs <- z@exprs[apply(exprs(z),1, function(y) {sum(!y>=minF)==0}),]	
+#							z
+#						})
+#				
+#			}
+#			return(x)		
+#		})
 
 ######################################################################
 ## Fit linear model to FSC vs channel of interest.  Correct for autofluoresence and then set the median back to it's orignal

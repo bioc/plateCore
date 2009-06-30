@@ -1,8 +1,6 @@
 importFrom(flowCore,"compensate","Subset","%on%")
 importClassesFrom(flowCore, "flowSet", "filterSet")
 
-importFrom(grDevices,"densCols")
-
 importFrom(graphics,"smoothScatter")
 
 importFrom(lattice,"xyplot","densityplot","panel.smoothScatter")
@@ -11,7 +9,7 @@ importFrom(Biobase,"sampleNames","phenoData")
 
 exportClasses("flowPlate")
 
-exportMethods("compensate","flowPlate","setRange","fixAutoFl","plateSet",
+exportMethods("compensate","flowPlate","fixAutoFl","plateSet",
               "phenoData","getGroups","wellAnnotation","Subset","%on%",
               "applyControlGates","summaryStats","sampleNames","fpbind",
               "setControlGates","plotPlate","gutterPlot",

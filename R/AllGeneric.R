@@ -10,14 +10,14 @@
 ##
 #########################################################################################################
 
-setGeneric("compensate", function(x, spillover, ...)
-			standardGeneric("compensate"))
+##setGeneric("compensate", function(x, spillover, ...)
+##			standardGeneric("compensate"))
 
-setGeneric("Subset",function(x,subset,select=NULL,...) standardGeneric("Subset"))
+##setGeneric("Subset",function(x,subset,select=NULL,...) standardGeneric("Subset"))
 
 setGeneric("flowPlate", function(data,wellAnnotation,plateName,...) standardGeneric("flowPlate"))
 
-setGeneric("setRange", function(x,minF,maxF,type="truncate") standardGeneric("setRange"))
+##setGeneric("setRange", function(x,minF,maxF,type="truncate") standardGeneric("setRange"))
 
 setGeneric("fixAutoFl", function(fp,fsc="FSC.A",chanCols,unstain=NULL,...) standardGeneric("fixAutoFl"))
 
