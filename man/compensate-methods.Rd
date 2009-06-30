@@ -1,5 +1,10 @@
 \name{compensate}
 \alias{compensate}
+\alias{compensate-method}
+\alias{compensate,flowPlate,ANY-method}
+
+\docType{methods}
+
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Compensate a flowPlate to correct for the effects of spillover. }
 \description{

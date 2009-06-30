@@ -1,10 +1,11 @@
 \name{densityplot}
-
 \alias{densityplot}
+\alias{densityplot-method}
+\alias{densityplot,formula,flowPlate-method}
+
+\docType{methods}
 
 \title{ One-dimensional density plots for flowPlates }
-
-
 
 \description{
 	This function is a modified version of densityplot from
@@ -15,7 +16,7 @@
 }
 
 \usage{
-densityplot(formula,flowSet)(
+densityplot(formula,flowPlate)(
     x,
     data, 
     xlab,

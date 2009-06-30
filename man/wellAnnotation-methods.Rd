@@ -1,7 +1,12 @@
 \name{wellAnnotation}
 \alias{wellAnnotation}
+\alias{wellAnnotation-method}
+\alias{wellAnnotation,flowPlate-method}
+
+\docType{methods}
+
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{ Retrieve a \code{data.frame} describing the content of a \code{\link{flowPlate-class}} }
+\title{ Retrieve a data.frame describing the content of a flowPlate }
 \description{
   wellAnnotation returns the tall \code{data.frame} describing the layout of a 
   \code{flowPate}, where each row corresponds to one well-channel. 

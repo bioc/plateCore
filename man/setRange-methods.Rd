@@ -1,5 +1,9 @@
 \name{setRange}
 \alias{setRange}
+\alias{setRange-method}
+\alias{setRange,flowPlate,numeric,numeric,character-method}
+
+\docType{methods}
 
 \title{ Truncate the signal values on a flowPlate }
 \description{

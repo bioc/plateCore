@@ -1,5 +1,8 @@
 \name{Subset}
+\docType{methods}
 \alias{Subset}
+\alias{Subset-method}
+\alias{Subset,flowPlate,ANY-method}
 
 \title{ Subset }
 \description{

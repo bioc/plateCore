@@ -1,5 +1,9 @@
 \name{summaryStats}
 \alias{summaryStats}
+\alias{summaryStats-method}
+\alias{summaryStats,flowPlate-method}
+
+\docType{methods}
 
 \title{ Compute summary statistics on a flowPlate }
 \description{

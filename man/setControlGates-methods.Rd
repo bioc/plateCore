@@ -1,5 +1,9 @@
 \name{setControlGates}
 \alias{setControlGates}
+\alias{setControlGates-method}
+\alias{setControlGates,flowPlate-method}
+
+\docType{methods}
 
 \title{ Create control gates for a flowPlate }
 \description{

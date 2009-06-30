@@ -1,5 +1,9 @@
 \name{xyplot}
 \alias{xyplot}
+\alias{xyplot-method}
+\alias{xyplot,formula,flowPlate-method}
+
+\docType{methods}
 
 \title{ Scatter plots (dotplots) for flowPlates. }
 

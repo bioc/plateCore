@@ -1,5 +1,9 @@
 \name{fpbind}
 \alias{fpbind}
+\alias{fpbind-method}
+\alias{fpbind,flowPlate,flowPlate-method}
+
+\docType{methods}
 
 \title{ Merge multiple flowPlates into a single virtual flowPlate }
 \description{

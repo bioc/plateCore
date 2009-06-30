@@ -1,5 +1,10 @@
 \name{plateSet}
 \alias{plateSet}
+\alias{plateSet-method}
+\alias{plateSet,flowPlate-method}
+
+\docType{methods}
+
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Get the flowSet from a flowPlate object }
 \description{

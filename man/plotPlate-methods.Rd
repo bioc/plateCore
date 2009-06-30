@@ -1,5 +1,9 @@
 \name{plotPlate}
 \alias{plotPlate}
+\alias{plotPlate-method}
+\alias{plotPlate,flowPlate-method}
+
+\docType{methods}
 
 \title{ plotPlate }
 \description{

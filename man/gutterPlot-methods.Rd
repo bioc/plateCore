@@ -1,5 +1,10 @@
 \name{gutterPlot}
 \alias{gutterPlot}
+\alias{gutterPlot-method}
+\alias{gutterPlot,flowPlate-method}
+
+\docType{methods}
+
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ gutterPlot }
 \description{

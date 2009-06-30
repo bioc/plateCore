@@ -1,5 +1,9 @@
 \name{fixAutoFl}
 \alias{fixAutoFl}
+\alias{fixAutoFl-method}
+\alias{fixAutoFl,flowPlate-method}
+
+\docType{methods}
 
 \title{Correct for the effects of cell size (FSC) on autofluorescence}
 \description{
