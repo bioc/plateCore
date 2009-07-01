@@ -15,7 +15,7 @@
 
 }
 \usage{
-Subset(x, subset, select=NULL,\dots)
+\S4method{Subset}{flowPlate,ANY}(x, subset, select=NULL,\dots)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

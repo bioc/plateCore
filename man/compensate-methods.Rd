@@ -13,7 +13,7 @@
   only adjusts for the dyes/fluorophores listed in wellAnnotation.
   }
 \usage{
-compensate(x, spillover,\dots)
+\S4method{compensate}{flowPlate,ANY}(x, spillover,\dots)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

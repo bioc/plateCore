@@ -17,7 +17,7 @@
 }
 
 \usage{
-xyplot(x, data, xlab, ylab,
+\S4method{xyplot}{formula,flowPlate}(x, data, xlab, ylab,
 				as.table = TRUE,
 				prepanel = prepanel.xyplot.flowPlate,
 				panel = panel.xyplot.flowPlate,

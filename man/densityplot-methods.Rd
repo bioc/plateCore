@@ -17,7 +17,7 @@
 }
 
 \usage{
-densityplot(x, data, xlab,
+\S4method{densityplot}{formula,flowPlate}(x, data, xlab,
     prepanel=prepanel.densityplot.flowPlate,
     panel = panel.densityplot.flowPlate,
     as.table=TRUE,
