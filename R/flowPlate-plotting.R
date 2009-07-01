@@ -1,8 +1,36 @@
-# TODO: Add comment
-#
-# Author: straine
-###############################################################################
+################################################################################
+##
+## Specialized functions for plotting flowPlates. The motivation for including
+##  these two methods is that the flow cytometry group at Amgen has found it
+##  useful to visualize data using these approaches. plotPlate makes simple row
+##  by column plot of the plate with colored wells. gutterPlot shows how many
+##  events in each well are at either their min or max values (too many events
+##  at the min/max may indicate a problem).
+##
+## Author: Errol Strain, Jon Gosink (and Florian Hahne for plotPlate from prada)
+##
+################################################################################
 
+################################################################################
+## colorramp is used by the plotPlate function to get the color gradient
+################################################################################
+colorramp <- function (col)  {
+	coord <- as.data.frame(t(col2rgb(col))/255)
+	x <- seq(0, 1, length = length(col))
+	r <- approxfun(x, coord$red)
+	g <- approxfun(x, coord$green)
+	b <- approxfun(x, coord$blue)
+	function(n) {
+		x <- seq(0, 1, length = n)
+		rgb(r(x), g(x), b(x))
+	}
+}
+
+################################################################################
+## plotPlate creates a row-column plot with circles representing wells. Wells are
+## colored according to some value of choice (MFI, etc). This code was copied
+## from prada (Florian Hahne) and modified for flowPlates.
+################################################################################
 setMethod("plotPlate",signature("flowPlate"),function(fp,x=NA,method="median",main,col,values,
 						width=2,na.action="zero",...) {
 	
@@ -148,6 +176,11 @@ setMethod("plotPlate",signature("flowPlate"),function(fp,x=NA,method="median",ma
 	invisible(res)
 })
 
+
+################################################################################
+# gutterPlot creates a plot showing what proportion of events in a well are at
+# either their minimum or maximum values (i.e. "in the gutter"). 
+################################################################################
 setMethod("gutterPlot",signature("flowPlate"),function(fp,chans=c("FSC-H","SSC-H","FL1-H","FL2-H","FL3-H","FL4-H"),...) {
 
 	resultMat <- fsApply(plateSet(fp),function(x) {

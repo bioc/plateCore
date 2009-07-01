@@ -21,7 +21,7 @@ One plate from a BD FACS CAP analysis of Peripheral Blood Mononucleocyte cells.
   Cytometry Society website (FICCS)  
 }
 \references{
-  Add reference for plateCore paper in Advances in Bioinformatics.
+  Add reference for plateCore paper (when/if published).
 }
 
 \keyword{datasets}

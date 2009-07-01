@@ -17,7 +17,7 @@ the gating (filtering), transformation, and other data manipulations for \code{f
 \tabular{ll}{
 Package: \tab plateCore\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
+Version: \tab 1.2.1\cr
 Date: \tab 2009-06-29\cr
 }
 

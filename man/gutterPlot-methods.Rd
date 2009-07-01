@@ -5,7 +5,6 @@
 
 \docType{methods}
 
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ gutterPlot }
 \description{
   A Quality Control plot to check the number of events in each channel that are at 
@@ -38,7 +37,6 @@ fp <- flowPlate(pbmcPlate,wellAnnotation,"p1001")
 
 gutterPlot(fp,chans=c("FSC-H","SSC-H","FL1-H","FL2-H","FL3-H","FL4-H"))
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
+
 \keyword{ methods }
 
