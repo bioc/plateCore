@@ -161,7 +161,7 @@ a \Rclass{rectangleGate} and \Rclass{norm2Filter}.  Details on how to use \Rfunc
 and in \Rpackage{flowCore}. The cells selected by this gate are shown in Figure ~\ref{fig:lymphGate}.
 <<echo=TRUE>>=
 rectGate <- rectangleGate("FSC-H"=c(300,700),"SSC-H"=c(50,400))
-normGate <- norm2Filter("SSC-H","FSC-H",scale.factor=1.5)
+normGate <- norm2Filter("SSC-H","FSC-H",scale.factor=2.5)
 pbmcFP.lymph <- Subset(pbmcFP, rectGate & normGate)
 @
 
@@ -169,8 +169,8 @@ pbmcFP.lymph <- Subset(pbmcFP, rectGate & normGate)
 \begin{center}
 <<label=lymphGate,fig=TRUE,echo=FALSE>>=
 
-print(xyplot(`SSC-H` ~ `FSC-H` | as.factor(Well.Id),pbmcFP[1:4],smooth=FALSE,displayFilter=TRUE,col=c("red","blue"),
-filter=rectangleGate("FSC-H"=c(300,700),"SSC-H"=c(50,400)) & norm2Filter("SSC-H","FSC-H",scale.factor=1.5)))	
+print(xyplot(`SSC-H` ~ `FSC-H` | as.factor(Well.Id),pbmcFP[93:96],smooth=FALSE,displayFilter=TRUE,col=c("red","blue"),
+filter=rectangleGate("FSC-H"=c(300,700),"SSC-H"=c(50,400)) & norm2Filter("SSC-H","FSC-H",scale.factor=2.5)))	
   
 @
 \end{center}
@@ -215,6 +215,8 @@ correction is then applied to all the wells on a the plate. The \Rfunction{fixAu
 indicating the FSC channel and the fluorsence channels (chanCols).  
 <<echo=TRUE>>=
 pbmcFPbgc <- fixAutoFl(pbmcFP.lymph,fsc="FSC-H",chanCols=rownames(comp.mat))
+
+
 @
 
 Dotplots for before and after the background correction are shown in Figure ~\ref{fig:bgc1}. The result of the background
