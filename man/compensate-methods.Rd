@@ -38,8 +38,7 @@ patt=".*H",fsc="FSC-H",ssc="SSC-H",method="median")
 
 ## Get the lymphocytes
 rectGate <- rectangleGate("FSC-H"=c(300,700),"SSC-H"=c(50,400))
-normGate <- norm2Filter("SSC-H","FSC-H",scale.factor=1.5)
-pbmcPlate <- Subset(pbmcPlate, rectGate & normGate)
+pbmcPlate <- Subset(pbmcPlate, rectGate)
 
 # Create a flowPlate from the sample data in plateCore
 fp <- flowPlate(pbmcPlate,wellAnnotation,plateName="P1")
