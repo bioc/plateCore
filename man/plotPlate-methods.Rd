@@ -43,8 +43,7 @@ data(plateCore)
 ## Create a flowPlate
 fp <- flowPlate(pbmcPlate,wellAnnotation,"p1001")
 
-plotPlate(fp,x="events",method="median",col=c("yellow", "darkblue"))
+plotPlate(transform("FL1-H"=log10) %on% fp,x="FL1-H",method="mean",col=c("yellow", "darkblue"))
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
+
 \keyword{ methods }

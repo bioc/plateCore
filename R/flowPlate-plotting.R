@@ -47,7 +47,7 @@ setMethod("plotPlate",signature("flowPlate"),function(fp,x=NA,method="median",ma
 	
 	sampNames <- unlist(lapply(rowIds,function(row) {
 		lapply(colIds,function(col){
-			subset(pData(phenoData(fp)),Column.Id==col & Row.Id==row, select=name)[1,1]		
+			rownames(subset(pData(phenoData(fp)),Column.Id==col & Row.Id==row))[1]		
 		})
 	}))
 	
