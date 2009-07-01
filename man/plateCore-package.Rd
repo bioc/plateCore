@@ -10,7 +10,7 @@ in R easier. High throughput flow studies are often run in a 96 or 384-well plat
 controls, and antibodies-dye conjugates present on the plate. Analyzing the output from the cytometer requires keeping track of the contents
 of each well, matching sample wells with control wells, gating each well/channel separately, making the appropriate plots, and
 summarizing the results. \code{plateCore} extends the \code{flowCore} and \code{flowViz} packages to work on
-\code{flowPlate} objects that represent these large flow datasets. For those familiar with \Rpackage{flowCore} and \code{flowViz}, 
+\code{flowPlate} objects that represent these large flow datasets. For those familiar with \code{flowCore} and \code{flowViz}, 
 the gating (filtering), transformation, and other data manipulations for \code{flowPlates} are very similar to \code{flowSets}. 
 }
 \details{
