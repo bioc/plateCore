@@ -484,7 +484,7 @@ of positive cells based on the MFI ratio, and Gate.Score indicates how many
 standard residuals a sample data point is from the best fit line. Figure ~\ref{fig:mfiRatio}
 shows the MFI ratio versus percent positive plot for the PBMC lymphocyte 
 example. The code used to generate the plot is shown below. The \Rfunction{glmrob}
-function from the \Rpacakage{robustbase} package is used to perform the regression.
+function from the \Rpackage{robustbase} package is used to perform the regression.
 
 <<eval=FALSE>>=
 mfiDf <- subset(wellAnnotation(pbmcFPbgc),Sample.Type=="Test")
