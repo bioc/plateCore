@@ -148,7 +148,11 @@ setMethod("flowPlate",signature("flowSet"),function(data,wellAnnotation,plateNam
 			temp <- new("flowPlate")
 			
 			## Add plateName to well annotation
-			wellAnnot <- data.frame(wellAnnotation,plateName=plateName,stringsAsFactors=FALSE)		
+			if(!"plateName" %in% colnames(wellAnnotation)) {
+				wellAnnot <- data.frame(wellAnnotation,plateName=plateName,stringsAsFactors=FALSE)
+			} else {
+				wellAnnot <- wellAnnotation
+			}
 			## Create a data.frame that corresponds to phenoData.  All info about a well is on a single row
 			config <- makePlateLayout(wellAnnot)
 			

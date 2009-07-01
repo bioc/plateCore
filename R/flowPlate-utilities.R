@@ -40,9 +40,9 @@ flowPhenoMerge <- function(data, newDF) {
 	
 	## Well Ids are equal to sample names on the first pass
 	if(identical(newDF$Well.Id,newDF$name)) {
-		idOrder <- sapply(newDF$Well.Id,function(x) {grep(x,dataNames)})
+		idOrder <- sapply(newDF$Well.Id,function(x) {which(dataNames==x)})
 	} else {
-		idOrder <- sapply(newIds,function(x) {grep(x,dataNames)})
+		idOrder <- sapply(newIds,function(x) {which(dataNames==x)})
 	}
 	
 	## Should warn users if ids are missing
