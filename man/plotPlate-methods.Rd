@@ -43,7 +43,7 @@ data(plateCore)
 ## Create a flowPlate
 fp <- flowPlate(pbmcPlate,wellAnnotation,"p1001")
 
-plotPlate(transform("FL1-H"=log10) %on% fp,x="FL1-H",method="mean",col=c("yellow", "darkblue"))
+plotPlate(transform("FL1-H"=log10) \%on\% fp,x="FL1-H",method="mean",col=c("yellow", "darkblue"))
 }
 
 \keyword{ methods }
