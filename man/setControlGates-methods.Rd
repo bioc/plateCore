@@ -8,21 +8,23 @@
 \title{ Create control gates for a flowPlate }
 \description{
   A function to estimate the threshold between positive and negative cells. This threshold corresponds to
-  a one-dimensional gate, and cells above the gate are considered positive. The gate is initially set by 
-  calculating 5 median absolute deviations above the median. If the value is less than the 99th quantile,
-  then the gate is iteratively moved up. The default value of \code{numMads=5} often works well on the 
-  linear scale, but will need to be adjusted for transformed data.
+  a one-dimensional gate, and cells above the gate are considered positive.
+  The default value of \code{numMads=5} generally works well on the 
+  linear scale, but will need to be adjusted for transformed data. If each well
+  contains a large number of events for the cell type of interest (>1000), then
+  using the 99.5th quantile usually gives similar values.
 }
 \usage{
 setControlGates(data, gateType, threshType="MAD", numMads=5, isoquantile=.995, \dots)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
-  \item{data}{ A \code{flowPlate} }
-  \item{gateType}{ The type of gate to be set. Currently only "Negative.Control" gates are supported. }
-  \item{threshType}{}
-  \item{numMads}{ Number of median absolute deviations above the median to set the initial gate. }
-  \item{isoquantile}{}
+  \item{data}{A \code{flowPlate} }
+  \item{gateType}{The type of gate to be set. Currently only "Negative.Control" gates are supported. }
+  \item{threshType}{Values can be either "MAD", for median absolute deviation
+    based gating, or "isoQuant" for quantile based gating. }
+  \item{numMads}{Number of median absolute deviations above the median to set the initial gate. }
+  \item{isoquantile}{Quantile setting for "isoQuant" threshType. }
   \item{\dots}{optional arguments.}
 }
 
@@ -49,6 +51,5 @@ fp <- setControlGates(fp,gateType="Negative.Control")
 # There should now be a Negative.Control.Gate column in wellAnnotation
 head(wellAnnotation(fp))
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
+
 \keyword{ methods }

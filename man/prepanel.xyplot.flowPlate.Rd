@@ -1,26 +1,22 @@
 \name{prepanel.xyplot.flowPlate}
 \alias{prepanel.xyplot.flowPlate}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{ Lattice-flowViz style panel function for flowPlate xyplot.  }
 \description{
      This function should not be called directly, use \code{\link{xyplot}}. 
 }
 \usage{
-prepanel.xyplot.flowPlate(x, 
-				frames, channel.x, channel.y,
-				...)
+prepanel.xyplot.flowPlate(x, frames, channel.x, channel.y,\dots)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{x}{ Character }
-  \item{frames}{ flowFrames }
-  \item{channel.x}{}
-  \item{channel.y}{}
+  \item{frames}{flowFrames }
+  \item{channel.x}{Character string for channel name.}
+  \item{channel.y}{Character string for channel name.}
   \item{\dots}{optional arguments}
 }
-\value{
-  Prints panel.
-}
+
 \author{ Errol Strain }
 
 \seealso{ See Also \code{\link{xyplot}} }
@@ -38,7 +34,6 @@ xyplot(`SSC-H` ~ `FSC-H` | as.factor(name),
 	fp[1], smooth=FALSE, filter=rectGate, displayFilter=FALSE)
 
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
+
 \keyword{ methods }
 

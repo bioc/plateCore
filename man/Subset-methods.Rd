@@ -12,16 +12,15 @@
   Subset function from flowCore. Additionally, the plateCore
   version of Subset also makes it easy to filter individual
   flowFrames and keep the flowPlate structure.
-
 }
 \usage{
 \S4method{Subset}{flowPlate,ANY}(x, subset, select=NULL,\dots)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{x}{ A \code{flowPlate} }
   \item{subset}{A filter object }
-  \item{select}{An optional vector of either sample names or well ids.}
+  \item{select}{An optional vector of either sample names or Well.IDs.}
   \item{\dots}{optional arguments}
 }
 

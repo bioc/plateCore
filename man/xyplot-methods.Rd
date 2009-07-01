@@ -31,28 +31,31 @@
 				...)
 }
 \arguments{
-\item{x}{A formula describing the layout of the plots.}
+\item{x}{A formula describing the layout of the plots. Plots for flowPlates
+	usually condition on either \code{as.factor(name)} or
+	\code{as.factor(Well.Id)} since only one flowFrame can be shown on each
+	panel (with the exception of Negative.Control overlays).}
 \item{data}{A flowPlate.}
-\item{xlab}{}
-\item{ylab}{}
-\item{as.table}{}
-\item{prepanel}{}
-\item{panel}{}
-\item{pch}{}
-\item{smooth}{}
-\item{filter}{A flowCore filter to apply to each flowFrame. Alternatively,
-				filter can take the character string "Isogate" of "Negative.Control"
-				when creating overlay plots.}
-\item{filterResults}{}
-\item{displayFilter}{}
-\item{flowStrip}{}
-\item{flowStripCex}{}
-\item{strip}{}
+\item{xlab}{Label for x-axis.}
+\item{ylab}{Label for y-axis.}
+\item{as.table}{Defaults to table layout.}
+\item{prepanel}{Lattice-flowViz prepanel function.}
+\item{panel}{Lattice-flowViz panel function.}
+\item{pch}{Plotting character.}
+\item{smooth}{Plot a smoothed scatterplot by default.}
+\item{filter}{A flowCore filter to apply to each flowFrame.}
+\item{filterResults}{If filterResults="Negative.Control", the negative control
+	wells corresponding to a test well are overlayed in the test well plots.}
+\item{displayFilter}{Defaults to displaying filter on the plot.}
+\item{flowStrip}{Character vector indicating additional information to be printed
+	on the strip. Values can include any combination of "Well.Id","MFI","MFI.Ratio", and
+	"Percent.Positive".}
+\item{flowStripCex}{Font size for the flowStrip.}
+\item{strip}{Lattice strip function.}
 \item{\dots}{Optional arguments}
 }
-
-\value{
-  Returns a \code{flowPlate}
+\seealso{
+\code{\link[flowViz:xyplot]{flowViz::xyplot}}
 }
 \author{ Errol Strain }
 \examples{

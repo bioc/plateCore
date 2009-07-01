@@ -30,9 +30,7 @@ panel.densityplot.flowPlate(x,
   \item{filterResult}{}
   \item{\dots}{optional arguments}
 }
-\value{
-  Prints panel.
-}
+
 \author{ Errol Strain }
 
 \seealso{ See Also \code{\link{densityplot}} }

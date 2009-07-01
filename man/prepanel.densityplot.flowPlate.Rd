@@ -12,12 +12,10 @@ prepanel.densityplot.flowPlate(x, frames, channel,\dots)
 \arguments{
   \item{x}{ Character }
   \item{frames}{ flowFrames }
-  \item{channel}{}
+  \item{channel}{Character string for channel name.}
   \item{\dots}{optional arguments}
 }
-\value{
-  Prints panel.
-}
+
 \author{ Errol Strain }
 
 \seealso{ See Also \code{\link{densityplot}} }

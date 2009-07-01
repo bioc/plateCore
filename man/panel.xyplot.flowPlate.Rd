@@ -35,9 +35,7 @@ panel.xyplot.flowPlate(x,
   \item{col}{}
   \item{\dots}{optional arguments}
 }
-\value{
-  Prints panel.
-}
+
 \author{ Errol Strain }
 
 \seealso{ See Also \code{\link{xyplot}} }

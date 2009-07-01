@@ -1,14 +1,14 @@
-##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+################################################################################
 #
-# densityplotFlowPlate.R
+# densityplot for flowPlates
 # 
-# Author: straine
+# Author: Errol Strain, though the code was directly copied from densityplot for
+#  flowSets from the flowViz package (Deepayan Sakar) and modified for
+#  flowPlates. The flowViz version only allowed one flowFrame per panel,
+#  but we often find it necessary to have multiple density curves in the
+#  same panel.
 #
-# Date: Apr 30, 2008
-#
-# Description:
-#
-##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+################################################################################
 
 prepanel.densityplot.flowPlate <- 
 		function(x, frames, channel, 

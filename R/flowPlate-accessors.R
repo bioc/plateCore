@@ -197,11 +197,11 @@ setMethod("flowPlate",signature("flowSet"),function(data,wellAnnotation,plateNam
 	return(temp)
 })
 
-######################################################################
+################################################################################
 ## Fit linear model to FSC vs channel of interest.
 ## Correct for autofluoresence and then set the median back to it's orignal
 ## value.  The fitting is performed on log  transformed data.
-######################################################################
+################################################################################
 setMethod("fixAutoFl",signature("flowPlate"), 
 		function(fp,fsc,chanCols,unstain=NULL,minCut=10) {
 			

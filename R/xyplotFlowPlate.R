@@ -1,9 +1,12 @@
-# xyplotFlowPlate.R
-# 
-# TODO: Add comment
+################################################################################
 #
-# Author: straine
-###############################################################################
+# xyplot for flowPlates
+# 
+# Author: Errol Strain, though the code was directly copied from xyplot for
+#  flowSets from the flowViz package (Deepayan Sakar) and modified for
+#  flowPlates.
+#
+################################################################################
 
 prepanel.xyplot.flowPlate <- 
 		function(x, 
@@ -185,8 +188,6 @@ setMethod("xyplot",
 				filter <- lapply(pd[[uniq.name]],function(x) filter)
 				names(filter) <- pd[[uniq.name]]
 			}
-
-#			browser()
 			
 			if(!is.null(flowStrip)) {
 				

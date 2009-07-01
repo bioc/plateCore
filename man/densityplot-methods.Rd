@@ -12,7 +12,7 @@
 	This function is a modified version of densityplot from
 	the flowViz package that allows for multiple flowFrames
 	per panel. The flowViz densityplot plots the density curves in a 
-	shingle layout, while the flowPlate densityplot overlays
+	one per panel style, while the flowPlate densityplot overlays
 	the densities.
 }
 
@@ -29,16 +29,19 @@
   \item{x}{A formula describing the layout of the plots.}
   \item{data}{A flowPlate.}
   \item{xlab}{Label for the x-axis}
-  \item{prepanel}{ Lattice prepanel function.}
-  \item{panel}{ Lattice panel function.}
-  \item{as.table}{}
-  \item{filterResult}{A flowCore filter to apply to each flowFrame. Alternatively,
-				filterResult can take the character string "Isogate" of "Negative.Control"
-				when creating overlay plots.}
+  \item{prepanel}{Lattice-flowViz prepanel function.}
+  \item{panel}{Lattice-flowViz panel function.}
+  \item{as.table}{Defaults to table layout.}
+  \item{filterResult}{ filterResult can either take the character
+  	string "Negative.Control" and have the negative control wells added
+  	to the panels, or if filterResult is a flowFrame then the density curve
+  	for the flowFrame will be added to each panel.}
   \item{\dots}{optional arguments}
 Other arguments are identical to densityPlot from flowViz.
 }
-
+\seealso{
+\code{\link[flowViz:densityplot]{flowViz::densityplot}}
+}
 \examples{
 # Load the plateCore package and data
 library(plateCore)
