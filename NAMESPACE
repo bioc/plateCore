@@ -1,11 +1,13 @@
-importFrom(flowCore,"compensate","Subset","%on%")
+importMethodsFrom(flowCore,"compensate","Subset","%on%")
 importClassesFrom(flowCore, "flowSet", "filterSet")
 
 importFrom(graphics,"smoothScatter")
 
 importFrom(lattice,"xyplot","densityplot","panel.smoothScatter")
 
-importFrom(Biobase,"sampleNames","phenoData")
+importMethodsFrom(Biobase,"sampleNames","phenoData")
+
+importFrom(MASS,cov.rob)
 
 exportClasses("flowPlate")
 

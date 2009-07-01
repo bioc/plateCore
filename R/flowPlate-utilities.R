@@ -134,5 +134,7 @@ makePlateLayout <- function(plateDesc,abName="Ab.Name",sampleType="Sample.Type",
 				
 	
 	plateLayout <- plateLayout[order(plateLayout$Well.Id),]
+	
+	return(plateLayout)
 
 }
