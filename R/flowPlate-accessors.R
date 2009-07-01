@@ -147,7 +147,7 @@ setMethod("flowPlate",signature("flowSet"),function(data,wellAnnotation,plateNam
 
 			temp <- new("flowPlate")
 			
-			## Add plateName to well annotation
+			## Add plateName to well annotation if it doesn't exist
 			if(!"plateName" %in% colnames(wellAnnotation)) {
 				wellAnnot <- data.frame(wellAnnotation,plateName=plateName,stringsAsFactors=FALSE)
 			} else {

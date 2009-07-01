@@ -31,16 +31,17 @@ flowPhenoMerge <- function(data, newDF) {
 	##Also assume that the ids in the first column of pData(newADF) 
 	
 	origDF <- pData(phenoData(data))
-#	origDF$name <- sampleNames(data)
 	
 	## Make sure merging columns are unique, otherwise throw an error
 	
 	newIds <- newDF[,1]
 	dataNames <- origDF[,1]
 	
-	## Well Ids are equal to sample names on the first pass
+	## Well Ids are equal to sample names when a flowPlate is first created.
+	## If flowPhenoMerge is being used in fpbind, then the unique names
+	## have already been created.
 	if(identical(newDF$Well.Id,newDF$name)) {
-		idOrder <- sapply(newDF$Well.Id,function(x) {which(dataNames==x)})
+		idOrder <- sapply(newDF$Well.Id,function(x) {grep(x,dataNames)})
 	} else {
 		idOrder <- sapply(newIds,function(x) {which(dataNames==x)})
 	}
