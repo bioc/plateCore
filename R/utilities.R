@@ -1,7 +1,13 @@
-
-
-### Some utilities (used by the lattice methods, at least)
-
+################################################################################
+## 
+## Functions in this file were copied directly from utilities.R in the flowViz
+## package. These are needed for xyplot and densityplot for flowPlates. Changing
+## these functions breaks xyplot and densityplot, so I maintain a copy here and
+## try to keep it current with flowViz.
+## 
+## Author: Deepayan Sakar
+##
+################################################################################
 
 ## needed for nice labels.  deparse() can potentially give results
 ## with length > 1
