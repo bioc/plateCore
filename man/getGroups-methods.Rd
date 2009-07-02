@@ -13,7 +13,7 @@
 \usage{
 getGroups(data,type="Negative.Control",chan, \dots)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{data}{ A flowPlate dataset. }
   \item{type}{Currently only Negative.Control groups are supported.}
@@ -38,7 +38,6 @@ negCon <- getGroups(fp,chan="FL1-H")
 
 negCon[1:2]
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
+
 \keyword{ methods }
 

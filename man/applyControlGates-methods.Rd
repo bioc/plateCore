@@ -7,9 +7,11 @@
 
 \title{ Apply control gates to a flowPlate }
 \description{
-  Once the function setControlGates has been used to create gates for a flowPlate object, then apply the gates to test
-samples using this function. The applyControlGates function is separated from setControlGates since gates may need be adjusted
-  outside of setControlGates.  
+  Once setControlGates has been used to create gates for a flowPlate
+   object, gates are applied to test samples using applyControlGates.
+   The applyControlGates function is separated from
+   setControlGates since gates may need be changed
+   outside of setControlGates.  
 }
 \usage{
 applyControlGates(data, gateType="Negative.Control", \dots)
@@ -17,12 +19,14 @@ applyControlGates(data, gateType="Negative.Control", \dots)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{data}{ A flowPlate dataset. }
-  \item{gateType}{ The type of gate to be applied to the flowPlate. Currently only "Negative.Control" gates are supported. }
+  \item{gateType}{ The type of gate to be applied to the flowPlate. Currently
+   only "Negative.Control" gates are supported. }
   \item{\dots}{optional arguments}
 }
 \value{
   Returns a \code{flowPlate} where the wellAnnotation now contains additional 
-  columns corresponding to the percentage of cells above background (Percent.Positive) and the number
+  columns corresponding to total number of events in a well (Total.Count),
+  the percentage of cells above background (Percent.Positive), and the number
   of positive cells (Positive.Count). 
 }
 \author{ Errol Strain }
@@ -47,7 +51,6 @@ fp <- applyControlGates(fp,gateType="Negative.Control")
 head(wellAnnotation(fp))
 
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
+
 \keyword{ methods }
 

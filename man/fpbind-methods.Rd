@@ -40,6 +40,5 @@ fp2 <- flowPlate(pbmcPlate,wellAnnotation,plateName="P2")
 virtPlate <- fpbind(fp1,fp2)
 
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
+
 \keyword{ methods }

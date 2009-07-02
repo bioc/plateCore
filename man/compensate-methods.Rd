@@ -7,17 +7,19 @@
 
 \title{ Compensate a flowPlate to correct for the effects of spillover. }
 \description{
-  Flow samples are often stained with multiple types fluorophores, and their
-  emission spectra can overlap. Compensate adjusts for spillover using the 
+  Flow samples are often stained with multiple types of fluorophores. 
+  Unfortunately, the emission spectra for these different fluorophores
+  often overlap, and the signals must be corrected before proceeding with
+  the analysis. Compensate adjusts for spillover using the 
   method implemented in the package flowCore. Unlike flowCore, compensate 
   only adjusts for the dyes/fluorophores listed in wellAnnotation.
   }
 \usage{
 \S4method{compensate}{flowPlate,ANY}(x, spillover,\dots)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
-  \item{x}{ flowPlate }
+  \item{x}{A flowPlate }
   \item{spillover}{ The compensation matrix where the row and column names match the 
   fluorescence channels of the flowPlate. }
   \item{\dots}{Optional arguments}
@@ -46,6 +48,5 @@ fp <- flowPlate(pbmcPlate,wellAnnotation,plateName="P1")
 # apply the compensation matrix
 fp <- compensate(fp,comp.mat)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
+
 \keyword{ methods }

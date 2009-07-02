@@ -11,9 +11,9 @@
 \description{
 	This function is a modified version of densityplot from
 	the flowViz package that allows for multiple flowFrames
-	per panel. The flowViz densityplot plots the density curves in a 
-	one per panel style, while the flowPlate densityplot overlays
-	the densities.
+	per panel. flowViz densityplot plots the density curves in a 
+	one per panel style, while the flowPlate densityplot can overlay
+	densities.
 }
 
 \usage{
