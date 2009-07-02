@@ -1,6 +1,6 @@
 \name{prepanel.densityplot.flowPlate}
 \alias{prepanel.densityplot.flowPlate}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{ Lattice-flowViz style panel function for flowPlate densityplot. }
 \description{
   This function should not be called directly, use \code{\link{densityplot}}.
@@ -8,7 +8,7 @@
 \usage{
 prepanel.densityplot.flowPlate(x, frames, channel,\dots)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{x}{ Character }
   \item{frames}{ flowFrames }
@@ -33,7 +33,6 @@ fp <- flowPlate(pbmcPlate,wellAnnotation,plateName="P1")
 densityplot(~ `FSC-H`, fp[1:3], groups=name, auto.key=TRUE)
 
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
+
 \keyword{ methods }
 
