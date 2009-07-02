@@ -15,14 +15,13 @@
   only adjusts for the dyes/fluorophores listed in wellAnnotation.
   }
 \usage{
-\S4method{compensate}{flowPlate,ANY}(x, spillover,\dots)
+\S4method{compensate}{flowPlate,ANY}(x, spillover)
 }
 
 \arguments{
   \item{x}{A flowPlate }
   \item{spillover}{ The compensation matrix where the row and column names match the 
   fluorescence channels of the flowPlate. }
-  \item{\dots}{Optional arguments}
 }
 \value{
   Returns a compensated \code{flowPlate}.
