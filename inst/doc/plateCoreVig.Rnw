@@ -592,7 +592,7 @@ save.image(file=paste("pbmcRData/",plateName,".Rdata",sep=""))
 @
 
 Once the 5 plates have been processed, the \Robject{flowPlates} can then be combined
-using \Rfunction{fpBind}. In this case the plates were saved using the same name,
+using \Rfunction{fpbind}. In this case the plates were saved using the same name,
 platePBMC. The \Robject{flowPlates} were read into a list, and then combined into
 a large "virtPlate". 
 <<eval=FALSE>>=
