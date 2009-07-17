@@ -222,8 +222,8 @@
      id="base"
      showgrid="false"
      inkscape:zoom="5.1976977"
-     inkscape:cx="158.13576"
-     inkscape:cy="273.61718"
+     inkscape:cx="209.55083"
+     inkscape:cy="332.24284"
      inkscape:window-x="22"
      inkscape:window-y="29"
      inkscape:current-layer="g2392" /><g
@@ -242,6 +242,7 @@
      y="-73.43"
      x="209.28999 215.96201 218.62601 225.298 228.634 235.306 243.97 250.642 254.638 261.31 264.646 272.64999 279.32199 285.99399 288.65799 294.65799 300.65799 303.32199"
      style="font-size:12px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">plateCore Analysis</tspan></text>
+
 <text
    id="text2406"
    transform="matrix(0,1,1,0,0,0)"
@@ -252,6 +253,7 @@
      y="20.620001"
      x="209.19 216.522 219.186 225.858 234.522 240.522 247.194 250.53 258.534 265.20599 271.87799 274.54199 280.54199 286.54199 289.20599"
      style="font-size:12px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">FlowJo Analysis</tspan></text>
+
 <g
    id="g2410" /><g
    id="g2412" /><g
@@ -282,6 +284,7 @@
      y="-116.79"
      x="43.41"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">0</tspan></text>
+
 <text
    id="text2434"
    transform="scale(1,-1)"
@@ -292,6 +295,7 @@
      y="-140.07001"
      x="37.849998 43.41"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">20</tspan></text>
+
 <text
    id="text2438"
    transform="scale(1,-1)"
@@ -302,6 +306,7 @@
      y="-163.35001"
      x="37.849998 43.41"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">40</tspan></text>
+
 <text
    id="text2442"
    transform="scale(1,-1)"
@@ -312,6 +317,7 @@
      y="-186.62"
      x="37.849998 43.41"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">60</tspan></text>
+
 <text
    id="text2446"
    transform="scale(1,-1)"
@@ -322,6 +328,7 @@
      y="-209.89999"
      x="37.849998 43.41"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">80</tspan></text>
+
 <text
    id="text2450"
    transform="scale(1,-1)"
@@ -332,6 +339,7 @@
      y="-233.17"
      x="32.290001 37.849998 43.41"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">100</tspan></text>
+
 <g
    id="g2454" /><path
    id="path2458"
@@ -360,6 +368,7 @@
      y="-93.720001"
      x="65.669998"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">0</tspan></text>
+
 <text
    id="text2474"
    transform="scale(1,-1)"
@@ -370,6 +379,7 @@
      y="-93.720001"
      x="86.169998 91.730003"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">20</tspan></text>
+
 <text
    id="text2478"
    transform="scale(1,-1)"
@@ -380,6 +390,7 @@
      y="-93.720001"
      x="109.44 115"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">40</tspan></text>
+
 <text
    id="text2482"
    transform="scale(1,-1)"
@@ -390,6 +401,7 @@
      y="-93.720001"
      x="132.72 138.28"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">60</tspan></text>
+
 <text
    id="text2486"
    transform="scale(1,-1)"
@@ -400,6 +412,7 @@
      y="-93.720001"
      x="155.99001 161.55"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">80</tspan></text>
+
 <text
    id="text2490"
    transform="scale(1,-1)"
@@ -410,6 +423,7 @@
      y="-93.720001"
      x="176.49001 182.05 187.61"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">100</tspan></text>
+
 <g
    id="g2494" /><path
    d="M 167.85875,151.80875 L 170.40875,154.35125 L 172.95125,151.80875 L 170.40875,149.25875 L 167.85875,151.80875"
@@ -997,6 +1011,7 @@
      y="0"
      x="0 8.0039997 10.668 17.34 20.676001 27.348 30.684 37.355999 44.028 50.700001"
      style="font-size:12px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">Plate 8774</tspan></text>
+
 
 
 
@@ -1621,6 +1636,7 @@
 
 
 
+
 </g><g
    id="g3352" /><path
    id="path3356"
@@ -1658,6 +1674,7 @@
      y="-93.720001"
      x="331.01001"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">0</tspan></text>
+
 <text
    id="text3388"
    transform="scale(1,-1)"
@@ -1668,6 +1685,7 @@
      y="-93.720001"
      x="351.5 357.06"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">20</tspan></text>
+
 <text
    id="text3392"
    transform="scale(1,-1)"
@@ -1678,6 +1696,7 @@
      y="-93.720001"
      x="374.78 380.34"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">40</tspan></text>
+
 <text
    id="text3396"
    transform="scale(1,-1)"
@@ -1688,6 +1707,7 @@
      y="-93.720001"
      x="398.06 403.62"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">60</tspan></text>
+
 <text
    id="text3400"
    transform="scale(1,-1)"
@@ -1698,6 +1718,7 @@
      y="-93.720001"
      x="421.32999 426.89001"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">80</tspan></text>
+
 <text
    id="text3404"
    transform="scale(1,-1)"
@@ -1708,6 +1729,7 @@
      y="-93.720001"
      x="441.82999 447.39001 452.95001"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">100</tspan></text>
+
 <path
    id="path3408"
    style="fill:none;stroke:#000000;stroke-width:0.75;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
@@ -2316,6 +2338,7 @@
      y="0"
      x="0 8.0039997 10.668 17.34 20.676001 27.348 30.684 37.355999 44.028 50.700001"
      style="font-size:12px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">Plate 9206</tspan></text>
+
 
 
 
@@ -2957,6 +2980,7 @@
 
 
 
+
 </g><g
    id="g4292" /><path
    id="path4296"
@@ -2990,6 +3014,7 @@
      y="-417.72"
      x="198.34"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">0</tspan></text>
+
 <text
    id="text4320"
    transform="scale(1,-1)"
@@ -3000,6 +3025,7 @@
      y="-417.72"
      x="218.83 224.39"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">20</tspan></text>
+
 <text
    id="text4324"
    transform="scale(1,-1)"
@@ -3010,6 +3036,7 @@
      y="-417.72"
      x="242.11 247.67"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">40</tspan></text>
+
 <text
    id="text4328"
    transform="scale(1,-1)"
@@ -3020,6 +3047,7 @@
      y="-417.72"
      x="265.39001 270.95001"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">60</tspan></text>
+
 <text
    id="text4332"
    transform="scale(1,-1)"
@@ -3030,6 +3058,7 @@
      y="-417.72"
      x="288.66 294.22"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">80</tspan></text>
+
 <text
    id="text4336"
    transform="scale(1,-1)"
@@ -3040,6 +3069,7 @@
      y="-417.72"
      x="309.16 314.72 320.28"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">100</tspan></text>
+
 <g
    id="g4340" /><g
    id="g4342" /><g
@@ -3070,6 +3100,7 @@
      y="-263.85999"
      x="336.98001"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">0</tspan></text>
+
 <text
    id="text4364"
    transform="scale(1,-1)"
@@ -3080,6 +3111,7 @@
      y="-287.14001"
      x="336.98001 342.54001"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">20</tspan></text>
+
 <text
    id="text4368"
    transform="scale(1,-1)"
@@ -3090,6 +3122,7 @@
      y="-310.42001"
      x="336.98001 342.54001"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">40</tspan></text>
+
 <text
    id="text4372"
    transform="scale(1,-1)"
@@ -3100,6 +3133,7 @@
      y="-333.69"
      x="336.98001 342.54001"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">60</tspan></text>
+
 <text
    id="text4376"
    transform="scale(1,-1)"
@@ -3110,6 +3144,7 @@
      y="-356.97"
      x="336.98001 342.54001"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">80</tspan></text>
+
 <text
    id="text4380"
    transform="scale(1,-1)"
@@ -3120,6 +3155,7 @@
      y="-380.23999"
      x="336.98001 342.54001 348.10001"
      style="font-size:10px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica">100</tspan></text>
+
 <g
    id="g4384" /><g
    id="g4386"><g
@@ -3716,6 +3752,7 @@
 
 
 
+
 </g><g
    id="g4798" /><path
    id="path4802"
@@ -3743,6 +3780,7 @@
 
 
 
+
 <text
    xml:space="preserve"
    style="font-size:10.32968712px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
@@ -3754,6 +3792,7 @@
      id="tspan3601"
      x="62.521748"
      y="-234.29971">R  = 0.77</tspan></text>
+
 <text
    xml:space="preserve"
    style="font-size:7.64432955px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
@@ -3765,6 +3804,7 @@
      id="tspan3605"
      x="63.937317"
      y="-261.41284">2</tspan></text>
+
 <text
    xml:space="preserve"
    style="font-size:10.32968712px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
@@ -3776,6 +3816,7 @@
      id="tspan3617"
      x="193.58885"
      y="-234.04964">R  = 0.83</tspan></text>
+
 <text
    xml:space="preserve"
    style="font-size:7.64432955px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
@@ -3787,6 +3828,7 @@
      id="tspan3621"
      x="184.1138"
      y="-261.14011">2</tspan></text>
+
 <text
    xml:space="preserve"
    style="font-size:10.32968712px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
@@ -3798,6 +3840,7 @@
      id="tspan3627"
      x="326.36816"
      y="-233.06931">R  = 0.90</tspan></text>
+
 <text
    xml:space="preserve"
    style="font-size:7.64432955px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
@@ -3809,6 +3852,7 @@
      id="tspan3631"
      x="305.8602"
      y="-260.07092">2</tspan></text>
+
 <text
    xml:space="preserve"
    style="font-size:10.32968712px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
@@ -3820,6 +3864,7 @@
      id="tspan3637"
      x="61.775223"
      y="-381.58984">R  = 0.91</tspan></text>
+
 <text
    xml:space="preserve"
    style="font-size:7.64432955px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
@@ -3831,6 +3876,7 @@
      id="tspan3641"
      x="63.252823"
      y="-422.05069">2</tspan></text>
+
 <text
    xml:space="preserve"
    style="font-size:10.32968712px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
@@ -3842,6 +3888,7 @@
      id="tspan3647"
      x="194.07169"
      y="-382.08002">R  = 0.93</tspan></text>
+
 <text
    xml:space="preserve"
    style="font-size:7.64432955px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
@@ -3853,4 +3900,16 @@
      id="tspan3651"
      x="184.55652"
      y="-422.5853">2</tspan></text>
+
+<text
+   xml:space="preserve"
+   style="font-size:8.47281075px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+   x="166.2858"
+   y="-263.16821"
+   id="text3584"
+   transform="scale(0.9725183,-1.0282583)"><tspan
+     sodipodi:role="line"
+     id="tspan3586"
+     x="166.2858"
+     y="-263.16821">CD112</tspan></text>
 </g></svg>
