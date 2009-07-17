@@ -461,7 +461,7 @@ Total.Count column of the wellAnnotation.
 <<echo=TRUE>>=
 summary(wellAnnotation(pbmcFPbgc)$Total.Count)
 @
-Since each well has at least 5742 gate lymphocyte events there are no apparent
+Since each well has at least 858 gated lymphocyte events there are no apparent
 problems with the sample acquisition on the plate.
 
 Fluidic events (bubbles, etc.) can cause the cytometer readings to shift. These
