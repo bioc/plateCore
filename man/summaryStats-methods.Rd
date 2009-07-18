@@ -11,7 +11,8 @@
   MFI ratio (ratio of test well MFI to negative control MFI) for each
   well/channel in a \code{flowPlate}. The predicted percent
   positive (Predict.PP) and gate score (Gate.Score) come from a robust
-  logistic regression of the MFI ratio to the percentage of positive cells.
+  logistic regression of the MFI ratio to either the percentage of positive cells
+  or the actual count of positive cells.
   Predict.PP is the estimated percent positive based on the MFI ratio and
   Gate.Score is the number of standardized residuals the sample data point
   is away from the best fit line. The glmrob function from the robustbase
@@ -19,11 +20,14 @@
   \code{wellAnnotation data.fame}.
 }
 \usage{
-summaryStats(data, \dots)
+summaryStats(data, Events="Percentage", \dots)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{data}{ A \code{flowPlate} }
+  \item{Events}{ The robust logistic regression can be performed using either 
+  the percentage of events above the negative control gate ("Percentage") or the
+  actual number of events above the gate ("Actual"). }
   \item{\dots}{optional arguments}
 }
 

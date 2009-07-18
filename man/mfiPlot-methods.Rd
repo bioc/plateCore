@@ -8,17 +8,21 @@
 \title{ mfiPlot }
 \description{
   A Quality Control plot that shows the MFI Ratio versus the percentage of 
-  positive cells in a flowPlate.
+  positive cells in a flowPlate. The robust logistic regression is performed
+  using gmlrob from the robustbase package.
 }
 \usage{
-mfiPlot(fp, thresh=2, Sample.Type="Test", \dots)
+mfiPlot(fp, thresh=2, Sample.Type="Test",Events="Percentage", \dots)
 }
 
 \arguments{
   \item{fp}{ A \code{flowPlate}. }
   \item{thresh}{ Points more than "thresh" number of standard deviations away from the
   best fit line will be colored red. }
-  \item{Sample.Type}{ Type of sample to show on plot. Defaults to "Test". } 
+  \item{Sample.Type}{ Type of sample to show on plot. Defaults to "Test" } 
+  \item{Events}{ The robust logistic regression can be performed using either 
+  the percentage of events above the negative control gate ("Percentage") or the
+  actual number of events above the gate ("Actual"). }
   \item{\dots}{optional arguments to plot and points.}
 }
 
