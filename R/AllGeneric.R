@@ -22,7 +22,7 @@ setGeneric("wellAnnotation", function(fp,...) standardGeneric("wellAnnotation"))
 
 setGeneric("applyControlGates", function(data,gateType="Negative.Control",...) standardGeneric("applyControlGates"))
 
-setGeneric("summaryStats", function(data,...) standardGeneric("summaryStats"))
+setGeneric("summaryStats", function(data,Events="Percentage",...) standardGeneric("summaryStats"))
 
 setGeneric("getGroups", function(data,type="Negative.Control",chan,...) standardGeneric("getGroups"))
 
@@ -33,7 +33,7 @@ setGeneric("plotPlate", function(fp,x=NA,method="median",main,col,values,
 
 setGeneric("gutterPlot", function(fp,chans=c("FSC-H","SSC-H","FL1-H","FL2-H","FL3-H","FL4-H"),...) standardGeneric("gutterPlot"))
 
-setGeneric("mfiPlot", function(fp,thresh=2,Sample.Type="Test",...) standardGeneric("mfiPlot"))
+setGeneric("mfiPlot", function(fp,thresh=2,Sample.Type="Test",Events="Percentage",...) standardGeneric("mfiPlot"))
 
 setGeneric("setGate",function(fp,chan,wells,newGate,type="Negative.Control.Gate",...) standardGeneric("setGate"))
 

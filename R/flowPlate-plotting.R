@@ -214,27 +214,42 @@ setMethod("gutterPlot",signature("flowPlate"),function(fp,chans=c("FSC-H","SSC-H
 ################################################################################
 # mfiPlot creates a plot showing the mfi ratio versus the percent positive cells
 ################################################################################
-setMethod("mfiPlot",signature("flowPlate"),function(fp,thresh=2,Sample.Type="Test",...) {
+setMethod("mfiPlot",signature("flowPlate"),function(fp,thresh=2,Sample.Type="Test",Events="Percentage",...) {
 			
 			## Declaring variables for R CMD check
 			Gate.Score = ""
 			
 			mfiDf <- subset(wellAnnotation(fp),Sample.Type==Sample.Type)
-			mfiDf2 <- subset(mfiDf,abs(Gate.Score)<thresh)
-			mfiDf3 <- subset(mfiDf,abs(Gate.Score)>=thresh)
+			
+
 			mfiDf$LogMFI.Ratio = log10(mfiDf$MFI.Ratio)
-			mfiDf$PosCount <- round(mfiDf$Percent.Positive,0)
-			mfiDf$NegCount <- 100-mfiDf$PosCount 
+			
+			if(Events == "Actual") {
+				mfiDf$PosCount <- mfiDf$Positive.Count
+				mfiDf$NegCount <- mfiDf$Total.Count - mfiDf$Positive.Count
+			} else if (Events == "Percentage") {
+				mfiDf$PosCount <- round(mfiDf$Percent.Positive,0)
+				mfiDf$NegCount <- 100-mfiDf$PosCount 
+			}
+			
+			mfiDf <- mfiDf[!is.na(mfiDf$LogMFI.Ratio),]
+			mfiDf <- mfiDf[!is.na(mfiDf$PosCount),]
+			mfiDf <- mfiDf[!is.na(mfiDf$NegCount),]
+	
 			robMFI <- glmrob(cbind(PosCount,NegCount) ~ LogMFI.Ratio, data=mfiDf,
-					family=binomial(link="logit"))
+					family=binomial(link="logit"))	
+			x <- -robMFI$coefficients[[1]]-robMFI$coefficients[[2]]*mfiDf$LogMFI.Ratio
+	
+			resids <- (robMFI$residuals-mean(robMFI$residuals,na.rm=TRUE))/sd(robMFI$residuals,na.rm=TRUE)	
 			
+			mfiDf2 <- subset(mfiDf,abs(resids)<thresh)
+			mfiDf3 <- subset(mfiDf,abs(resids)>=thresh)			
 			
-			mfiRange = range(log10(mfiDf2$MFI.Ratio),na.rm=TRUE)
+			mfiRange = range(mfiDf$LogMFI.Ratio,na.rm=TRUE)
 			
 			x=seq(mfiRange[1],mfiRange[2],0.1)
 			
-			x2 <- -robMFI$coefficients[[1]]-robMFI$coefficients[[2]]*x
-			
+			x2 <- -robMFI$coefficients[[1]]-robMFI$coefficients[[2]]*x			
 			
 			plot(mfiDf2$MFI.Ratio,mfiDf2$Percent.Positive, log="x",...)
 			points(mfiDf3$MFI.Ratio,mfiDf3$Percent.Positive,col="red",...)

@@ -298,7 +298,7 @@ setMethod("compensate", signature(x="flowPlate"), function(x,spillover) {
 ## that has been processed using setControlGates and applyControlGates. Results
 ## are stored as new columns in the wellAnnotation data.frame
 ################################################################################
-setMethod("summaryStats", signature("flowPlate"), function(data,...) {
+setMethod("summaryStats", signature("flowPlate"), function(data,Events="Percentage",...) {
 			
 	## Declare variables for R check
 	Well.Id <- ""
@@ -340,19 +340,30 @@ setMethod("summaryStats", signature("flowPlate"), function(data,...) {
 	## Fit a robust glm to the MFI ratio vs Percent Positive to assess the
 	## quality of the gating, uses glmrob from robustbase
 	if("Percent.Positive" %in% colnames(wellAnnotation)) {
-		df <- subset(wellAnnotation, Sample.Type=="Test")
-		df$MFI.Ratio <- log(df$MFI.Ratio)
-		PosCount <- round(df$Percent.Positive,0)
-		NegCount <- 100-PosCount			
-		robMFI <- glmrob(cbind(PosCount,NegCount) ~ MFI.Ratio, data=df,family=binomial(link="logit"))		
+		
+		mfiDf <- subset(wellAnnotation, Sample.Type=="Test")
+		mfiDf$LogMFI.Ratio = log10(mfiDf$MFI.Ratio)
+		
+		if(Events == "Actual") {
+			mfiDf$PosCount <- mfiDf$Positive.Count
+			mfiDf$NegCount <- mfiDf$Total.Count - mfiDf$Positive.Count
+		} else if (Events == "Percentage") {
+			mfiDf$PosCount <- round(mfiDf$Percent.Positive,0)
+			mfiDf$NegCount <- 100-mfiDf$PosCount 
+		}
+		
+		robMFI <- glmrob(cbind(PosCount,NegCount) ~ LogMFI.Ratio, data=mfiDf,
+				family=binomial(link="logit"))	
 		x <- -robMFI$coefficients[[1]]-robMFI$coefficients[[2]]*log(wellAnnotation$MFI.Ratio)
+		
 		wellAnnotation$Predict.PP <- 100/(1 + exp(x))		
-		diffR <- wellAnnotation$Percent.Positive-wellAnnotation$Predict.PP	
+		#diffR <- wellAnnotation$Percent.Positive-wellAnnotation$Predict.PP	
 			
 		resids <- (robMFI$residuals-mean(robMFI$residuals,na.rm=TRUE))/sd(robMFI$residuals,na.rm=TRUE)
 					
 		wellAnnotation$Gate.Score <- NA
 		wellAnnotation$Gate.Score[wellAnnotation$Sample.Type=="Test"] <- resids
+		
 	}
 			
 	data@wellAnnotation <- wellAnnotation
