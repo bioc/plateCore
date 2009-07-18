@@ -16,7 +16,7 @@ mfiPlot(fp, thresh=2, Sample.Type="Test", \dots)
 
 \arguments{
   \item{fp}{ A \code{flowPlate}. }
-  \item{thresh}{ Points more than this number of standard deviations away from the
+  \item{thresh}{ Points more than "thresh" number of standard deviations away from the
   best fit line will be colored red. }
   \item{Sample.Type}{ Type of sample to show on plot. Defaults to "Test". } 
   \item{\dots}{optional arguments to plot and points.}
