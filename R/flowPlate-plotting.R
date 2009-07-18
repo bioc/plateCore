@@ -209,3 +209,36 @@ setMethod("gutterPlot",signature("flowPlate"),function(fp,chans=c("FSC-H","SSC-H
 			bty="n", pch=1:length(chans), col=1:length(chans));
 	
 })
+
+
+################################################################################
+# mfiPlot creates a plot showing the mfi ratio versus the percent positive cells
+################################################################################
+setMethod("mfiPlot",signature("flowPlate"),function(fp,thresh=2,Sample.Type="Test",...) {
+			
+			## Declaring variables for R CMD check
+			Gate.Score = ""
+			
+			mfiDf <- subset(wellAnnotation(fp),Sample.Type==Sample.Type)
+			mfiDf2 <- subset(mfiDf,abs(Gate.Score)<thresh)
+			mfiDf3 <- subset(mfiDf,abs(Gate.Score)>=thresh)
+			mfiDf$LogMFI.Ratio = log10(mfiDf$MFI.Ratio)
+			mfiDf$PosCount <- round(mfiDf$Percent.Positive,0)
+			mfiDf$NegCount <- 100-mfiDf$PosCount 
+			robMFI <- glmrob(cbind(PosCount,NegCount) ~ LogMFI.Ratio, data=mfiDf,
+					family=binomial(link="logit"))
+			
+			
+			mfiRange = range(log10(mfiDf2$MFI.Ratio),na.rm=TRUE)
+			
+			x=seq(mfiRange[1],mfiRange[2],0.1)
+			
+			x2 <- -robMFI$coefficients[[1]]-robMFI$coefficients[[2]]*x
+			
+			
+			plot(mfiDf2$MFI.Ratio,mfiDf2$Percent.Positive, log="x",...)
+			points(mfiDf3$MFI.Ratio,mfiDf3$Percent.Positive,col="red",...)
+			lines(10^x,100/(1 + exp(x2)),lwd=2,col='red')
+					
+			
+		})

@@ -33,6 +33,8 @@ setGeneric("plotPlate", function(fp,x=NA,method="median",main,col,values,
 
 setGeneric("gutterPlot", function(fp,chans=c("FSC-H","SSC-H","FL1-H","FL2-H","FL3-H","FL4-H"),...) standardGeneric("gutterPlot"))
 
+setGeneric("mfiPlot", function(fp,thresh=2,Sample.Type="Test",...) standardGeneric("mfiPlot"))
+
 setGeneric("setGate",function(fp,chan,wells,newGate,type="Negative.Control.Gate",...) standardGeneric("setGate"))
 
 setGeneric("adjustGateLog10",function(fp,wells,chan,xlim,ylim,
@@ -41,3 +43,4 @@ setGeneric("adjustGateLog10",function(fp,wells,chan,xlim,ylim,
 setGeneric("xyplot", function(x, data, ...) standardGeneric("xyplot"))
 
 setGeneric("densityplot", function(x, data, ...) standardGeneric("densityplot"))
+
