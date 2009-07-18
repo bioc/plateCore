@@ -489,23 +489,8 @@ example. The code used to generate the plot is shown below. The \Rfunction{glmro
 function from the \Rpackage{robustbase} package is used to perform the regression.
 
 <<eval=FALSE>>=
-mfiDf <- subset(wellAnnotation(pbmcFPbgc),Sample.Type=="Test")
-mfiDf2 <- subset(mfiDf,abs(Gate.Score)<2)
-mfiDf3 <- subset(mfiDf,abs(Gate.Score)>=2)
-mfiDf$LogMFI.Ratio = log10(mfiDf$MFI.Ratio)
-mfiDf$PosCount <- round(mfiDf$Percent.Positive,0)
-mfiDf$NegCount <- 100-mfiDf$PosCount 
-robMFI <- glmrob(cbind(PosCount,NegCount) ~ LogMFI.Ratio, data=mfiDf,
-		family=binomial(link="logit"))
-x=seq(-10,75,0.1)
-x2 <- -robMFI$coefficients[[1]]-robMFI$coefficients[[2]]*x
-
-
-plot(mfiDf2$MFI.Ratio,mfiDf2$Percent.Positive, log="x",
-	xlab="MFI Ratio (Test MFI / Isotype MFI)",xlim=c(0.1,250),
-	ylab="Percentage of cells above the isotype gate",pch=23)
-points(mfiDf3$MFI.Ratio,mfiDf3$Percent.Positive,col="red",pch=23)
-lines(10^x,100/(1 + exp(x2)),lwd=2,col='red')
+mfiPlot(fp,thresh=2,xlab="MFI Ratio (Test MFI / Isotype MFI)",xlim=c(0.1,250),
+		ylab="Percentage of cells above the isotype gate",pch=23)
 @
 
 
@@ -523,26 +508,12 @@ pmbc lymphocyte example plate. }
 \end{figure}
 
 
-<<echo=FALSE,results=hide>>=
-mfiDf <- subset(wellAnnotation(pbmcFPbgc),Sample.Type=="Test")
-mfiDf2 <- subset(mfiDf,abs(Gate.Score)<2)
-mfiDf3 <- subset(mfiDf,abs(Gate.Score)>=2)
-mfiDf$LogMFI.Ratio = log10(mfiDf$MFI.Ratio)
-mfiDf$PosCount <- round(mfiDf$Percent.Positive,0)
-mfiDf$NegCount <- 100-mfiDf$PosCount 
-robMFI <- glmrob(cbind(PosCount,NegCount) ~ LogMFI.Ratio, data=mfiDf,family=binomial(link="logit"))
-x=seq(-10,75,0.1)
-x2 <- -robMFI$coefficients[[1]]-robMFI$coefficients[[2]]*x
-@
-
 \clearpage
 \begin{figure}
 \begin{center}
 <<label=mfiRatio,fig=TRUE,echo=FALSE>>=
-plot(mfiDf2$MFI.Ratio,mfiDf2$Percent.Positive, log="x",xlab="MFI Ratio (Test MFI / Isotype MFI)",xlim=c(0.1,250),
+mfiPlot(pbmcFPbgc,thresh=2,xlab="MFI Ratio (Test MFI / Isotype MFI)",xlim=c(0.1,250),
 		ylab="Percentage of cells above the isotype gate",pch=23)
-points(mfiDf3$MFI.Ratio,mfiDf3$Percent.Positive,col="red",pch=23)
-lines(10^x,100/(1 + exp(x2)),lwd=2,col='red')
 @
 \end{center}
 \caption{Plot of the MFI ratio versus the percentage of positive cells for the 
