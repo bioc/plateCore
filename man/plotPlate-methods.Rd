@@ -8,8 +8,7 @@
 \title{ plotPlate }
 \description{
   Make a row vs. column plot of a plate, where the wells are colored according to some value 
-  of choice (number of events, median signal intensity, percent positive, etc.). This type
-  of plot is not very useful but people like to make them.)
+  of choice (number of events, median signal intensity, percent positive, etc.).)
 }
 \usage{
 plotPlate(fp, x = NA, method = "median", main, col, values, width = 1, na.action = "zero", \dots)
@@ -37,7 +36,7 @@ plotPlate(fp, x = NA, method = "median", main, col, values, width = 1, na.action
 \references{ The original version of this plot came from the \code{prada} package. }
 \author{ Jon Gosink and Errol Strain }
 \seealso{
-\code{\link[prada:plotPlate]{prada::plotPlate}}
+\code{\link[prada::plotPlate]{plotPlate}}
 }
 \examples{
 library(plateCore)

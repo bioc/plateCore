@@ -28,7 +28,7 @@
 
 }
 \author{ Errol Strain }
-\seealso{ See Also \code{\link[flowCore:flowCore-package]{compensate}} }
+\seealso{ See Also \code{\link[flowCore::compensation-class]{compensation-class}} }
 \examples{
 library(plateCore)
 data(plateCore)
