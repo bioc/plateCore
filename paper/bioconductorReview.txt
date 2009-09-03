@@ -1,0 +1,73 @@
+
+> I have several comments that may help the authors improve the package:
+> The antibody identities in the example data are masked, which introduces
+> confusion for a knowledgeable analyst.  I recommend that only patient
+> identifiers be masked and that the original antibody assignments be used in the
+> vignette and the example data.  This will make it much more interpretable for a
+> skilled cytometrist.  The plate data on the FICCS website (at least the version
+> that I downloaded almost a year ago) would be suitable for this purpose.
+
+The layout of the antibody-dye conjugates on the 96-well plate is proprietary to BD.   
+We agree that providing the antibody assignments makes the data much more interesting, 
+but we do not yet have approval to release the layout. 
+
+> I found some errors in the help pages.  For example, the compensate document
+> page refers to flowCore:compensate, but the link is broken.  Same on the
+> compensationSet page.
+
+I've updated the help pages so they are compatible with the latest version of flowCore.
+
+> PlotPlate is not illustrated in the vignette.  The help page says ?this type of
+> plot is not very useful but people like to make them?.
+> gutterPlot seemed to have some formatting problems running on Linux with an
+> x11() display.
+
+I was not able to replicate the formatting problems since gutterPlot renders
+correctly in Windows XP and in Ubuntu 9.04. In the example, the data is pretty
+well behaved and they are no wells that would be flagged based on gutterPlot.
+Perhaps the reviewer is referring to the compactness of the points on
+the y-axis? 
+
+> In the vignette I studied Figure 2 fairly carefully.  I cannot see any visual
+> differences at all between the original and background-corrected plots.  It?s
+> not a good illustration of the utility of this function.  Recommend omitting it
+> or finding a better (worse?) example with more autofluorescence.
+> In this same section of the vignette some editing is needed:  ?This correction
+> will later allows us to de?ne a one-dimensional gate between positive and
+> negative cells in only the channel (of) interest, instead of having a two
+> dimensional gate that includes the forward scatter (FSC) channel. The background
+> correction uses the unstained wells and ?ts a log-log linear model to FSC versus
+> each ?uorescence channel (Insert Florian?s ref ).?
+
+
+
+
+
+
+>
+> I executed on a Leopard platform the code on page 9 that supposedly generates
+> Figure 1 (the Figure would be better placed with the code that generates it).  I
+> got an error: ?Error using packet x, method for function ?glpoints?, for
+> signature ?intersectFilter?? in the graphical window, where x = the panel number
+> 1:4.
+>
+> For Figure 3 it would be helpful to illustrate the use of the getGroups() method
+> to select the wells associated with the negative control for A03.  As it is, the
+> figure shown is not the result of the code shown above it ? in my opinion, bad
+> form for a vignette.  In general Sweave is such a cool thing ? why not use it?
+> Section 7 would be better if each of the figures produced by the xyplot were
+> included in the vignette.
+>
+> The documentation for flowPlate, flowPlate-class, and flowPlate-flowSet-method
+> are all the same.  Generally, the man page for flowPlate should describe the
+> constructor, and flowPlate-class should describe the object slots and methods
+> for S4 classes.  The constructor can be documented in the class page, but please
+> don?t omit a complete description of the class.  For example, the subset
+> operators [ and [[  should be documented in the class document.  See
+> flowCore::flowFrame-class documentation for a good example.
+>
+> Authorship is not clear.  The DESCRIPTION file indicates Strain and Haaland.
+> The vignette suggests just Strain.  The plateCore-package man page indicates
+> Strain, Hahne and Haaland.
+>
+> ----------
