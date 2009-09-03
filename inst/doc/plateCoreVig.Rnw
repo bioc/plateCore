@@ -226,6 +226,26 @@ correction on lymphocytes is subtle at best, but it can have dramatic effects fo
 \begin{center}
 <<label=bgc1,fig=TRUE,echo=FALSE>>=
 
+autoDS <- read.flowSet(path="autofluor")
+flowViz::xyplot(`FL1-H` ~ `FSC-H` | as.factor(name) , transform("FL1-H"=log10) %on% autoDS)
+rectGate <- rectangleGate("FL1-H"=c(90,10000),"FSC-H"=c(100,800))
+autoDS2 <- Subset(autoDS[[1]], rectGate )
+flowViz::xyplot(`FL1-H` ~ `FSC-H` , transform("FL1-H"=log10) %on% autoDS2)
+
+temp <- list("Uncorrected"=autoDS2,"Corrected"=autoDS2)
+
+temp <- as(temp,"flowSet")
+
+sampleNames(temp)
+
+temp
+
+
+flowPlate(temp,wellAnnotation,plateName="PBMC.001")
+
+
+pbmcFPbgc <- fixAutoFl(temp,fsc="FSC-H",chanCols=c("FL1-H"),unstain="Uncorrected")
+
 temp <- transform("FL1-H"=log10) %on% pbmcFP.lymph[[96]]
 temp2 <- transform("FL1-H"=log10) %on% pbmcFPbgc[[96]]
 temp <- list("H11"=temp,"H11 (corrected)"=temp2)
