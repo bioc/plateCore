@@ -423,9 +423,28 @@ Now that we have this information we can display it using \Rfunction{xyplot}. We
 positive results to our  dotplots (Figure ~\ref{fig:isoGate3}). The \Rfunction{getGroups} retrieves a list
 of wells associated with each negative control for a particular channel.  In this case, the 3rd element
 in the controlGroups list corresponds to negative control well A03.
+<<eval=FALSE,echo=TRUE>>=
+controlGroups <- getGroups(pbmcFPbgc,chan="FL1-H")
+
+print(xyplot(`FL1-H` ~ `FSC-H` | as.factor(Well.Id),
+	transform("FL1-H"=log10) %on% pbmcFPbgc[controlGroups[[3]]],
+	displayFilter=TRUE,
+	smooth=FALSE,
+	col=c("red","blue"),
+	filter="Negative.Control",
+	flowStrip=c("Well.Id","Ab.Name","Percent.Positive")))
+@
+
+
+The \Robject{wellAnnotation} \Rclass{data.frame} can be exported as a comma delimited for a record of the analysis.
+<<eval=FALSE>>=
+write.csv(pbmcFPbgc@wellAnnotation,file="PMBC.001.csv")
+@
+
+\clearpage
 \begin{figure}
 \begin{center}
-<<label=isoGate3,fig=TRUE,echo=TRUE>>=
+<<label=isoGate3,fig=TRUE,echo=FALSE>>=
 controlGroups <- getGroups(pbmcFPbgc,chan="FL1-H")
 
 print(xyplot(`FL1-H` ~ `FSC-H` | as.factor(Well.Id),
@@ -442,10 +461,7 @@ cells in blue. The strip above each plot now contains the Antibody-Marker name, 
 \label{fig:isoGate3}
 \end{figure}
 
-The \Robject{wellAnnotation} \Rclass{data.frame} can be exported as a comma delimited for a record of the analysis.
-<<eval=FALSE>>=
-write.csv(pbmcFPbgc@wellAnnotation,file="PMBC.001.csv")
-@
+
 
 
 
