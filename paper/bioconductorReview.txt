@@ -66,8 +66,7 @@ why the function call fails on flowSets.
 > included in the vignette.
 
 I edited the vignette so that the code use to generate the figure is in the text.
-Also, I illustrated the use of the getGroups() function.
-
+Also, I used this figure to illustrate the use of the getGroups() function. 
 
 > The documentation for flowPlate, flowPlate-class, and flowPlate-flowSet-method
 > are all the same.  Generally, the man page for flowPlate should describe the
@@ -77,8 +76,9 @@ Also, I illustrated the use of the getGroups() function.
 > operators [ and [[  should be documented in the class document.  See
 > flowCore::flowFrame-class documentation for a good example.
 
-
-
+I separated the documentation for the flowPlate constructor documentation from the flowPlate class.
+The flowPlate class documentation was modeled on the flowSet-class example, providing
+the slots and subset operators. 
 
 > Authorship is not clear.  The DESCRIPTION file indicates Strain and Haaland.
 > The vignette suggests just Strain.  The plateCore-package man page indicates
