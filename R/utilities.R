@@ -152,8 +152,8 @@ setMethod("filterBoundary",
 
           ## FIXME: the next section assumes details which may change (but don't know how else to access them)
 
-          rect.min <- result.details$rectangleGate$filter@min[parameters]
-          rect.max <- result.details$rectangleGate$filter@max[parameters]
+          rect.min <- filter.object@min[parameters]
+          rect.max <-filter.object@max[parameters]
           ans <-
               list(x = c(rect.min[1], rect.max[1], rect.max[1], rect.min[1]),
                    y = c(rect.min[2], rect.min[2], rect.max[2], rect.max[2]))
