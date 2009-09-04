@@ -14,14 +14,13 @@ setClass("flowPlate",
 	representation(
 		plateName="character",
 		plateSet="flowSet",
-		plateFilters="filterSet",
-		wellAnnotation="data.frame",
-		fjWorkspaces="environment"),
+		wellAnnotation="data.frame"
+	),
 	prototype=list(
 		plateName=character(0),
 		plateConfig=data.frame(),
-		wellAnnotation=data.frame(),
-		fjWorkspaces=emptyenv())
+		wellAnnotation=data.frame()
+	)
 )
 
 
