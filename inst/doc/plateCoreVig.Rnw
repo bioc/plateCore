@@ -30,7 +30,7 @@ library(gplots)
 
 \title{Analysis of High Throughput Flow Cytometry Data using \Rpackage{plateCore}}
 
-\author{Errol Strain}
+\author{Errol Strain, Florian Hahne, Perry Haaland}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
@@ -208,19 +208,19 @@ pbmcFPcomp <- compensate(pbmcFP.lymph,comp.mat)
 In this particular case the \Robject{pbmcPlate} has already compensated on the cytometer, so no further compensation is necessary.
 
 The process of analyzing and gating (filtering) the large amount of data in a \Rclass{flowPlate} can be simplified by first correcting
-for the effects of cell size on background fluoresence. This correction will later allows us to define a one-dimensional gate between positive and negative
+for the effects of cell size on background fluorescence. This step is not necessary in this PBMC lymphocyte example, since the 
+level of autofluorescence is very low, but it can have large effects on other cell types that have a wider range of FSC values, such as fibroblasts and stem cells.
+This correction will later allows us to define a one-dimensional gate between positive and negative
 cells in only the channel interest, instead of having a two dimensional gate that includes the forward scatter (FSC) channel. The background
-correction uses the unstained wells and fits a log-log linear model to FSC versus each fluorescence channel (Insert Florian's ref).  The
+correction uses the unstained wells and fits a log-log linear model to FSC versus each fluorescence channel (Hahne et al. 2006 Genome Biology).  The
 correction is then applied to all the wells on a the plate. The \Rfunction{fixAutoFl} function takes a \Rclass{flowPlate}, and character variables
 indicating the FSC channel and the fluorsence channels (chanCols).  
 <<echo=TRUE>>=
 pbmcFPbgc <- fixAutoFl(pbmcFP.lymph,fsc="FSC-H",chanCols=rownames(comp.mat))
-
-
 @
+Figure ~\ref{fig:bgc1} shows the results of the autofluorescence correction for PBMC lymphoctes where the background fluorescence was
+artificially inflated. 
 
-Dotplots for before and after the background correction are shown in Figure ~\ref{fig:bgc1}. The result of the background
-correction on lymphocytes is subtle at best, but it can have dramatic effects for other cells types that have a wider range of FSC values.
 
 \begin{figure}
 \begin{center}
@@ -243,7 +243,8 @@ print(flowViz::levelplot(`FL1-H` ~ `FSC-H` | as.factor(name),data=temp, ylim=c(0
 @
 \end{center}
 \caption{Levelplots showing the effects of cell size (FSC) on fluorescence for the unstained cells before (left) and after (right) the 
-background correction. In the uncorrected data the fluorescence signal generally increases with increasing cell size (FSC).}
+background correction. The fluorescence signal intensity generally increases with increasing cell size (FSC). The effect
+of cell size on background fluorescence for PBMC lymphocytes was exaggerated in this plot to demonstrate \Rfunction{fixAutoFl}.}
 \label{fig:bgc1}
 \end{figure}
 
@@ -251,20 +252,21 @@ background correction. In the uncorrected data the fluorescence signal generally
 \clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Gating}
+
 Gating on \Rclass{flowplates} is mainly performed using \Rfunction{Subset}. The first argument to this function is a \Rclass{flowPlate} and
-the second is a valid \Rpackage{flowCore} filter(s). For exploratory analysis and setting up the initial gates, it is more
+the second is a valid \Rpackage{flowCore} filter(s). For exploratory analysis and setting up the initial gates, it is sometimes more
 convenient to work with a \Rclass{flowSet}, which can be extracted from a \Rclass{flowPlate} using the \Rfunction{plateSet}
 function.    
 <<echo=TRUE>>=
 fs <- plateSet(pbmcFP)
 @
 
-For example, we can use a \Rclass{rectangleGate} to separate the lymphocytes from the debris and monocytes. Looking at the 
+In this PBMC example, we can use a \Rclass{rectangleGate} to separate the lymphocytes from the debris and monocytes. Looking at the 
 plots in Figure ~\ref{fig:lymphGate}, the lymphocytes look like they are located from about 400 to 650 on the FSC scale, and
-100 to 300 on the SSC scale.  We can use \Rfunction{xyplot} from the \Rpackage{flowViz} package to display the gates.
+100 to 300 on the SSC scale.  We can use \Rfunction{xyplot} from the \Rpackage{flowViz} package to display events inside the gates.
 <<echo=TRUE,eval=FALSE>>=
 rectGate <- rectangleGate("FSC-H"=c(400,700),"SSC-H"=c(100,300))
-xyplot(`SSC-H` ~ `FSC-H` | as.factor(Well.Id), fs[1:2], displayFilter=TRUE,
+xyplot(`SSC-H` ~ `FSC-H` | as.factor(Well.Id), pbmcFP[1:2], displayFilter=TRUE,
 smooth=FALSE, col=c("red","blue"),filter=rectGate)
 @
 Since we want this gate to be applicable to all the wells, it may help to enlarge the \Rclass{rectangleGate} and then use
@@ -274,8 +276,7 @@ region of high density.
 <<echo=TRUE,eval=FALSE>>=
 rectGate <- rectangleGate("FSC-H"=c(300,700),"SSC-H"=c(50,400))
 normGate <- norm2Filter("SSC-H","FSC-H",scale.factor=1.5)
-xyplot(`SSC-H` ~ `FSC-H` | as.factor(Well.Id), fs[1:4], displayFilter=TRUE,
-smooth=FALSE, col=c("red","blue"),filter=rectGate & normGate)
+xyplot(`SSC-H` ~ `FSC-H` | as.factor(Well.Id), pbmcFP[1:4], displayFilter=TRUE, smooth=FALSE, col=c("red","blue"),filter=normGate & rectGate)
 @
 The results of applying the \Rclass{rectangleGate} and \Rclass{norm2filt} are shown in Figure~\ref{fig:lymphGate}.
 
@@ -321,7 +322,6 @@ smooth=FALSE,col=c("red","blue"),filter="Negative.Control")
 <<label=isoGate1,fig=TRUE,echo=FALSE>>=
 
 wells <- unique(subset(pbmcFPbgc@wellAnnotation,Negative.Control=="A03",select="name")[,1])
-
 print(xyplot(`FL1-H` ~ `FSC-H` | as.factor(Well.Id), transform("FL1-H"=log10) %on% pbmcFPbgc[wells], displayFilter=TRUE,smooth=FALSE, col=c("red","blue"),
 filter="Negative.Control"))
 
@@ -420,38 +420,34 @@ In this PMBC example a number of the samples have multiple cell populations, so 
 may not be helpful since they are based on all the cells in a well, and not just the positive cells.
 
 Now that we have this information we can display it using \Rfunction{xyplot}. We can add the marker names and percent
-positive results to our  dotplots (Figure ~\ref{fig:isoGate3}).
-<<eval=FALSE>>=
-wells <- unique(subset(pbmcFPbgc@wellAnnotation,Negative.Control=="A03",
-	select="name")[,1])
-print(xyplot(`FL1-H` ~ `FSC-H` | as.factor(Well.Id), 
-  transform("FL1-H"=log10) %on% pbmcFPbgc[wells],
-  displayFilter=TRUE,smooth=FALSE, col=c("blue","green"),
-  filter="Negative.Control",
-  flowStrip=c("Well.Id","Ab.Name","Percent.Positive")))
-
-@
-
-The \Robject{wellAnnotation} \Rclass{data.frame} can be exported as a comma delimited for a record of the analysis.
-<<eval=FALSE>>=
-write.csv(pbmcFPbgc@wellAnnotation,file="PMBC.001.csv")
-@
-
+positive results to our  dotplots (Figure ~\ref{fig:isoGate3}). The \Rfunction{getGroups} retrieves a list
+of wells associated with each negative control for a particular channel.  In this case, the 3rd element
+in the controlGroups list corresponds to negative control well A03.
 \begin{figure}
 \begin{center}
-<<label=isoGate3,fig=TRUE,echo=FALSE>>=
+<<label=isoGate3,fig=TRUE,echo=TRUE>>=
+controlGroups <- getGroups(pbmcFPbgc,chan="FL1-H")
 
-wells <- unique(subset(pbmcFPbgc@wellAnnotation,Negative.Control=="A03",select="name")[,1])
-
-print(xyplot(`FL1-H` ~ `FSC-H` | as.factor(Well.Id), transform("FL1-H"=log10) %on% pbmcFPbgc[wells], displayFilter=TRUE,smooth=FALSE, col=c("red","blue"),
-filter="Negative.Control",flowStrip=c("Well.Id","Ab.Name","Percent.Positive")))
-
+print(xyplot(`FL1-H` ~ `FSC-H` | as.factor(Well.Id),
+				transform("FL1-H"=log10) %on% pbmcFPbgc[controlGroups[[3]]],
+				displayFilter=TRUE,
+				smooth=FALSE,
+				col=c("red","blue"),
+				filter="Negative.Control",
+				flowStrip=c("Well.Id","Ab.Name","Percent.Positive")))
 @
 \end{center}
 \caption{Dotplots and Negative.Control gates for wells associated with control well A03. Negative cells are shown in read and positive
 cells in blue. The strip above each plot now contains the Antibody-Marker name, along with the percentage of positive cells in the well.}
 \label{fig:isoGate3}
 \end{figure}
+
+The \Robject{wellAnnotation} \Rclass{data.frame} can be exported as a comma delimited for a record of the analysis.
+<<eval=FALSE>>=
+write.csv(pbmcFPbgc@wellAnnotation,file="PMBC.001.csv")
+@
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
