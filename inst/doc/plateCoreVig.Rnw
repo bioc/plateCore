@@ -225,37 +225,24 @@ correction on lymphocytes is subtle at best, but it can have dramatic effects fo
 \begin{figure}
 \begin{center}
 <<label=bgc1,fig=TRUE,echo=FALSE>>=
-
-autoDS <- read.flowSet(path="autofluor")
-flowViz::xyplot(`FL1-H` ~ `FSC-H` | as.factor(name) , transform("FL1-H"=log10) %on% autoDS)
-rectGate <- rectangleGate("FL1-H"=c(90,10000),"FSC-H"=c(100,800))
-autoDS2 <- Subset(autoDS[[1]], rectGate )
-flowViz::xyplot(`FL1-H` ~ `FSC-H` , transform("FL1-H"=log10) %on% autoDS2)
-
-temp <- list("Uncorrected"=autoDS2,"Corrected"=autoDS2)
-
-temp <- as(temp,"flowSet")
-
-sampleNames(temp)
-
-temp
-
-
-flowPlate(temp,wellAnnotation,plateName="PBMC.001")
-
-
-pbmcFPbgc <- fixAutoFl(temp,fsc="FSC-H",chanCols=c("FL1-H"),unstain="Uncorrected")
-
-temp <- transform("FL1-H"=log10) %on% pbmcFP.lymph[[96]]
-temp2 <- transform("FL1-H"=log10) %on% pbmcFPbgc[[96]]
-temp <- list("H11"=temp,"H11 (corrected)"=temp2)
-temp <- as(temp,"flowSet")
-
-print(flowViz::levelplot(`FL1-H` ~ `FSC-H` | as.factor(name),data=temp,ylim=c(0,2.2)))	
-
+temp <- pbmcFP.lymph[96]
+fsMed <- log10(median(exprs(temp[[1]])[,"FSC-H"]))
+temp <- fsApply(plateSet(temp),function(x) {
+			flVals <- log10(exprs(x)[,"FL1-H"])
+			fsc <-  log10(exprs(x)[,"FSC-H"])
+			exprs(x)[,"FL1-H"] <- 10^(flVals+4*(fsc-fsMed))
+			x
+		})
+temp2 <- as(list("0877408774.H12"=temp[[1]]),"flowSet")
+wellTemp <- subset(wellAnnotation(pbmcFP),Well.Id=="H12")
+temp2 <- flowPlate(temp2,wellTemp,plateName="H12")
+temp2 <- fixAutoFl(temp2,fsc="FSC-H",chanCols=c("FL1-H","FL2-H"),unstain="0877408774.H12")
+temp <- as(list("H11"=temp[[1]],"H11 (corrected)"=temp2[[1]]),"flowSet")
+temp <- transform("FL1-H"=log10) %on% temp
+print(flowViz::levelplot(`FL1-H` ~ `FSC-H` | as.factor(name),data=temp, ylim=c(0,2.2)))	
 @
 \end{center}
-\caption{Dotplots showing the effects of cell size (FSC) on fluorescence for the unstained cells before (left) and after (right) the 
+\caption{Levelplots showing the effects of cell size (FSC) on fluorescence for the unstained cells before (left) and after (right) the 
 background correction. In the uncorrected data the fluorescence signal generally increases with increasing cell size (FSC).}
 \label{fig:bgc1}
 \end{figure}
