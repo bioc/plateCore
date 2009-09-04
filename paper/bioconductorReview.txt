@@ -39,25 +39,36 @@ the y-axis?
 > correction uses the unstained wells and ?ts a log-log linear model to FSC versus
 > each ?uorescence channel (Insert Florian?s ref ).?
 
+I was unable to find a publicly available data set where the autofluorescence correction
+had a big effect. This correction isn't required for PBMCs, but it make analysis
+of adherent cells (fibroblasts, stem cells, etc.) much easier. Unfortunately, 
+we are not able to release data on these other cell types. Even though we can't
+make a compelling case to correct for autofluorescence with PBMC data, we think it is 
+important provide an example. I increased the autofluorescence in the PBMC lymphocyte
+example in Figure 2 so that readers can see how the method functions.
 
-
-
-
-
->
 > I executed on a Leopard platform the code on page 9 that supposedly generates
 > Figure 1 (the Figure would be better placed with the code that generates it).  I
 > got an error: ?Error using packet x, method for function ?glpoints?, for
 > signature ?intersectFilter?? in the graphical window, where x = the panel number
 > 1:4.
->
+
+It appears that plotting intersect filters (rectGate & normGate) is not working correctly for xyplot on
+flowSets from the flowViz package. I changed the functions to use xyplot for 
+flowPlates instead, and edited the text to reflect the changes. I'll investigate
+why the function call fails on flowSets.
+
 > For Figure 3 it would be helpful to illustrate the use of the getGroups() method
 > to select the wells associated with the negative control for A03.  As it is, the
 > figure shown is not the result of the code shown above it ? in my opinion, bad
 > form for a vignette.  In general Sweave is such a cool thing ? why not use it?
 > Section 7 would be better if each of the figures produced by the xyplot were
 > included in the vignette.
->
+
+I edited the vignette so that the code use to generate the figure is in the text.
+Also, I illustrated the use of the getGroups() function.
+
+
 > The documentation for flowPlate, flowPlate-class, and flowPlate-flowSet-method
 > are all the same.  Generally, the man page for flowPlate should describe the
 > constructor, and flowPlate-class should describe the object slots and methods
@@ -65,9 +76,13 @@ the y-axis?
 > don?t omit a complete description of the class.  For example, the subset
 > operators [ and [[  should be documented in the class document.  See
 > flowCore::flowFrame-class documentation for a good example.
->
+
+
+
+
 > Authorship is not clear.  The DESCRIPTION file indicates Strain and Haaland.
 > The vignette suggests just Strain.  The plateCore-package man page indicates
 > Strain, Hahne and Haaland.
->
-> ----------
+
+Authorship of the vignette and Description file have been updated to include
+all 3 authors.
