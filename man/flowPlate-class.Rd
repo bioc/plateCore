@@ -7,7 +7,10 @@
 
 \title{The flowPlate class.}
 \description{
-	\code{flowPlates} are the 
+	\code{flowPlates} are the basic data containers for the plateCore package. 
+	A \code{flowPlate} is essentially a \code{\link[flowCore::flowSet-class]{flowSet-class}},
+	plus a \code{data.frame} describing the layout of the plate and contents of 
+	individual wells.
 }
 
 \section{Slots}{
@@ -52,7 +55,7 @@
 }
 
 
-\author{ Errol Strain }
+\author{ Errol Strain, Florian Hahne, Perry Haaland }
 \examples{
 library(plateCore)
 data(plateCore)
