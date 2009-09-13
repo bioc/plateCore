@@ -8,7 +8,7 @@
 > that I downloaded almost a year ago) would be suitable for this purpose.
 
 The layout of the antibody-dye conjugates on the 96-well plate is proprietary to BD.   
-We agree that providing the antibody assignments makes the data much more interesting, 
+We agree that providing the antibody assignments would the the data much more interesting, 
 but we do not yet have approval to release the layout. 
 
 > I found some errors in the help pages.  For example, the compensate document
