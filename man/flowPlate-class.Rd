@@ -7,7 +7,7 @@
 
 \title{The flowPlate class.}
 \description{
-	\code{flowPlates} 
+	\code{flowPlates} are the 
 }
 
 \section{Slots}{
