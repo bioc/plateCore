@@ -23,7 +23,7 @@ I've updated the help pages so they are compatible with the latest version of fl
 > x11() display.
 
 I was not able to replicate the formatting problems since gutterPlot renders
-correctly in Windows XP and in Ubuntu 9.04. In the example, the data is pretty
+correctly in Windows XP and in Ubuntu 32-bit. In the example, the data is pretty
 well behaved and they are no wells that would be flagged based on gutterPlot.
 Perhaps the reviewer is referring to the compactness of the points on
 the y-axis? 
