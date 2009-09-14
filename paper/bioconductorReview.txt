@@ -1,3 +1,10 @@
+Hi Nishant,
+
+I have made the corrections to plateCore suggested by the reviewer.
+I appreciate the reviewer taking the time to thoroughly examine the plateCore package.
+My responses to the reviewer's comments are provided below.
+
+Errol
 
 > I have several comments that may help the authors improve the package:
 > The antibody identities in the example data are masked, which introduces
