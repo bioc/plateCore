@@ -20,9 +20,9 @@
     \item{\code{plateName}:}{A \code{character} string containing the name of the plate.
       }
 
-    \item{\code{plateSet}:}{A \code{\link[flowCore::flowSet-class]{flowSet-class}} containing FCS
+    \item{\code{plateSet}:}{A \code{\link[flowCore:flowSet-class]{flowSet-class}} containing FCS
 	  event data. Prior to creating a \code{flowPlate}, the FCS files are first read
-	  into a \code{\link[flowCore::flowSet-class]{flowSet-class}} using \code{\link[flowCore::read.flowSet]{read.flowSet}}.
+	  into a \code{\link[flowCore:flowSet-class]{flowSet-class}} using \code{\link[flowCore:read.flowSet]{read.flowSet}}.
       }
 
     \item{\code{wellAnnotation}:}{A \code{data.frame} describing the layout of the

@@ -18,7 +18,7 @@
   Sample data set from BD FACS CAP analysis.
 }
 \author{ Errol Strain }
-\seealso{ See Also \code{\link[flowCore::compensation-class]{compensation-class}}} 
+\seealso{ See Also \code{\link[flowCore:compensation-class]{compensation-class}}} 
 \examples{
 library(plateCore)
 data(plateCore)

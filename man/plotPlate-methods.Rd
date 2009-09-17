@@ -36,7 +36,7 @@ plotPlate(fp, x = NA, method = "median", main, col, values, width = 1, na.action
 \references{ The original version of this plot came from the \code{prada} package. }
 \author{ Jon Gosink and Errol Strain }
 \seealso{
-\code{\link[prada::plotPlate]{plotPlate}}
+\code{\link[prada:plotPlate]{plotPlate}}
 }
 \examples{
 library(plateCore)
