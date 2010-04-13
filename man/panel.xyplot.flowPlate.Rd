@@ -22,17 +22,17 @@ panel.xyplot.flowPlate(x,
 \arguments{
   \item{x}{ character }
   \item{frames}{ flowFrames }
-  \item{channel.x}{}
-  \item{channel.y}{}
-  \item{channel.x.name}{}
-  \item{channel.y.name}{}
-  \item{filter}{}
-  \item{filterResults}{}
-  \item{displayFilter}{}
-  \item{pch}{} 
-  \item{smooth}{}
-  \item{wellAnnotation}{}
-  \item{col}{}
+  \item{channel.x}{ xyplot channel.x parameter }
+  \item{channel.y}{ xyplot channel.y parameter }
+  \item{channel.x.name}{ xyplot channel.x.name parameter }
+  \item{channel.y.name}{ xyplot channel.y.name parameter }
+  \item{filter}{ xyplot filter parameter }
+  \item{filterResults}{ xyplot filterResults parameter }
+  \item{displayFilter}{ xyplot displayFilter parameter }
+  \item{pch}{ xyplot pch parameter } 
+  \item{smooth}{ xyplot smooth parameter }
+  \item{wellAnnotation}{ wellAnnotation data.frame }
+  \item{col}{ xyplot col parameter }
   \item{\dots}{optional arguments}
 }
 

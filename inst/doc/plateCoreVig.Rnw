@@ -483,15 +483,15 @@ summary(wellAnnotation(pbmcFPbgc)$Total.Count)
 Since each well has at least 858 gated lymphocyte events there are no apparent
 problems with the sample acquisition on the plate.
 
-%Fluidic events (bubbles, etc.) can cause the cytometer readings to shift. These
-%type of events can often be identified by plotting FSC vs Time, or through ecdf
-%plots (as described in Le Meur et al. 2007, Cytometry Part A). An example of an ecdf plot
-%for FSC looking for a row effect, since the samples are acquired by row, is shown
-%in Figure ~\ref{fig:ecdf}.  The code used to produce the figure is shown below.
-%<<eval=FALSE>>=
-%print(flowViz::ecdfplot(~`FSC-H` | as.factor(Column.Id),
-% data=plateSet(pbmcFPbgc), groups=Row.Id, auto.key=TRUE))
-%@
+Fluidic events (bubbles, etc.) can cause the cytometer readings to shift. These
+type of events can often be identified by plotting FSC vs Time, or through ecdf
+plots (as described in Le Meur et al. 2007, Cytometry Part A). An example of an ecdf plot
+for FSC looking for a row effect, since the samples are acquired by row, is shown
+in Figure ~\ref{fig:ecdf}.  The code used to produce the figure is shown below.
+<<eval=FALSE>>=
+print(flowViz::ecdfplot(~`FSC-H` | as.factor(Column.Id),
+ data=plateSet(pbmcFPbgc), groups=Row.Id, auto.key=TRUE))
+@
 
 One approach to evaluating the consistency of isotype-based gating is to plot
 the MFI ratio versus the percentage of positive cells. The MFI ratio is the
@@ -513,18 +513,18 @@ mfiPlot(fp,thresh=2,xlab="MFI Ratio (Test MFI / Isotype MFI)",xlim=c(0.1,250),
 @
 
 
-%\clearpage
-%\begin{figure}
-%\begin{center}
-%<<label=ecdf,fig=TRUE,echo=FALSE>>=
-%print(flowViz::ecdfplot(~`FSC-H` | as.factor(Column.Id),
-%				data=plateSet(pbmcFPbgc), groups=Row.Id, auto.key=TRUE))
-%@
-%\end{center}
-%\caption{Empirical Cumulative Distribution Function (ecdf) plot for FSC from the
-%pmbc lymphocyte example plate. }
-%\label{fig:ecdf}
-%\end{figure}
+\clearpage
+\begin{figure}
+\begin{center}
+<<label=ecdf,fig=TRUE,echo=FALSE>>=
+print(flowViz::ecdfplot(~`FSC-H` | as.factor(Column.Id),
+				data=plateSet(pbmcFPbgc), groups=Row.Id, auto.key=TRUE))
+@
+\end{center}
+\caption{Empirical Cumulative Distribution Function (ecdf) plot for FSC from the
+pmbc lymphocyte example plate. }
+\label{fig:ecdf}
+\end{figure}
 
 
 \clearpage

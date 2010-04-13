@@ -20,14 +20,14 @@ panel.densityplot.flowPlate(x,
 \arguments{
   \item{x}{ character }
   \item{frames}{ flowFrames }
-  \item{channel}{}
+  \item{channel}{ channel of interest }
   \item{wellAnnotation}{wellAnnotation data.frame}
-  \item{groups}{} 
-  \item{subscripts}{}
-  \item{col}{}
-  \item{col.points}{}
-  \item{col.line}{}
-  \item{filterResult}{}
+  \item{groups}{density plot groups parameter } 
+  \item{subscripts}{ densityplot subscripts parameter }
+  \item{col}{ densityplot col parameter }
+  \item{col.points}{ densityplot col.points parameter }
+  \item{col.line}{ densityplot col.line parameter}
+  \item{filterResult}{ densityplot filterResult parameter }
   \item{\dots}{optional arguments}
 }
 
