@@ -1,5 +1,5 @@
 \name{flowPlate}
-\docType{method}
+\docType{methods}
 \alias{flowPlate}
 \alias{flowPlate-method}
 \alias{flowPlate,flowSet-method}
