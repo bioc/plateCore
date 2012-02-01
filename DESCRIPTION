@@ -1,10 +1,10 @@
 Package: plateCore
-Version: 1.13.0
+Version: 1.13.1
 Date: 2010-04-12
 Title: Statistical tools and data structures for plate-based flow cytometry
 Author: Errol Strain, Florian Hahne, and Perry Haaland
 Maintainer: Errol Strain <estrain@gmail.com>
-Depends: R (>= 2.8.0), flowCore, flowViz, lattice, latticeExtra
+Depends: R (>= 2.10), flowCore, flowViz, lattice, latticeExtra
 Imports: Biobase, flowCore, graphics, grDevices, lattice, MASS,
          methods, robustbase, stats, utils
 Suggests: gplots
