@@ -1,8 +1,13 @@
 import(methods)
 
-importClassesFrom("flowCore", "curv2Filter", "filter", "flowSet",
+importClassesFrom("flowCore", "filter", "flowSet",
                   "norm2Filter", "polygonGate", "rectangleGate",
                   "subsetFilter")
+
+importClassesFrom("flowStats", "curv2Filter")
+
+importMethodsFrom("flowStats", "%on%")
+
 importMethodsFrom("flowCore", "%on%", "compensate", "each_col",
                   "filter", "filterDetails", "fsApply", "Subset")
 
